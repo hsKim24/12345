@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace = 클래스명과 동일  -->
+<mapper namespace="as">
+
+	 <select id="getAsListCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM ASSET ASS INNER JOIN EMP E
+                ON ASS.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON ASS.DEPT_NO = D.DEPT_NO
+		WHERE 1 = 1
+		AND ASS.AS_DSTR_DATE IS NULL
+		<if test="txt != null and txt != ''">
+			<choose>
+		      		<when test="searchGbn == 0">
+			      		AND ASS.AS_NO LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 1">
+			      		AND ASS.AS_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 2">
+			      		AND D.DEPT_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      	</choose>
+		</if>
+	</select>
+	
+	<select id="getAsList" parameterType="hashmap" resultType="hashmap">
+		SELECT L.ASNO, L.ASNM, L.ENAME, L.DNAME, L.PDATE, L.PPRI,L.CSPN
+		FROM(SELECT ASS.AS_NO AS ASNO, ASS.AS_NAME AS ASNM, E.NAME AS ENAME, D.DEPT_NAME AS DNAME,
+                     TO_CHAR(ASS.AS_PURCH_DATE, 'YYYY-MM-DD') AS PDATE, ASS.AS_PURCH_PRICE AS PPRI, AS_CS_PHONE AS CSPN,
+       									 ROW_NUMBER() OVER(ORDER BY ASS.AS_PURCH_DATE DESC) AS RNUM
+		FROM ASSET ASS INNER JOIN EMP E
+                ON ASS.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON ASS.DEPT_NO = D.DEPT_NO
+        WHERE 1=1
+        AND ASS.AS_DSTR_DATE IS NULL
+        <if test="txt != null and txt != ''">
+					<choose>
+		      		<when test="searchGbn == 0">
+			      		AND ASS.AS_NO LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 1">
+			      		AND ASS.AS_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 2">
+			      		AND D.DEPT_NAME  LIKE '%' || #{txt} || '%'
+		      		</when>
+		      	</choose>
+					
+		</if>)L
+        WHERE L.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+	</select> 
+	
+	<insert id="insertAs" parameterType="hashmap">
+		INSERT INTO ASSET (AS_NO, AS_NAME, EMP_NO, DEPT_NO, AS_PURCH_PRICE, AS_PURCH_DATE, AS_CS_PHONE)
+		VALUES (#{textItemNo}, #{textItemNm}, #{textEmpNo}, #{textDeptNo}, #{textPurPri}, #{textPurDate}, #{textCsNum} )
+	</insert>
+	
+	<select id="getAsSearchList" parameterType="hashmap" resultType="hashmap">
+		SELECT S.EMP_NO,S.NAME, S.DEPT_NO, S.DEPT_NAME
+		FROM(SELECT E.EMP_NO, E.NAME, D.DEPT_NO, D.DEPT_NAME
+		FROM HR_APNT HR INNER JOIN EMP E
+                ON HR.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON HR.DEPT_NO = D.DEPT_NO
+        WHERE 1=1       
+		<if test="searchEmpTxt != null and searchEmpTxt != ''">
+		     <choose>
+				<when test="searchGbn1 == 0">
+					      AND E.NAME LIKE '%' || #{searchEmpTxt} || '%'
+				</when>
+				<when test="searchGbn1 == 1">
+					      AND D.DEPT_NAME LIKE '%' || #{searchEmpTxt} || '%'
+				</when>
+			</choose> 
+		</if>)S
+	
+	</select>
+	
+	<select id="getAsSearchListCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM HR_APNT HR INNER JOIN EMP E
+                ON HR.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON HR.DEPT_NO = D.DEPT_NO
+		WHERE 1 = 1
+		<if test="searchEmpTxt != null and searchEmpTxt != ''">
+			      AND E.NAME LIKE '%' || #{searchEmpTxt} || '%'
+		</if>
+	</select>
+	
+	<update id="UpdateAs" parameterType="hashmap">
+		UPDATE ASSET SET AS_NO = #{textItemNo}, DEPT_NO = #{textDeptNo}, EMP_NO = #{textEmpNo}, AS_NAME = #{textItemNm},
+						AS_PURCH_PRICE = #{textPurPri}, AS_PURCH_DATE = #{textPurDate}, AS_CS_PHONE = #{textCsNum}
+		WHERE AS_NO = #{textItemNo}
+	</update>
+	
+	<select id="getAsDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT L.ASNO, L.ASNM, L.ENAME, L.DNAME, L.PDATE, L.PPRI, L.CSPN, L.DEPT_NO, L.EMP_NO
+		FROM(SELECT ASS.AS_NO AS ASNO, ASS.AS_NAME AS ASNM, E.NAME AS ENAME, D.DEPT_NAME AS DNAME, D.DEPT_NO, E.EMP_NO,
+                     TO_CHAR(ASS.AS_PURCH_DATE, 'YYYY-MM-DD') AS PDATE, ASS.AS_PURCH_PRICE AS PPRI, AS_CS_PHONE AS CSPN,
+       									 ROW_NUMBER() OVER(ORDER BY ASS.AS_PURCH_DATE DESC) AS RNUM
+		FROM ASSET ASS INNER JOIN EMP E
+                ON ASS.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON ASS.DEPT_NO = D.DEPT_NO
+		WHERE ASS.AS_NO = #{textItemNo}
+		)L	
+	</select>
+	
+	<update id="UpdateAsListDel" parameterType="hashmap">
+		UPDATE ASSET SET AS_DSTR_DATE = SYSDATE
+		WHERE AS_NO = #{textItemNo}
+	</update>
+	
+	<delete id="deleteAs" parameterType="hashmap">
+		DELETE FROM ASSET 
+		WHERE AS_NO = #{textItemNo}
+	</delete>
+	
+	<select id="getAsProjList" parameterType="hashmap" resultType="hashmap">
+		SELECT  TT.INPPL, TT.PNO, TT.ENO, TT.ENM, TT.SOLNM, TT.SOLNO, TT.PD, TT.PTYPE, TT.PAPPSOL, TT.MKNO, TT.MKNM, TT.ARNM, TT.ARNO 
+		FROM(SELECT NVL(INPP.INPPL, '0')AS INPPL , LL.PNO, LL.ENO, LL.ENM, LL.SOLNM, LL.SOLNO, LL.PD, LL.PTYPE, LL.PAPPSOL, LL.MKNO, LL.MKNM, LL.ARNM, LL.ARNO,
+		LL.RNUM
+        FROM(SELECT L.ENO, L.ENM, L.PNO, L.SOLNM, L.SOLNO, L.PPL, L.PD, L.PTYPE, L.PAPPSOL, L.MKNO, L.MKNM, L.ARNM, L.ARNO, L.RNUM
+		FROM(SELECT E.EMP_NO AS ENO, E.NAME AS ENM, PJ.PROJ_NO AS PNO, SL.SOL_NAME AS SOLNM, SL.SOL_NO AS SOLNO,   
+			NVL(PJ.PROJ_PPL, '0')AS PPL, PJ.PROJ_TYPE AS PTYPE, ARE.AREA_NAME AS ARNM, ARE.AREA_NO AS ARNO, MK.MARK_NO AS MKNO,
+       		TO_CHAR(PJ.PROJ_START_DAY, 'YYYY-MM-DD')||'~'||TO_CHAR(PJ.PROJ_FNSH_DAY, 'YYYY-MM-DD') AS PD,    
+       		NVL(PJ.PROJ_APPSOL, '-')AS PAPPSOL, MK.NAME AS MKNM,  ROW_NUMBER() OVER(ORDER BY PJ.PROJ_NO DESC) AS RNUM
+			FROM PROJ PJ INNER JOIN SOL SL
+          			  ON PJ.SOL_NO = SL.SOL_NO
+        	   		 INNER JOIN AREA ARE
+           			  ON  PJ.AREA_NO = ARE.AREA_NO
+          			 INNER JOIN EMP E
+           			  ON PJ.EMP_NO = E.EMP_NO   
+           			 INNER JOIN MARK MK
+            		  ON PJ.MARK_NO = MK. MARK_NO )L)LL
+                     
+                      LEFT OUTER JOIN 
+			                      
+			 (SELECT INP.PROJ_NO, INP.INPPL          
+			 FROM(SELECT PROJ_NO, COUNT(PROJ_NO) AS INPPL
+			      FROM INPUT_PPL
+			      GROUP BY PROJ_NO)INP)INPP
+			    ON LL.PNO = INPP.PROJ_NO
+			   
+			            		                  
+       			 WHERE 1=1
+       			 <if test="txt != null and txt != ''">
+					<choose>
+			      		<when test="searchGbn == 0">
+				      		AND LL.SOL_NAME LIKE '%' || #{txt} || '%'
+			      		</when>
+			      		<when test="searchGbn == 1">
+				      		AND LL.MKNM LIKE '%' || #{txt} || '%'
+			      		</when>
+			      		<when test="searchGbn == 2">
+				      		AND LL.PTYPE  LIKE '%' || #{txt} || '%'
+			      		</when>
+		      		</choose>
+				</if>)TT
+        WHERE TT.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select> 
+	
+	<select id="getAsProjListCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+        FROM(SELECT L.ENO, L.ENM, L.PNO, L.SOLNM, L.SOLNO, L.PPL, L.PD, L.PTYPE, L.PAPPSOL, L.MKNO, L.MKNM, L.ARNM, L.ARNO, L.RNUM
+		FROM(SELECT E.EMP_NO AS ENO, E.NAME AS ENM, PJ.PROJ_NO AS PNO, SL.SOL_NAME AS SOLNM, SL.SOL_NO AS SOLNO,   
+			NVL(PJ.PROJ_PPL, '0')AS PPL, PJ.PROJ_TYPE AS PTYPE, ARE.AREA_NAME AS ARNM, ARE.AREA_NO AS ARNO, MK.MARK_NO AS MKNO,
+       		TO_CHAR(PJ.PROJ_START_DAY, 'YYYY-MM-DD')||'~'||TO_CHAR(PJ.PROJ_FNSH_DAY, 'YYYY-MM-DD') AS PD,    
+       		NVL(PJ.PROJ_APPSOL, '-')AS PAPPSOL, MK.NAME AS MKNM,  ROW_NUMBER() OVER(ORDER BY PJ.PROJ_NO DESC) AS RNUM
+			FROM PROJ PJ INNER JOIN SOL SL
+          			  ON PJ.SOL_NO = SL.SOL_NO
+        	   		 INNER JOIN AREA ARE
+           			  ON  PJ.AREA_NO = ARE.AREA_NO
+          			 INNER JOIN EMP E
+           			  ON PJ.EMP_NO = E.EMP_NO   
+           			 INNER JOIN MARK MK
+            		  ON PJ.MARK_NO = MK. MARK_NO )L)LL
+                     
+                       LEFT OUTER JOIN 
+			                      
+			 (SELECT INP.PROJ_NO, INP.INPPL          
+			 FROM(SELECT PROJ_NO, COUNT(PROJ_NO) AS INPPL
+			      FROM INPUT_PPL
+			      GROUP BY PROJ_NO)INP)INPP
+			    ON LL.PNO = INPP.PROJ_NO
+			    WHERE 1=1
+		<if test="txt != null and txt != ''">
+			<choose>
+	      		<when test="searchGbn == 0">
+		      		AND LL.SOLNM LIKE '%' || #{txt} || '%'
+	      		</when>
+	      		<when test="searchGbn == 1">
+		      		AND LL.MKNM LIKE '%' || #{txt} || '%'
+	      		</when>
+	      		<when test="searchGbn == 2">
+		      		AND LL.PTYPE LIKE '%' || #{txt} || '%'
+	      		</when>
+		    </choose>
+		</if>
+	</select>
+	
+	<insert id="insertAsProj" parameterType="hashmap">
+		INSERT INTO PROJ (PROJ_NO, SOL_NO, AREA_NO, MARK_NO, EMP_NO, PROJ_START_DAY, PROJ_FNSH_DAY,
+                    PROJ_PPL,  PROJ_APPSOL, PROJ_TYPE)
+		VALUES (PROJ_SEQ.NEXTVAL, #{solNo}, #{arNo}, #{mkNo}, #{empNo}, #{textStd}, #{textFnd}, #{textPpl}, #{textAppSol}, #{textPtype})
+	</insert>
+	
+	<select id="getProjSol" parameterType="hashmap" resultType="hashmap">
+		SELECT SOL_NO, SOL_NAME
+		FROM SOL
+		WHERE 1=1
+	</select> 
+	
+	<select id="getProjMk" parameterType="hashmap" resultType="hashmap">
+		SELECT MARK_NO, NAME
+		FROM MARK
+		WHERE 1=1
+	</select> 
+	
+	<select id="getProjArea" parameterType="hashmap" resultType="hashmap">
+		SELECT AREA_NO, AREA_NAME
+		FROM AREA
+		WHERE 1=1
+	</select> 
+	
+	<select id="getProjPm" parameterType="hashmap" resultType="hashmap">
+		SELECT EMP_NO, NAME AS ENAME
+		FROM EMP
+		WHERE 1=1
+	</select> 
+		
+	<select id="getAsProjListDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT L.ENO, L.ENM, L.PNO, L.SOLNM, L.SOLNO, L.PPL, L.PTYPE, L.ARNM, L.ARNO, L.MKNO, L.PSTD, L.PFND, L.PAPPSOL, L.MKNM 
+		FROM(SELECT E.EMP_NO AS ENO, E.NAME AS ENM, PJ.PROJ_NO AS PNO, SL.SOL_NAME AS SOLNM, SL.SOL_NO AS SOLNO,   
+				PJ.PROJ_PPL AS PPL, PJ.PROJ_TYPE AS PTYPE, ARE.AREA_NAME AS ARNM, ARE.AREA_NO AS ARNO, MK.MARK_NO AS MKNO,
+       			TO_CHAR(PJ.PROJ_START_DAY, 'YYYY-MM-DD') AS PSTD,<!-- ||'~'|| -->TO_CHAR(PJ.PROJ_FNSH_DAY, 'YYYY-MM-DD') AS PFND,    
+       			 PJ.PROJ_APPSOL AS PAPPSOL, MK.NAME AS MKNM, ROW_NUMBER() OVER(ORDER BY PJ.PROJ_NO DESC) AS RNUM
+			FROM PROJ PJ INNER JOIN SOL SL
+	          			  ON PJ.SOL_NO = SL.SOL_NO
+	        	   		 INNER JOIN AREA ARE
+	           			  ON  PJ.AREA_NO = ARE.AREA_NO
+	          			 INNER JOIN EMP E
+	           			  ON PJ.EMP_NO = E.EMP_NO   
+	           			 INNER JOIN MARK MK
+	            		  ON PJ.MARK_NO = MK. MARK_NO
+	        WHERE PJ.PROJ_NO = #{projNo}
+      	)L	
+	</select>	
+			
+	<select id="getAsProjListSubDtl" parameterType="hashmap" resultType="hashmap">
+      	SELECT INP.INPUT_PPL_NO, E.EMP_NO, E.NAME, P.POSI_NAME, MT.MNGR_TASK_NAME
+		FROM INPUT_PPL INP INNER JOIN EMP E 
+		                           ON INP.EMP_NO = E.EMP_NO
+		                   INNER JOIN (SELECT EMP_NO, POSI_NO,
+		                                      ROW_NUMBER() OVER(PARTITION BY EMP_NO ORDER BY APNT_DATE DESC) AS RNUM
+		                               FROM HR_APNT) HR
+		                           ON E.EMP_NO = HR.EMP_NO
+		                          AND HR.RNUM = 1
+		                   INNER JOIN POSI P
+		                           ON HR.POSI_NO = P.POSI_NO
+		                   INNER JOIN MNGR_TASK MT
+		                           ON INP.MNGR_TASK_NO = MT.MNGR_TASK_NO
+		WHERE PROJ_NO = #{projNo}
+		UNION ALL
+		SELECT INP.INPUT_PPL_NO, E.OUT_EMP_NO, E.OUT_EMP_NAME, '외주', MT.MNGR_TASK_NAME
+		FROM INPUT_PPL INP INNER JOIN OUT_EMP E 
+		                           ON INP.OUT_EMP_NO = E.OUT_EMP_NO
+		                   INNER JOIN MNGR_TASK MT
+		                           ON INP.MNGR_TASK_NO = MT.MNGR_TASK_NO
+		WHERE PROJ_NO = #{projNo}
+	</select>	
+	
+	<update id="UpdateAsProj" parameterType="hashmap">
+		UPDATE PROJ SET PROJ_NO = #{projNo}, SOL_NO = #{solNo}, AREA_NO = #{arNo},  MARK_NO = #{mkNo}, EMP_NO = #{empNo}, 
+						PROJ_START_DAY = #{textStdUp}, PROJ_FNSH_DAY = #{textFndUp}, PROJ_PPL = #{textPplUp}, 
+						PROJ_APPSOL = #{textAppSolUp}, PROJ_TYPE = #{textPtypeUp}
+		WHERE PROJ_NO = #{projNo}
+	</update>
+	
+	<select id="getProjAddEmp" parameterType="hashmap" resultType="hashmap">
+		SELECT  DISTINCT L.NO, L.NAME, L.DEPT, L.SKILL, L.PROJ_NO
+		FROM(SELECT DISTINCT CONCAT(A.EMP_NO, B.OUT_EMP_NO)NO, CONCAT(A.NAME, B.OUT_EMP_NAME) NAME, NVL(A.DEPT_NAME, '외부') DEPT, NVL(B.OUT_EMP_SKILL, '-') SKILL, I.PROJ_NO
+             FROM(SELECT E.EMP_NO, E.NAME, D.DEPT_NO, D.DEPT_NAME
+				  FROM EMP E JOIN HR_APNT HR
+                             ON E.EMP_NO = HR.EMP_NO
+                             JOIN DEPT D
+                             ON HR.DEPT_NO = D.DEPT_NO) A
+		FULL OUTER JOIN
+			(SELECT OUT_EMP_NO, OUT_EMP_NAME, OUT_EMP_SKILL
+			 FROM OUT_EMP) B
+                   ON A.EMP_NO = B.OUT_EMP_NO
+        LEFT OUTER JOIN INPUT_PPL I
+                   ON A.EMP_NO = I.EMP_NO
+                   OR B.OUT_EMP_NO = I.OUT_EMP_NO
+                   ORDER BY NO)L
+		WHERE L.PROJ_NO IS NULL
+			
+	</select>	
+	
+	<select id="getProjListTask" parameterType="hashmap" resultType="hashmap">
+		SELECT MNGR_TASK_NO, MNGR_TASK_NAME
+		FROM MNGR_TASK
+	</select>	
+	
+	<insert id="insertAsProjAdd" parameterType="hashmap">
+		INSERT INTO INPUT_PPL (INPUT_PPL_NO, MNGR_TASK_NO, EMP_NO, OUT_EMP_NO, PROJ_NO, INPUT_PPL_START_DAY, INPUT_PPL_FNSH_DAY)
+		VALUES (INPUT_PPL_SEQ.NEXTVAL, #{pjTaskNo}, #{empNo}, #{outEmpNo}, #{projNo}, #{pjStd}, #{pjFnd})
+	</insert>
+	
+	<select id="getProjListAddReload" parameterType="hashmap" resultType="hashmap">
+		SELECT INP.INPUT_PPL_NO, E.EMP_NO, E.NAME, P.POSI_NAME, MT.MNGR_TASK_NAME
+		FROM INPUT_PPL INP INNER JOIN EMP E 
+		                           ON INP.EMP_NO = E.EMP_NO
+		                   INNER JOIN (SELECT EMP_NO, POSI_NO,
+		                                      ROW_NUMBER() OVER(PARTITION BY EMP_NO ORDER BY APNT_DATE DESC) AS RNUM
+		                               FROM HR_APNT) HR
+		                           ON E.EMP_NO = HR.EMP_NO
+		                          AND HR.RNUM = 1
+		                   INNER JOIN POSI P
+		                           ON HR.POSI_NO = P.POSI_NO
+		                   INNER JOIN MNGR_TASK MT
+		                           ON INP.MNGR_TASK_NO = MT.MNGR_TASK_NO
+		WHERE PROJ_NO = #{projNo}
+		UNION ALL
+		SELECT INP.INPUT_PPL_NO, E.OUT_EMP_NO, E.OUT_EMP_NAME, '외주', MT.MNGR_TASK_NAME
+		FROM INPUT_PPL INP INNER JOIN OUT_EMP E 
+		                           ON INP.OUT_EMP_NO = E.OUT_EMP_NO
+		                   INNER JOIN MNGR_TASK MT
+		                           ON INP.MNGR_TASK_NO = MT.MNGR_TASK_NO
+		WHERE PROJ_NO = #{projNo}
+		
+	</select>
+	
+	<delete id="deleteAsProjDelEmp" parameterType="hashmap">
+		DELETE FROM INPUT_PPL
+		WHERE INPUT_PPL_NO = #{inpNo}
+	</delete>
+	
+	<select id="getAsdeList" parameterType="hashmap" resultType="hashmap">
+		SELECT L.ASNO, L.ASNM, L.ENAME, L.DNAME, L.PDATE, L.PPRI, L.CSPN, L.DTD
+		FROM(SELECT ASS.AS_NO AS ASNO, ASS.AS_NAME AS ASNM, E.NAME AS ENAME, D.DEPT_NAME AS DNAME, TO_CHAR(ASS.AS_DSTR_DATE, 'YYYY-MM-DD') AS DTD,
+                     TO_CHAR(ASS.AS_PURCH_DATE, 'YYYY-MM-DD') AS PDATE, ASS.AS_PURCH_PRICE AS PPRI, AS_CS_PHONE AS CSPN,
+       									 ROW_NUMBER() OVER(ORDER BY ASS.AS_PURCH_DATE DESC) AS RNUM
+		FROM ASSET ASS INNER JOIN EMP E
+                ON ASS.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON ASS.DEPT_NO = D.DEPT_NO
+        WHERE 1=1
+        AND ASS.AS_DSTR_DATE IS NOT NULL
+        <if test="txt != null and txt != ''">
+					<choose>
+		      		<when test="searchGbn == 0">
+			      		AND ASS.AS_NO LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 1">
+			      		AND ASS.AS_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 2">
+			      		AND D.DEPT_NAME  LIKE '%' || #{txt} || '%'
+		      		</when>
+		      	</choose>
+					
+		</if>)L
+        WHERE L.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+	</select> 
+	
+	 <select id="getAsdeListCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM ASSET ASS INNER JOIN EMP E
+                ON ASS.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON ASS.DEPT_NO = D.DEPT_NO
+		WHERE 1 = 1
+		AND ASS.AS_DSTR_DATE IS NOT NULL
+		<if test="txt != null and txt != ''">
+			<choose>
+		      		<when test="searchGbn == 0">
+			      		AND ASS.AS_NO LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 1">
+			      		AND ASS.AS_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      		<when test="searchGbn == 2">
+			      		AND D.DEPT_NAME LIKE '%' || #{txt} || '%'
+		      		</when>
+		      	</choose>
+		</if>
+	</select>
+	
+	<delete id="deleteAsProjListDel" parameterType="hashmap">
+		DELETE FROM PROJ 
+		WHERE PROJ_NO = #{projNo}
+	</delete>
+	
+	<delete id="deleteAsProjListDelFirst" parameterType="hashmap">
+		DELETE FROM INPUT_PPL 
+		WHERE PROJ_NO = #{projNo}
+	</delete>
+	
+	<select id="itemNoCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*)
+		FROM ASSET
+		WHERE AS_DSTR_DATE IS NULL
+		AND AS_NO = #{textItemNo}
+	</select>
+	
+</mapper>

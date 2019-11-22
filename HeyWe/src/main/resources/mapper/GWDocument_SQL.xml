@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="document">
+
+<select id="getDocBoardList" resultType="hashMap" parameterType="hashMap">
+	SELECT DOC_NO, DOC_TYPE_NO, NAME, TITLE, WRITE_DAY, DOC_HIT, DEL_WHETHER, RNUM
+	FROM(SELECT DOC_NO,
+		 D.DOC_TYPE_NO,
+		 TITLE,
+		 E.NAME,
+		 DEL_WHETHER,
+		 D.DOC_HIT,
+		 ROW_NUMBER() OVER(ORDER BY WRITE_DAY DESC) AS RNUM,
+		 CASE WHEN TO_CHAR(WRITE_DAY, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+       	 THEN TO_CHAR(WRITE_DAY, 'AM HH : MI')
+       	 ELSE TO_CHAR(WRITE_DAY, 'YYYY-MM-DD')
+       	 END AS WRITE_DAY
+	 	 FROM DOC D INNER JOIN EMP E
+           		ON D.EMP_NO = E.EMP_NO
+           			INNER JOIN DOC_TYPE DT
+           		ON D.DOC_TYPE_NO = DT.DOC_TYPE_NO		
+	 	 WHERE DEL_WHETHER = 1
+	 	 	<choose>
+ 	 	 	 	<when test="sDocType != null and sDocType != ''">
+		 	 		AND D.DOC_TYPE_NO = #{sDocType}
+		 	 	</when>
+		 	 	<otherwise>
+		 	 		AND DT.DEPT_NO = #{deptNo}
+		 	 	</otherwise>
+		 	 </choose>
+		 <if test="searchTxt != null and searchTxt !=''">
+				<choose>
+					<when test="SearchGbn == 0"> 
+						AND TITLE LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<when test="SearchGbn == 1">
+						AND CON LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<when test="SearchGbn == 2">
+						AND ( TITLE LIKE '%' || #{searchTxt} || '%' OR CON LIKE '%' || #{searchTxt} || '%')
+					</when>
+					<when test="SearchGbn == 3">
+						AND E.NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					</choose>
+				</if>
+				) X
+	WHERE RNUM BETWEEN  #{startCnt} AND #{endCnt}
+	
+</select>
+
+<select id="getDocBoardCnt" resultType="Integer" parameterType="hashMap">
+	SELECT COUNT(*)
+	FROM DOC D INNER JOIN EMP E
+           		ON D.EMP_NO = E.EMP_NO
+           		INNER JOIN DOC_TYPE DT
+           		ON D.DOC_TYPE_NO = DT.DOC_TYPE_NO		
+	 WHERE DEL_WHETHER = 1
+	  <choose>
+	 	 	<when test="sDocType != null and sDocType != ''">
+	 	 		AND D.DOC_TYPE_NO = #{sDocType}
+	 	 	</when>
+	 	 	<otherwise>
+	 	 		AND DT.DEPT_NO = #{deptNo}
+	 	 	</otherwise>
+	 	 </choose>
+		<if test="searchTxt != null and searchTxt !=''">
+				<choose>
+					<when test="SearchGbn == 0"> 
+						AND TITLE LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<when test="SearchGbn == 1">
+						AND CON LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<when test="SearchGbn == 2">
+						AND (TITLE LIKE '%' || #{searchTxt} || '%' OR CON LIKE '%' || #{searchTxt} || '%')
+					</when>
+					<when test="SearchGbn == 3">
+						AND E.NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					</choose>
+				</if>
+</select>
+
+<select id="DocDtl" parameterType="hashMap" resultType="hashMap">
+	SELECT DOC_NO, TITLE, CON, NAME, TO_CHAR(WRITE_DAY, 'YYYY/MM/DD AM HH:MI') AS WRITE_DAY, DOC_TYPE_NAME,E.EMP_NO
+	FROM DOC D INNER JOIN EMP E
+       			ON D.EMP_NO = E.EMP_NO
+           INNER JOIN DOC_TYPE DY
+           ON D.DOC_TYPE_NO = DY.DOC_TYPE_NO
+	WHERE DOC_NO = #{no}
+</select>
+
+<insert id="DocWrite" parameterType="hashMap">
+	INSERT INTO DOC(DOC_NO, DOC_TYPE_NO, TITLE, CON, EMP_NO, WRITE_DAY, DEL_WHETHER)
+	VALUES (#{docNo},
+		 <choose>
+	 	 	<when test="sDocType != null and sDocType != ''">
+	 	 		#{sDocType}
+	 	 	</when>
+	 	 	<otherwise>
+	 	 		(SELECT DOC_TYPE_NO FROM DOC_TYPE WHERE DEPT_NO = #{deptNo})
+	 	 	</otherwise>
+	 	 </choose>, #{title}, #{contents}, #{sEmpNo}, SYSDATE, 1)
+</insert>
+
+<delete id="DocDel" parameterType="hashMap">
+	UPDATE DOC
+	SET DEL_WHETHER = 0
+	WHERE DOC_NO = #{no}
+</delete>
+
+<update id="DocUpdate" parameterType="hashMap">
+	UPDATE DOC
+	SET TITLE = #{title}, CON = #{contents}
+	WHERE DOC_NO = #{no}
+		
+</update>
+
+<update id="DocHit" parameterType="hashMap">
+	UPDATE DOC
+	SET DOC_HIT = DOC_HIT + 1
+	WHERE DOC_NO = #{no}
+</update>
+
+<delete id="DocFileDelete" parameterType="hashmap">
+	DELETE FROM DOC_ATT_FILE
+	WHERE DOC_NO = #{no}
+	<if test="existAttFiles != '' and existAttFiles != null">	<!-- 조직도 부서 클릭 시 -->
+			AND ATT_FILE_NO NOT IN(${existAttFiles})
+	</if>
+</delete>
+
+<insert id="DocUpload" parameterType="hashMap">
+	INSERT INTO DOC_ATT_FILE
+	VALUES (DOC_ATT_FILE_SEQ.NEXTVAL, #{uploadSEQ} , #{upload})
+</insert>
+
+<select id="DocNoSEQ" resultType="Integer">
+	SELECT DOC_SEQ.NEXTVAL
+	FROM DUAL
+</select>
+
+<select id="DocDtlAtt" resultType="hashMap">
+	SELECT *
+	FROM DOC_ATT_FILE
+	WHERE DOC_NO = #{no}
+</select>
+
+<!-- DOC_TYPE 추가 -->
+<insert id="DocTypeNum" parameterType="hashmap">
+	INSERT INTO DOC_TYPE (DOC_TYPE_NO, DEPT_NO, DOC_TYPE_NAME)
+	VALUES (DOC_TYPE_SEQ.NEXTVAL, #{DEPT_NO}, #{DEPT_NAME})
+</insert>
+
+
+</mapper>

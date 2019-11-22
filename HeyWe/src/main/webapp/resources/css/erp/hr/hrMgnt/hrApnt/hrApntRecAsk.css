@@ -1,0 +1,303 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	SteelBlue : rgb(70, 130, 180), #4682b4
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	LightSkyBlue : rgb(176,218,236), #B0DAEC
+	White : rgb(255,255,255), #FFFFFF
+ */
+
+.regBtnBox {
+	width: 1210px;
+	text-align: right;
+	margin-left: 40px;
+}
+
+.regBtnBox > #hrApntReg{
+	margin-top: 5px;
+	margin-bottom: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 11pt;
+    width: 80px;
+    background-color: #134074;
+    border-radius: 3px;
+    color: #FFFFFF;
+    border: 0px;
+}
+
+.content_select {
+	width: 1210px;
+	padding-top: 30px;
+	padding-bottom: 10px;
+	background-color: #8DA9C4;
+	margin-left: 40px;
+	margin-top: 10px;
+	border-radius: 3px;
+	border: 1px solid #CCC;
+}
+
+.content_select > .content_select_row{
+	width: 100%;
+	height: 25px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	border-radius: 3px;
+}
+
+
+.content_select > .content_select_row > .table {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.content_select > .content_select_row > .table > .content_select_row_name{
+	width: 90px;
+	height: 25px;
+	background-color: #134074;
+	display: table;
+	border-radius: 3px;
+}
+
+.content_select > .content_select_row > .table > .content_select_row_name > div {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+.content_select > .content_select_row >  .calendar_group {
+	height: 25px;
+	vertical-align: top;
+	display: inline-block;
+	font-size: 11pt;
+}
+
+.content_select > .content_select_row > .dropdown {
+	height : 25px;
+	display: inline-block;
+	vertical-align: top;
+	font-size: 11pt;
+	margin-left: 10px;
+	width: 100px;
+}
+
+.content_select > .content_select_row > .calendar_group > [type="text"] {
+	margin-left: 10px;
+	font-size: 11pt;
+	text-align: center;
+	margin-top: 2px;
+}
+
+#person_select_txt {
+	margin-left: 10px;
+    font-size: 11pt;
+    text-align: center;
+    margin-top: 2px;
+    vertical-align: top;
+}
+
+#person_search_btn {
+	background-image: url("../../../../../images/erp/hr/search.png");
+	background-size: 25px;
+	height: 25px;
+	width: 25px;
+	vertical-align: top;
+	background-repeat: no-repeat;
+	display: inline-block;
+	margin-left: 20px;
+}
+
+#search {
+	margin-left: 800px;
+}
+
+#search:hover, #person_select_txt:hover, #person_search_btn:hover {
+	cursor: pointer;
+}
+
+
+.content_table {
+	width: 1210px;
+	margin-top: 20px;
+	margin-left: 40px;
+	margin-bottom: 20px;
+	border-radius: 3px;
+}
+
+.recAsklist {
+	border-collapse: collapse;
+	border: 1px solid #CCC;
+	font-size: 11pt;
+}
+
+.recAsklist > thead tr td{
+	border: 1px solid #8DA9C4;
+	background-color: #134074;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.recAsklist > thead tr {
+	height: 40px;
+} 
+
+.recAsklist > tbody .odd_row {
+	height: 30px;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.recAsklist > tbody .even_row {
+	height: 30px;
+	background-color: #DEE6EF;
+	color: #000000;
+}
+
+.recAsklist > tbody tr:hover {
+	background-color: #B0DAEC;
+	color: #134074;
+}
+
+.recAsklist > tbody tr td{
+	text-align: center;
+}
+
+
+.paging_group {
+	width: 100%;
+	height: 30px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.paging_group > [type="button"] {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	border: 1px solid #134074;
+	border-radius:2px;
+	font-size: 14pt;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	margin-left: 10px;
+	color: #134074;
+}
+
+.paging_group > [type="button"]:hover {
+	cursor: pointer;
+	background-color: #134074;
+    color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+	background-color: #FFFFFF;
+	color: #134074;
+}
+
+/* 사원검색팝업 */
+
+#empSearch{
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+#empSearch > #search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#empSearch > #search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	
+	font-weight: bold;
+    cursor: pointer;
+    background-color: #134074;
+    border-radius: 3px;
+    color: #FFFFFF;
+    border: 0px;
+}
+
+#list {
+	margin-left: 20px;
+    margin-top: 15px;
+    /* height: 245px; */
+}
+
+#listTop{
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse; 
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color:#134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+
+#listCon{ 
+	border-collapse: collapse; 
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100% - 230px) !important;
+	min-width: 630px !important;
+}
+#listCon tr td{
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listCon tr:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+
+#listCon .odd_row {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+#listCon .even_row {
+	background-color: #DEE6EF;
+	color: #000000;
+}
+#listDiv {
+	height: 180px;
+	width: 630px !important;
+}
+
+#listDiv tbody tr  {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}

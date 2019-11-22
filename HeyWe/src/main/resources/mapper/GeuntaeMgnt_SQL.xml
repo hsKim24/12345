@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GeuntaeMgnt">
+	<!-- 근태조회 -->
+	<select id="getGeuntaeName" resultType="hashmap">
+		SELECT GEUNTAE_NO, GEUNTAE_NAME, SAL_MGFN
+		FROM GEUNTAE
+		WHERE CLOSE_WHETHER = 1
+		ORDER BY GEUNTAE_NO ASC
+	</select>
+	
+	<!-- 근태중복확인 -->
+	<select id="geuntaeOverlapCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(GEUNTAE_NAME) AS CNT
+		FROM GEUNTAE
+		WHERE GEUNTAE_NAME = #{formGeuntaeName}
+		AND CLOSE_WHETHER = 1
+	</select>
+	
+	<!-- 근태추가 -->
+	<insert id="geuntaeAdd" parameterType="hashmap">
+		INSERT INTO GEUNTAE (GEUNTAE_NO, GEUNTAE_NAME, SAL_MGFN)
+		VALUES (GEUNTAE_SEQ.NEXTVAL, #{formGeuntaeName}, #{formSalMgfn})
+	</insert>
+	
+	<!-- 근태수정확인 -->
+	<select id="geuntaeUpdateOverlapCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(GEUNTAE_NAME) AS CNT
+		FROM GEUNTAE
+		WHERE GEUNTAE_NO != #{formGeuntaeNo}
+		AND GEUNTAE_NAME = #{formGeuntaeName}
+		AND CLOSE_WHETHER = 1
+	</select>
+	
+	<!-- 근태수정 -->
+	<update id="geuntaeUpdate" parameterType="hashmap">
+		UPDATE GEUNTAE
+		SET GEUNTAE_NAME = #{formGeuntaeName}, SAL_MGFN = #{formSalMgfn}
+		WHERE GEUNTAE_NO = #{formGeuntaeNo}
+	</update>
+	
+	<!-- 근태삭제가능여부 -->
+	<select id="geuntaeDeleteCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM GEUNTAE_REC
+		WHERE GEUNTAE_NO = #{formGeuntaeNo}
+	</select>
+	
+	<!-- 근태삭제 -->
+	<delete id="geuntaeDelete" parameterType="hashmap">
+		UPDATE GEUNTAE
+		SET CLOSE_WHETHER = 0 
+		WHERE GEUNTAE_NO = #{formGeuntaeNo}
+	</delete>
+	
+	<!-- 추가근무등록 (근태명 조회) -->
+	<select id="addWorkGeuntaeList" resultType="hashmap">
+		SELECT GEUNTAE_NO, GEUNTAE_NAME
+		FROM GEUNTAE
+		WHERE GEUNTAE_NAME LIKE '%근무'
+		ORDER BY GEUNTAE_NO
+	</select>
+	
+	<!-- 추가근무등록 -->
+	<insert id="addWorkReg" parameterType="hashmap">
+		INSERT INTO GEUNTAE_REC (GEUNTAE_REC_NO, EMP_NO, GEUNTAE_NO, REC_DATE, NOTE, TIME)
+		VALUES (GEUNTAE_REC_SEQ.NEXTVAL, #{fromEmpNo}, #{formGeuntaeNo}, #{formDate}, #{formNote}, #{formAddWorkTime})
+	</insert>
+	
+	<!-- 기연 -->
+	<select id="getGeunTaeList" resultType="hashmap" parameterType="hashmap">
+	
+	SELECT *
+	FROM (	SELECT Z.EMP_NO , Z.NAME , Z.DEPT_NAME, TO_CHAR(G.REC_DATE,'YYYY/MM/DD') AS REC_DATE, T.GEUNTAE_NAME, NVL( G.TIME,0)AS ADD_WORK_TIME,G.NOTE
+					,ROW_NUMBER() OVER (ORDER BY g.geuntae_rec_no DESC) AS RNUM
+			FROM geuntae_rec G INNER JOIN GEUNTAE T
+	   		 						   ON g.geuntae_no = t.geuntae_no 
+							     		<if test="GeunTaeSelctBox != 1000">
+											AND T.GEUNTAE_NO = #{GeunTaeNo}
+										</if>
+	    					  INNER JOIN(	SELECT E.EMP_NO,E.NAME,D.DEPT_NAME 
+	        							 	FROM EMP E INNER JOIN hr_apnt H
+	                										   ON E.EMP_NO = H.EMP_NO
+	                								   INNER JOIN DEPT D
+	                										   ON H.DEPT_NO = D.DEPT_NO
+	    									WHERE E.EMP_NO = #{sEmpNo} AND H.FNSH_DATE IS NULL) Z
+	     							  ON G.EMP_NO = Z.EMP_NO
+	     							  <if test= "date_start !='' and date_end !=''">
+	     							  		AND G.REC_DATE BETWEEN #{date_start} AND #{date_end}
+									  </if>
+	      )
+	
+	WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+	ORDER BY RNUM
+	     
+	</select>
+	
+	<select id="getGeunTaeCnt" resultType="integer" parameterType="hashmap">
+	SELECT COUNT(Z.NAME)AS CNT
+	FROM geuntae_rec G INNER JOIN GEUNTAE T
+    ON g.geuntae_no = t.geuntae_no 
+    <if test="GeunTaeSelctBox != 1000">
+    		AND T.GEUNTAE_NO = #{GeunTaeNo}
+    </if>
+    <if test= "date_start !='' and date_end !=''" >
+    		AND G.REC_DATE BETWEEN #{date_start} AND #{date_end}
+    </if>
+   
+    INNER JOIN(SELECT E.EMP_NO,E.NAME,D.DEPT_NAME
+        	   FROM EMP E INNER JOIN hr_apnt H
+               			  ON E.EMP_NO = H.EMP_NO
+              			  INNER JOIN DEPT D
+           			      ON H.DEPT_NO = D.DEPT_NO
+    		   WHERE E.EMP_NO = #{sEmpNo} AND H.FNSH_DATE IS NULL) Z
+     ON G.EMP_NO = Z.EMP_NO
+	
+	</select>
+	
+	
+	<select id="GeunTaeList" resultType="hashmap" parameterType="hashmap">
+	SELECT GEUNTAE_NO, GEUNTAE_NAME
+	FROM GEUNTAE
+	
+	</select>
+	
+	<!-- 근태관리자 SQL문 -->
+	<select id="getGeunTaeAdminList" resultType="hashmap" parameterType="hashmap">
+	SELECT *
+	FROM (	SELECT Z.EMP_NO , Z.NAME , Z.DEPT_NAME, TO_CHAR(G.REC_DATE,'YYYY/MM/DD') AS REC_DATE, T.GEUNTAE_NAME, NVL( G.TIME,0)AS TIME,G.NOTE,ROW_NUMBER() OVER (ORDER BY g.rec_date DESC) AS RNUM
+			FROM geuntae_rec G INNER JOIN GEUNTAE T
+	   		 						   ON g.geuntae_no = t.geuntae_no
+	   		 						   <if test="GeunTaeSelectBox != 1000">
+	   		 						   		AND T.GEUNTAE_NO = #{GeunTaeSelectBox}
+	   		 						   </if> 
+	   		 						   <if test= "date_start !='' and date_end !=''" >
+	    								AND G.REC_DATE BETWEEN #{date_start} AND #{date_end}
+	    							   </if>
+			INNER JOIN(	SELECT E.EMP_NO,E.NAME,D.DEPT_NAME 
+	        			FROM EMP E INNER JOIN hr_apnt H
+	                			   ON E.EMP_NO = H.EMP_NO
+	                			   INNER JOIN DEPT D
+	                			   ON D.DEPT_NO = H.DEPT_NO
+	                			   <if test="DeptSelectBox != 1000">
+	                			   		AND D.DEPT_NO = #{DeptSelectBox}
+	                			   	</if>
+	    				WHERE  H.FNSH_DATE IS NULL) Z
+	ON G.EMP_NO = Z.EMP_NO
+	 WHERE 1 = 1 
+	<if test="searchTxt!=null and searchTxt!='' ">
+		AND Z.NAME LIKE '%' ||  #{searchTxt} || '%' 
+	</if> )
+	WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+	
+		
+	ORDER BY RNUM
+	</select>
+	
+	<select id="getGeunTaeAdminCnt" resultType="integer" parameterType="hashmap">
+		SELECT COUNT(Z.NAME)AS CNT
+		FROM geuntae_rec G INNER JOIN GEUNTAE T
+	    						   ON g.geuntae_no = t.geuntae_no 
+	    <if test="GeunTaeSelectBox != 1000">
+	    		AND T.GEUNTAE_NO = #{GeunTaeSelectBox}
+	    </if>
+	    <if test= "date_start !='' and date_end !=''" >
+	    		AND G.REC_DATE BETWEEN #{date_start} AND #{date_end}
+	    </if>
+	    INNER JOIN(SELECT E.EMP_NO,E.NAME,D.DEPT_NAME
+	        	   FROM EMP E INNER JOIN hr_apnt H
+	               				 ON E.EMP_NO = H.EMP_NO
+	               			  INNER JOIN DEPT D
+	               				 ON H.DEPT_NO = D.DEPT_NO
+	               				 <if test="DeptSelectBox != 1000">
+	               				 		AND D.DEPT_NO = #{DeptSelectBox}
+	               				 </if> 
+	    		   WHERE H.FNSH_DATE IS NULL) Z
+	     ON G.EMP_NO = Z.EMP_NO
+		</select>
+	
+	<select id="DeptList" resultType="hashmap" parameterType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME
+		FROM DEPT
+		WHERE DEPT_NO != 0
+	</select>
+	
+	<!-- 사원조회 -->
+	<select id="getEmpSearchPopup" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO, D.DEPT_NAME, E.NAME
+		FROM HR_APNT HR INNER JOIN EMP E
+		                        ON HR.EMP_NO = E.EMP_NO
+		                        AND HR.FNSH_DATE IS NULL
+		                        AND HR.HR_APNT_NO != 0
+		                        AND E.NAME LIKE '%' || #{empsearchtxt} || '%'
+		                INNER JOIN DEPT D
+		                        ON HR.DEPT_NO = D.DEPT_NO
+		ORDER BY E.EMP_NO
+	</select>
+	
+	<!-- 팝업후 근태추가 -->
+	<insert id="insertGeunTaeData" parameterType="hashmap"  >
+		INSERT INTO geuntae_rec(GEUNTAE_REC_NO, EMP_NO, GEUNTAE_NO, REC_DATE, NOTE, TIME)
+		VALUES (GEUNTAE_REC_SEQ.nextval,#{emp_no},#{GeunTae_no},SYSDATE,#{con},#{time})
+	</insert>
+</mapper>
+

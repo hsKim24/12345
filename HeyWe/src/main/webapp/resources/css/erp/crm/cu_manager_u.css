@@ -1,0 +1,324 @@
+@charset "UTF-8";
+
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	White : rgb(255,255,255), #FFFFFF
+ */
+.menuname {
+	display: inline_block;
+	width: 100%;
+	font-size: 30px;
+	margin-left: 40px;
+	font-weight: bold;
+}
+
+.title {
+	font-size: 20px;
+	font-weight: bold;
+	color: #505050;
+}
+
+.title>.title_txt {
+	width: 200px;
+	font-size: 20px;
+	display: inline-block;
+}
+
+#writeImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 830px;
+}
+
+#backImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 10px;
+}
+
+.crmInfo {
+	margin-top: 10px;
+	margin-left: 40px;
+	min-width: 65%;
+	height: 700px;
+}
+
+tbody tr {
+	height: 50px;
+}
+
+tbody #tr_1 {
+	font-size: 16px;
+	height: 150px;
+}
+
+#hr_2 {
+	height: 1px;
+    margin-top: 20px;
+    width: 870px;
+    background-color: black;
+}
+
+#tdleft {
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: center;
+	background-color: #8da9c4;
+}
+
+#tdright {
+	padding-left: 13px;
+}
+
+#tdfile {
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #8da9c4;
+}
+#tdfile_1 {
+	font-size: 11pt;
+}
+
+#tdright_1 {
+	padding-left: 13px;
+}
+#tdright_2 {
+	padding-left: 13px;
+	height: 160px;
+}
+
+.block {
+	display: inline-block;
+	height: 90px;
+	width: 700px;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+#upName {
+	font-size: 14pt;
+	color: #505050;
+	font-weight: bold;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+
+#upName img {
+	width: 40px;
+	height: 40px;
+	margin-left: 760px;
+}
+
+#upName_1 {
+	font-size: 12pt;
+	margin-top: 10px;
+	color: #505050;
+	font-weight: bold;
+}
+
+#writeBtn {
+	width: 70px;
+	height: 30px;
+	margin-left: 6px;
+}
+#cstmBtn {
+	width: 70px;
+	height: 30px;
+	margin-left: 6px;
+}
+#chanceBtn {
+	width: 70px;
+	height: 30px;
+	margin-left: 6px;
+}
+#empBtn {
+	width: 70px;
+	height: 30px;
+	margin-left: 6px;
+}
+
+#writeBtn_1 {
+	width: 70px;
+	height: 30px;
+	padding: 1px 6px;
+}
+
+#Cbox {
+	margin-top: 10px;
+	font-size: 10pt;
+}
+
+#Cselect {
+	margin-right: 450px;
+}
+
+.content_area>#hr_1 {
+	max-width: 42%;
+	margin-left: 40px;
+}
+
+.txt {
+	font-size: 11pt;
+	width: 618px;
+	height: 33px;
+}
+
+#txt_1 {
+	display: inline-block;
+	font-size: 11pt;
+	width: 547px;
+	height: 33px;
+}
+#txt_2 {
+	display: inline-block;
+	font-size: 11pt;
+	width: 547px;
+	height: 33px;
+}
+
+#SBtn {
+	font-size: 11pt;
+	width: 620px;
+	height: 39px;
+}
+
+#uploadFile>table {
+	text-align: center;
+}
+
+#txtright {
+	margin-top: 10px;
+}
+
+.grey{
+	background-color: #D8D8D8;
+	display: inline-block;
+	font-size: 11pt;
+	width: 547px;
+	height: 33px;
+}
+
+#tbMiddle {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+
+
+#search{
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+#search > #search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search > #search_cstm {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search > #search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	
+	font-weight: bold;
+    cursor: pointer;
+    background-color: #134074;
+    border-radius: 3px;
+    color: #FFFFFF;
+    border: 0px;
+}
+
+#list {
+	margin-left: 20px;
+    margin-top: 15px;
+    /* height: 245px; */
+}
+
+#listTop{
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse; 
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color:#134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+#listCon{ 
+	border-collapse: collapse; 
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100% - 230px) !important;
+	min-width: 630px !important;
+}
+#listCon tr td{
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listDiv {
+	height: 180px;
+	width: 630px !important;
+}
+
+#listDiv tbody tr  {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}
+
+.filebox{
+	width : 100px;
+	height : 50px;
+	display: inline-block;
+	margin-left: 300px;
+}
+.filebox label { 
+	display: inline-block;
+	padding: .5em .75em;
+	color: black;
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #8da9c4;
+    cursor: pointer; border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2; border-radius: .25em;
+} 
+
+.filebox input[type="file"] { 
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px; 
+	overflow: hidden; 
+	clip:rect(0,0,0,0); 
+	border: 0; 
+}

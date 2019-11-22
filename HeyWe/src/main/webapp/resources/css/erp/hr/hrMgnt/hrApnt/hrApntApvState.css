@@ -1,0 +1,108 @@
+@charset "UTF-8";
+
+.content_box {
+	width: 1210px;
+}
+
+.content_box > .content_box_calendar_row {
+	min-width: 500px;
+	height: 80px;
+	width: 100%;
+	display: inline-block;
+	text-align: center;
+	font-size: 12pt;
+	background-color: #8DA9C4;
+	margin-left: 40px;
+}
+
+.content_box > .content_box_calendar_row > .calecdar_data_input {
+	margin-left: 10px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+	margin-top: 20px;
+}
+
+.content_table {
+	width: 1210px;
+	margin-left: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+}
+
+.apvStateList {
+	border-collapse: collapse;
+	border: 1px solid #CCC;
+	font-size: 11pt;
+}
+
+.apvStateList > thead tr td{
+	border: 1px solid #8DA9C4;
+	background-color: #134074;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.apvStateList > thead tr {
+	height: 40px;
+} 
+
+.apvStateList > tbody .odd_row {
+	height: 30px;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.apvStateList > tbody .even_row {
+	height: 30px;
+	background-color: #DEE6EF;
+	color: #000000;
+}
+
+.apvStateList > tbody tr:hover {
+	background-color: #B0DAEC;
+	color: #134074;
+}
+
+.apvStateList > tbody tr td{
+	text-align: center;
+}
+
+.paging_group {
+	width: 100%;
+	height: 30px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.paging_group > [type="button"] {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	border: 1px solid #134074;
+	border-radius:2px;
+	font-size: 14pt;
+	font-weight: bold;
+	background-color: #FFFFFF;	
+	margin-left: 10px;
+	color: #134074;
+}
+
+.paging_group > [type="button"]:hover {
+	cursor: pointer;
+	background-color: #134074;
+    color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+	background-color: #FFFFFF;
+	color: #134074;
+}

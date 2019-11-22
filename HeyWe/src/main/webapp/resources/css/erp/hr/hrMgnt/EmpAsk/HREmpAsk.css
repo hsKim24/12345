@@ -1,0 +1,134 @@
+@charset "UTF-8";
+
+
+
+.content {
+	margin-top: 20px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1500px;
+	height: 100px;
+	line-height: 100px;
+}
+
+.content > .mr {
+	margin-left: 170px;
+	font-size: 12pt;
+	color: #000000;
+	width: 200px;
+	height: 60px;
+	display: inline-block;
+	font-weight: bold;
+}
+
+.content > .job_name {
+	margin-left: 80px;
+	font-size: 12pt;
+	color: #000000;
+	width: 200px;
+	height: 60px;
+	display: inline-block;
+	font-weight: bold;
+}
+
+
+.content > .사원명 {
+	font-size: 12pt;
+	display: inline-block;
+	margin-left: 80px;	
+}
+
+
+.content > .사원명 >.사원이름 {
+	display: inline-block;
+	width: 200px;
+	height: 55px;
+	font-size: 12pt;
+	font-weight: bold;
+}
+.입사년도 {
+	margin-left: 80px;
+	display: inline-block;
+	width: 200px;
+	height: 55px;
+	font-size: 12pt;
+	font-weight: bold;
+}
+.돋보기 {
+	cursor: pointer;
+	margin-left: 80px;
+	vertical-align: middle;
+	display: inline-block;
+	width: 50px;
+}
+
+.content_down {
+    margin-top: 20px;
+    padding-top: 30px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1500px;
+	height: 500px;
+	/* line-height: 100px; */
+}
+
+.table {
+	margin-top: 30px;
+	margin-left: 170px;
+	
+}
+.title {
+	margin-left: 20px;
+	background-color: silver;
+	font-size: 12pt;
+	height: 50px;
+}
+
+#board > tbody {
+	font-size: 11pt;
+}
+
+.title_content {
+	cursor: pointer;
+	background-color: white;
+	font-size: 12pt;
+	height: 30px;
+}
+
+.paging_group {
+   width: 100%;
+   height: 30px;
+   margin-top: 20px;
+   text-align: center;
+}
+
+.paging_group > div {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+}
+
+.paging_group > div:hover {
+   cursor: pointer;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.title_content_color1:hover{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+.title_content_color2:hover{
+	background-color: #b0daec;
+	color: #134074;
+}

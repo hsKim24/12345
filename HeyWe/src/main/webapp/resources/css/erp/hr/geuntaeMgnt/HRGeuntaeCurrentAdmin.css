@@ -1,0 +1,315 @@
+@charset "UTF-8";
+
+.등록 {
+	font-size: 10pt;
+	width: 150px;
+	height: 30px;	
+	margin-left: 1300px;
+	margin-top: 20px;
+	background-color: #134074; 
+    color: #FFFFFF;
+    border : 1px solid #134074;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.content {
+	margin-top: 20px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1410px;
+	height: 100px;
+	line-height: 100px;
+}
+.content > #GeunTaeSelectBox {
+	margin-left: 10px;
+    font-size: 12pt;
+    color: #000000;
+    width: 170px;
+    height: 35px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}
+.content > #DeptSelectBox {
+	margin-left: 10px;
+    font-size: 12pt;
+    color: #000000;
+    width: 170px;
+    height: 35px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}
+#date_start{
+	margin-left: 10px;
+    font-size: 12pt;
+    color: #000000;
+    width: 150px;
+    height: 30px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}
+#date_end{
+	margin-left: 10px;
+    font-size: 12pt;
+    color: #000000;
+    width: 150px;
+    height: 30px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.근태종류 {
+	font-size: 12pt;
+	margin-left: 30px;
+	font-weight: bolder;
+	display: inline-block;
+}
+
+.content > .부서이름 {
+	margin-left: 60px;
+	font-size: 14pt;
+	color: #000000;
+	width: 200px;
+	height: 60px;
+	display: inline-block;
+}
+
+.입사년도 {
+	margin-left: 50px;
+	display: inline-block;
+	width: 200px;
+	height: 55px;
+	font-size: 14pt;
+	text-align: center;
+}
+
+.물결 {
+	font-size: 17pt;
+	margin-left: 18px;
+	font-weight: bolder;
+	display: inline-block;
+}
+.content > .사원이름 {
+    display: inline-block;
+    width: 150px;
+    height: 30px;
+    font-size: 12pt;
+    font-weight: bold;
+    border-radius: 3px;
+    margin-left: 20px;
+}
+
+.돋보기 {
+	cursor: pointer;
+	margin-left: 50px;
+	vertical-align: middle;
+	display: inline-block;
+	width: 50px;
+}
+.사원이름 {
+	margin-left: 60px;
+	display: inline-block;
+	width: 200px;
+	height: 55px;
+	font-size: 14pt;
+	text-align: center;
+}
+
+.content_down {
+    margin-top: 20px;
+    padding-top: 30px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1410px;
+	height: 500px;
+	/* line-height: 100px; */
+}
+
+.table {
+	margin-top: 20px;
+    margin-left: 80px;
+    width: 1250px;
+    text-align: center;
+    font-weight: bold;
+	
+}
+.title {
+	margin-left: 10px;
+	background-color: #134074;
+	color: white;
+	font-size: 12pt;
+	height: 50px;
+}
+.title_content {
+	cursor: pointer;
+	background-color: white;
+	font-size: 12pt;
+	height: 30px;
+}
+
+.title_content_color {
+	cursor: pointer;
+	background-color: #DEE6EF;
+	font-size: 12pt;
+	height: 30px;
+}
+.title_content:hover{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+.title_content_color:hover{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+.paging_group {
+   width: 100%;
+   height: 30px;
+   margin-top: 20px;
+   text-align: center;
+}
+
+.paging_group > [type="button"] {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+   color: #134074;
+}
+
+.paging_group > [type="button"]:hover {
+   cursor: pointer;
+   background-color: #134074;
+    color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+
+/* 근태팝업 */
+#search {
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+
+#search>#search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_cstm {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: #134074;
+	border-radius: 3px;
+	color: #FFFFFF;
+	border: 0px;
+}
+
+#list {
+	margin-left: 150px;
+	margin-top: 15px;
+	/* height: 245px; */
+}
+
+#listTop {
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color: #134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+
+#listCon {
+	border-collapse: collapse;
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100%) !important;
+	min-width: 1030px !important;
+}
+
+#listCon tr td {
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listDiv {
+	height: 180px;
+	width: 1030px !important;
+}
+
+#listDiv tbody tr {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}
+
+.GeunTaePopCss{
+	
+    font-size: 10pt;
+    color: #000000;
+    width: 200px;
+    height: 30px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.PopCon{
+	font-size: 10pt;
+    color: #000000;
+    width: 200px;
+    height: 25px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 3px;
+}

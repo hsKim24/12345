@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace :클래스명과 동일 -->
+<mapper namespace="ASSH">
+
+	<!-- 카운트 -->
+	<select id="tchrLctCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*)
+		FROM TCHR
+	</select>
+	
+	<select id="getplaceInfoCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*)
+		FROM PLACE
+	</select>
+	
+	<select id="getscheLectCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM LECT LE JOIN LECT_TYPE LT
+		ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+		JOIN EMP E 
+		ON E.EMP_NO = LE.EMP_NO
+		WHERE 1=1
+		 <![CDATA[
+			 AND (SYSDATE-LE.LECT_START_DAY) <= 0
+		]]>
+		
+	</select>
+	
+	<select id="getLectCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM LECT LE JOIN LECT_TYPE LT
+		ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+		JOIN EMP E 
+		ON E.EMP_NO = LE.EMP_NO
+		WHERE 1=1
+		 <![CDATA[
+			 AND (SYSDATE-LE.LECT_START_DAY) >= 0 AND (LE.LECT_FNSH_DAY-SYSDATE)>=0
+		]]>				
+		
+	</select>
+	  
+	
+	<select id="getendLectCnt" parameterType="hashmap" resultType="Integer">
+			SELECT COUNT(*) 
+			FROM LECT LE JOIN LECT_TYPE LT
+			ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+			JOIN EMP E
+			ON E.EMP_NO = LE.EMP_NO
+			WHERE 1=1
+				 <![CDATA[
+      			  AND (LE.LECT_FNSH_DAY-SYSDATE)<=0
+    			]]>
+				<!-- searchTxt가 비어있지 않다면 -->
+				<if test="searchTxt != null and searchTxt !=''">	
+					<choose>
+					<!-- 프로그램명 -->
+					<when test="searchGbn == 0">
+						AND LE.LECT_NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<!-- 교육담당 -->
+					<when test="searchGbn == 1">
+						AND E.NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<!-- 형식 -->
+					<when test="searchGbn == 2">
+						AND LECT_TYPE_NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					</choose>
+				</if>
+				
+				<if test="startday != null and startday !='' and endday != null and endday !='' ">	
+				AND (TO_CHAR(LE.LECT_START_DAY, 'yyyy-mm-dd') BETWEEN #{startday} AND #{endday} 
+                     OR TO_CHAR(LE.LECT_FNSH_DAY, 'yyyy-mm-dd') BETWEEN #{startday} AND #{endday} )
+				
+				</if>
+	</select>
+	<!-- 리스트 -->
+	<select id="getplaceInfoList" parameterType="hashmap" resultType="hashmap">
+		    SELECT P.PLACE_NO, P.PLACE_NAME, P.USE_PPL, P.PLACE_IMG
+		    FROM(SELECT PLACE_NO, PLACE_NAME, USE_PPL,PLACE_IMG,
+		    ROW_NUMBER() OVER(ORDER BY PLACE_NO DESC) AS RNUM
+			FROM PLACE)P
+			WHERE P.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	
+	<select id="gettchrLectList" parameterType="hashmap" resultType="hashmap">
+		    SELECT T.TCHR_NO, T.TCHR_NAME, T.MOBILE_NUM
+		    FROM(SELECT TCHR_NO, TCHR_NAME, 
+		    REGEXP_REPLACE (TCHR_MOBILE_NUM, '(.{3})(.+)(.{4})', '\1-\2-\3') AS MOBILE_NUM,
+		    ROW_NUMBER() OVER(ORDER BY TCHR_NO DESC) AS RNUM
+			FROM TCHR)T
+			WHERE T.RNUM BETWEEN #{startCnt3} AND #{endCnt3}
+	</select>
+	
+	
+	<select id="getscheLectList" parameterType="hashmap" resultType="hashmap">
+		    	SELECT L.LECT_NO, L.LECT_NAME, L.LECT_DAY, L.NAME, L.LECT_TYPE
+				FROM(SELECT LE.LECT_NO, LE.LECT_NAME, LE.LECT_START_DAY|| '-' || LE.LECT_FNSH_DAY  AS LECT_DAY, E.NAME  ,LT.LECT_TYPE_NAME AS LECT_TYPE,
+				ROW_NUMBER() OVER(ORDER BY LE.LECT_NO DESC) AS RNUM
+				FROM LECT LE JOIN LECT_TYPE LT
+				ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+				JOIN EMP E
+				ON E.EMP_NO = LE.EMP_NO
+				WHERE 1=1
+				 <![CDATA[
+      			  AND (SYSDATE-LE.LECT_START_DAY) <= 0
+    			]]>
+    			)L
+		        
+		WHERE L.RNUM BETWEEN #{startCnt3} AND #{endCnt3}
+	</select>
+	
+	
+	
+
+
+	<select id="getLectList" parameterType="hashmap" resultType="hashmap">
+			SELECT L.LECT_NO, L.LECT_NAME, L.LECT_DAY, L.NAME, L.LECT_TYPE
+			FROM(SELECT LE.LECT_NO, LE.LECT_NAME, LE.LECT_START_DAY|| '-' || LE.LECT_FNSH_DAY  AS LECT_DAY, E.NAME  ,LT.LECT_TYPE_NAME AS LECT_TYPE,
+			ROW_NUMBER() OVER(ORDER BY LE.LECT_NO DESC) AS RNUM
+			FROM LECT LE JOIN LECT_TYPE LT
+			ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+			JOIN EMP E
+			ON E.EMP_NO = LE.EMP_NO
+			WHERE 1=1
+				<![CDATA[
+				AND (SYSDATE-LE.LECT_START_DAY) >= 0 AND (LE.LECT_FNSH_DAY-SYSDATE)>=0
+				]]>
+
+		        )L
+		WHERE L.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+		
+	</select>
+	
+	<!-- 종료강의리스트 & 검색 -->
+	<!-- 리스트 -->
+	<select id="getendLectList" parameterType="hashmap" resultType="hashmap">
+		      SELECT L.LECT_NO, L.LECT_NAME, L.LECT_DAY, L.NAME, L.LECT_TYPE
+				FROM(SELECT LE.LECT_NO, LE.LECT_NAME, LE.LECT_START_DAY|| '-' || LE.LECT_FNSH_DAY  AS LECT_DAY, E.NAME  ,LT.LECT_TYPE_NAME AS LECT_TYPE,
+				ROW_NUMBER() OVER(ORDER BY LE.LECT_NO DESC) AS RNUM
+				FROM LECT LE JOIN LECT_TYPE LT
+				ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+				JOIN EMP E
+				ON E.EMP_NO = LE.EMP_NO
+				WHERE 1=1
+				 <![CDATA[
+      			 AND LE.LECT_FNSH_DAY < SYSDATE
+    			]]>
+    			
+				<!-- searchTxt가 비어있지 않다면 -->
+				<if test="searchTxt != null and searchTxt !=''">	
+					<choose>
+					<!-- 프로그램명 -->
+					<when test="searchGbn == 0">
+						AND LE.LECT_NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<!-- 교육담당 -->
+					<when test="searchGbn == 1">
+						AND E.NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					<!-- 형식 -->
+					<when test="searchGbn == 2">
+						AND LT.LECT_TYPE_NAME LIKE '%' || #{searchTxt} || '%'
+					</when>
+					</choose>
+				</if>
+				
+				<if test="startday != null and startday !='' and endday != null and endday !='' ">	
+				AND (TO_CHAR(LE.LECT_START_DAY, 'yyyy-mm-dd') BETWEEN #{startday} AND #{endday} 
+                     OR TO_CHAR(LE.LECT_FNSH_DAY, 'yyyy-mm-dd') BETWEEN #{startday} AND #{endday} )
+				
+				</if>
+				
+			
+					
+		        )L
+		WHERE L.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	
+	
+	<!-- 상세보기 -->
+	<select id="getLectDtl" parameterType="hashmap" resultType="hashmap">
+		 SELECT L.LECT_NO, L.LECT_NAME, L.LECT_DAY, L.NAME, L.LECT_TYPE, L.PLACE_NAME, L.LECT_PIC, L.LECT_CON, L.LECT_ATND, L.TCHR_NO, L.TCHR_NAME,L.LECT_START_DAY,L.LECT_FNSH_DAY
+			FROM(SELECT LE.LECT_NO, LE.LECT_ATND, LE.LECT_NAME, TO_CHAR(LE.LECT_START_DAY, 'yyyy-mm-dd') AS LECT_START_DAY ,TO_CHAR(LE.LECT_FNSH_DAY, 'yyyy-mm-dd')AS LECT_FNSH_DAY,LE.LECT_START_DAY|| '-' || LE.LECT_FNSH_DAY  AS LECT_DAY, E.NAME  ,LT.LECT_TYPE_NAME AS LECT_TYPE, P.PLACE_NAME, LE.LECT_PIC, LE.LECT_CON, TC.TCHR_NO, TC.TCHR_NAME,
+			ROW_NUMBER() OVER(ORDER BY LE.LECT_NO DESC) AS RNUM
+			FROM LECT LE JOIN LECT_TYPE LT
+			ON LE.LECT_TYPE_NO = LT.LECT_TYPE_NO
+			JOIN EMP E
+			ON E.EMP_NO = LE.EMP_NO
+            JOIN PLACE P
+            ON P.PLACE_NO = LE.PLACE_NO
+            LEFT OUTER JOIN TCHR TC
+            ON LE.TCHR_NO = TC.TCHR_NO  
+			WHERE 1=1
+			AND LE.LECT_NO  =
+			<choose>
+                	<when test="no != null and no != ''">
+                		#{no}
+                	</when>
+                	<otherwise>
+                		''
+                	</otherwise>
+                </choose>
+			
+			
+			)L
+</select>
+            
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--수강생목록 -->
+	<select id="getAfcList" parameterType="hashmap" resultType="hashmap">
+	SELECT AL.AFC_NO, AL.NAME, AL.EMP_NO, AL.POSI_NAME
+	FROM(SELECT  A.AFC_NO, E.NAME, E.EMP_NO, P.POSI_NAME, HR.APNT_DATE, ROW_NUMBER() OVER(PARTITION BY E.NAME ORDER BY HR.APNT_DATE DESC) as DRNK
+	FROM AFC A JOIN EMP E
+	ON A.EMP_NO = E.EMP_NO
+	JOIN HR_APNT HR
+	ON E.EMP_NO = HR.EMP_NO
+	JOIN  POSI P
+	ON HR.POSI_NO = P.POSI_NO
+	WHERE 1=1
+	AND A.LECT_NO = 
+				<choose>
+                	<when test="no != null and no != ''">
+                		#{no}
+                	</when>
+                	<otherwise>
+                		''
+                	</otherwise>
+                </choose>
+	)AL
+	WHERE AL.DRNK=1
+	</select>
+	
+	<!--수강생목록 -->
+	<!-- 
+	<select id="getAfcList" parameterType="hashmap" resultType="hashmap">
+		SELECT AFC_NO, EMP_NAME, EMP_NO, POSI_NAME, LECTEST_NO
+		FROM AFCTEST
+		WHERE LECTEST_NO =
+				<choose>
+                	<when test="no != null and no != ''">
+                		#{no}
+                	</when>
+                	<otherwise>
+                		''
+                	</otherwise>
+                </choose>
+	</select> 
+	-->
+	
+	
+	<!-- 강의정보 입력 -->
+	<insert id="regiLect" parameterType="hashmap">
+	INSERT INTO LECT(LECT_NO, LECT_TYPE_NO, TCHR_NO, EMP_NO, PLACE_NO, LECT_START_DAY, LECT_FNSH_DAY,LECT_COST,LECT_ATND,LECT_PIC,LECT_CON,LECT_NAME)
+	VALUES(LEC_SEQ.NEXTVAL, #{lectype},#{tchrno},#{mngrno},#{placeno},#{lectsday},#{lecteday},#{cost},#{atnd},#{imgname},#{lectinfo} ,#{lectname})
+	</insert>
+	
+	<!-- 강의정보 입력 -->
+	<insert id="regiApply" parameterType="hashmap">
+	INSERT INTO AFC (AFC_NO,LECT_NO,EMP_NO) 
+	VALUES (AFC_SEQ.NEXTVAL,#{applect_no},#{appemp})
+	</insert>	
+	
+	<!-- 강의정보 입력 -->	
+	<insert id="regiPlace" parameterType="hashmap">
+	INSERT INTO PLACE (PLACE_NO, PLACE_NAME, USE_PPL)
+	VALUES (#{placeno},#{placename},#{placeppl})
+	</insert>
+	
+	
+	<insert id="regiTchr" parameterType="hashmap">
+	INSERT INTO TCHR ( TCHR_NO, TCHR_NAME,TCHR_MOBILE_NUM) 
+	VALUES (TCHR_SEQ.NEXTVAL,#{tchrname},#{tchrphoneno})
+	</insert>
+
+	<!-- 팝업 사원조회 -->
+	<select id="getAsSearchList" parameterType="hashmap" resultType="hashmap">
+	SELECT S.EMP_NO,S.NAME, S.DEPT_NO, S.DEPT_NAME
+		FROM(SELECT E.EMP_NO, E.NAME, D.DEPT_NO, D.DEPT_NAME
+		FROM HR_APNT HR INNER JOIN EMP E
+                ON HR.EMP_NO = E.EMP_NO
+                INNER JOIN DEPT D
+                ON HR.DEPT_NO = D.DEPT_NO
+        WHERE 1=1       
+		<if test="searchEmpTxt != null and searchEmpTxt != ''">
+		<choose>
+		<when test="searchGbn == 0">
+			      AND E.NAME LIKE '%' || #{searchEmpTxt} || '%'
+		</when>
+		<when test="searchGbn == 1">
+			      AND D.DEPT_NAME LIKE '%' || #{searchEmpTxt} || '%'
+		</when>
+
+		</choose> 	      
+		</if>)S
+	</select>
+	
+	<!-- 팝업 장소조회-->
+	<select id="getplaceList" parameterType="hashmap" resultType="hashmap">
+	SELECT PLACE_NO, PLACE_NAME, USE_PPL, PLACE_IMG
+	FROM PLACE
+	WHERE 1=1
+	</select>
+	
+	<!-- 삭제(강의를 삭제)-->
+	<delete id="deleteLect" parameterType="hashmap">
+		DELETE FROM LECT 
+		WHERE LECT_NO = #{applect_no}
+	</delete>
+	
+	<!-- 삭제(수강생을 삭제)-->
+	
+	<delete id="deletAfc" parameterType="hashmap">
+		DELETE FROM AFC
+		WHERE  LECT_NO = #{applect_no}
+	</delete>
+	
+	<!-- 수강취소 -->
+	<delete id="droplect" parameterType="hashmap">
+		DELETE FROM AFC
+		WHERE EMP_NO = #{appemp}
+		AND LECT_NO= #{applect_no}
+	</delete>
+	
+	
+	
+	<select id="gettchrList" parameterType="hashmap" resultType="hashmap">
+	SELECT  T.TCHR_NO, T.TCHR_NAME, T.MOBILE_NUM
+	from (SELECT TCHR_NO, TCHR_NAME,  REGEXP_REPLACE(TCHR_MOBILE_NUM, '(02|.{3})(.+)(.{4})', '\1-\2-\3') MOBILE_NUM
+	FROM TCHR
+	where 1=1
+	
+	<if test="searchTchrTxt != null and searchTchrTxt != ''">
+		 AND TCHR_NAME LIKE '%' || #{searchTchrTxt} || '%'
+     
+		</if>)T
+	</select>
+	
+	
+	<!-- 장소 중복체크 -->
+	<select id="roomnumchek" parameterType="hashmap" resultType="Integer">
+	SELECT COUNT(PLACE_NO)
+	FROM PLACE
+	WHERE PLACE_NO = #{placeno}
+	</select>
+	
+	<!-- 장소 중복체크 -->
+	
+	<select id="phonenumchek" parameterType="hashmap" resultType="Integer">
+	SELECT COUNT(TCHR_MOBILE_NUM)
+	FROM TCHR
+	WHERE TCHR_MOBILE_NUM = #{tchrphoneno}
+	</select>
+	
+	<!-- 장소 상세정보 -->
+	<select id="placeDtl" parameterType="hashmap" resultType="hashmap">
+	SELECT PLACE_NO, PLACE_NAME, USE_PPL
+	FROM PLACE
+	WHERE PLACE_NO = #{no}
+	</select>
+	
+	
+	<!-- 장소 수정 -->
+	<update id="updatePlace" parameterType="hashmap">
+		UPDATE PLACE SET PLACE_NAME = #{placename}
+        WHERE PLACE_NO = #{placeno}
+	</update>
+	
+	<!-- 경력 등록 -->
+	<insert id="regiCareer" parameterType="hashmap">
+	INSERT INTO TCHR_CAREER (TCHR_CAREER_NO,TCHR_NO,LECT_NAME,LECT_START,LECT_FNSH) 
+	VALUES (TCHR_CAREER_SEQ.NEXTVAL, #{c_tchr_no}, #{c_lect_name},#{c_lectsday},#{c_lecteday})
+	</insert>
+	
+	<!-- 경력 중복체크 -->
+	<select id="careerChek" parameterType="hashmap" resultType="Integer">
+	SELECT COUNT(*)
+	FROM TCHR_CAREER
+	WHERE TCHR_NO =  #{c_tchr_no}
+	AND LECT_NAME = #{c_lect_name}
+	AND LECT_START = #{c_lectsday}
+	AND LECT_FNSH =#{c_lecteday}
+	</select>
+	
+	<!-- 강사 상세정보 -->
+	<select id="getchrDtl" parameterType="hashmap" resultType="hashmap">
+	SELECT TCHR_NO, TCHR_NAME, REGEXP_REPLACE(TCHR_MOBILE_NUM, '(02|.{3})(.+)(.{4})', '\1-\2-\3') TCHR_MOBILE_NUM
+	FROM TCHR
+	WHERE TCHR_NO = #{tno}
+	</select>
+	
+	<select id="careerList" parameterType="hashmap" resultType="hashmap">
+	SELECT TCHR_CAREER_NO, TCHR_NO, LECT_NAME, LECT_START|| '-' || LECT_FNSH  AS LECT_DAY
+	FROM TCHR_CAREER
+	WHERE TCHR_NO = #{tno}
+	</select>
+
+	
+</mapper>

@@ -1,0 +1,361 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	White : rgb(255,255,255), #FFFFFF
+ */
+.menuname {
+	display: inline_block;
+	width: 100%;
+	font-size: 30px;
+	margin-left: 40px;
+	font-weight: bold;
+}
+
+.title {
+	font-size: 20px;
+	margin-left: 40px;
+	font-weight: bold;
+	color: #505050;
+}
+
+#uploadFile>table {
+	text-align: center;
+}
+
+#uploadFile {
+	margin-top: 15px;
+}
+
+.title>.title_txt {
+	width: 200px;
+	font-size: 24px;
+	display: inline-block;
+}
+
+#txtright {
+	margin-top: 10px;
+}
+
+#search {
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+
+#search>#search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_cstm {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: #134074;
+	border-radius: 3px;
+	color: #FFFFFF;
+	border: 0px;
+}
+
+#list {
+	margin-left: 20px;
+	margin-top: 15px;
+	/* height: 245px; */
+}
+
+#listTop {
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color: #134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+
+#listCon {
+	border-collapse: collapse;
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100% - 230px) !important;
+	min-width: 630px !important;
+}
+
+#listCon tr td {
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listDiv {
+	height: 180px;
+	width: 630px !important;
+}
+
+#listDiv tbody tr {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}
+
+#writeImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 830px;
+}
+
+#backImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 10px;
+}
+
+.crmInfo {
+	margin-top: 10px;
+	margin-left: 40px;
+	min-width: 65%;
+	height: 700px;
+}
+
+.crmInfo tbody tr {
+	font-size: 12pt;
+	font-weight: bold;
+	height: 50px;
+}
+
+#hr_2 {
+	height: 10px;
+	margin-top: 30px;
+	width: 890px;
+}
+
+#tdleft {
+	text-align: center;
+	background-color: #DEE6EF;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#tdright {
+	padding-left: 13px;
+	font-size: 11pt;
+}
+
+#tdfile {
+	background-color: #8da9c4
+}
+
+#tdright>#fulltext {
+	width: 618px;
+	height: 33px;
+}
+
+#tdright>#middletext {
+	width: 547px;
+	height: 33px;
+}
+
+
+#tdright>#btn {
+	width: 70px;
+	height: 30px;
+}
+
+#tdright>#select {
+	width: 622px;
+	height: 39px;
+}
+
+.pluscustom {
+	height: 100px;
+	margin-top: 20px;
+	margin-bottom: 40px;
+}
+
+.pluscustom table {
+	text-align: center;
+}
+
+.pluscustom table #pluscrmTop {
+	background-color: #DEE6EF;
+}
+
+.crmInfo>table {
+	border-color: #BDBDBD;
+}
+
+#pluscrmMiddle {
+	font-size: 11pt;
+	font-weight: normal;
+}
+
+.block {
+	display: inline-block;
+	height: 90px;
+	width: 700px;
+	background-color: #cce8ff;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+.block_1 {
+	height: 90px;
+	width: 640px;
+	background-color: #cce8ff;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+#upName {
+	font-size: 14pt;
+    color: #505050;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#plusImg {
+	width: 40px;
+	height: 40px;
+	margin-top: 10px;
+	margin-left: 750px;
+}
+
+#upName_1 {
+	font-size: 18px;
+	margin-top: 10px;
+	color: #505050;
+	font-weight: bold;
+}
+
+#writeBtn {
+	margin-left: 500px;
+	font-size: 18px;
+}
+
+#Cbox {
+	margin-top: 10px;
+	font-size: 10px;
+}
+
+#Cselect {
+	margin-right: 450px;
+}
+
+.content_area>#hr_1 {
+	max-width: 890px;
+	margin-left: 40px;
+}
+
+#content {
+	height: 150px;
+	padding: 15px;
+}
+
+#content>input[type=text] {
+	height: 80px;
+	width: 700px;
+}
+
+#content>input[type=button] {
+	margin-left: 40px;
+	height: 70px;
+	width: 100px;
+	background-color: #3498DB;
+}
+
+#attFile {
+	margin-top: 10px;
+}
+
+#Mark_Name {
+	width: 620px;
+    height: 32px;
+}
+
+#mngr {
+	width: 560px;
+	height: 32px;
+}
+
+#mngrBtn {
+	height: 38px;
+    width: 56px;
+}
+
+#Progress_State {
+	width: 622px;
+    height: 39px;
+}
+
+#Bsns_Type {
+	width: 622px;
+    height: 39px;
+}
+
+#Sales_Div {
+	width: 622px;
+    height: 39px;
+}
+
+#Sales_Div_Dtl {
+	width: 620px;
+    height: 32px;
+}
+
+#Recog_Path {
+	width: 622px;
+    height: 39px;
+}
+
+#date_start {
+	width: 585px;
+    height: 32px;
+}
+
+#emp {
+	width: 560px;
+    height: 32px;
+}
+
+#empBtn {
+	height: 38px;
+    width: 56px;
+}
+
+.ui-datepicker-trigger {
+	margin-left: 10px;
+    width: 24px
+}
+
+#Note {
+	width: 620px;
+    height: 32px;
+}

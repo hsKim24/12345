@@ -1,0 +1,533 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	SteelBlue : rgb(70, 130, 180), #4682b4
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), 	
+	LightSkyBlue : rgb(176,218,236), #B0DAEC
+	White : rgb(255,255,255), #FFFFFF
+ */
+
+.tab_table{
+    margin-top: -165px !important;
+    margin-left: 165px;
+    width: 820px;
+    table-layout: fixed;
+    color: #131a74;
+    border-spacing: 15px;
+    background-color: #fff;
+}
+
+.bg{
+   	
+ 	padding: 20px; 
+   	margin-left: 40px;
+   	width: 1000px;
+   	height: 550px;
+  	background-color: #8DA9C4;
+  	
+}	 
+
+.tabcnt_area {
+	display: inline-block;
+	vertical-align: top;
+	width: 165px;
+	/* height: 400px; */
+	 padding: 5px 0px; 
+}
+
+.tabcnt_area > .tabcnt_img {
+	display: inline-block;
+	width: 160px;
+	height: 160px;
+	vertical-align: top;
+	margin-right: 10px;
+}
+.tabcnt_area > .tabcnt_img > img {
+	width: 135px;
+    height: 140px;
+}	
+.tab_txt{
+	width: 100px;
+    font-size: 18px;
+    text-align: right;
+    margin-left: 150px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+
+.tab_table{
+    margin-top: -170px;
+    margin-left: 165px;
+    width: 820px;
+    table-layout: fixed;
+    color: #131a74;
+    border-spacing: 15px;
+    background-color: #DEE6EF; 
+}
+.tab_tables{
+	margin-top: 5px;
+    margin-left: 165px;
+    width: 820px;
+    height: 100px;
+    table-layout: fixed;
+    color: #134074;
+    border-spacing: 15px;  
+	background-color: #DEE6EF;    
+}
+
+	
+.tab_cnt{
+	font-weight: bold;
+	
+	font-size: 12pt;
+	text-align:center;
+	/* border-right:0px ;
+	color: #000000;
+	border-bottom: 1px solid #ccc;
+	border-left:  0px ;
+	border-top:  1px solid #ccc; */
+}	
+	
+
+.tabbtn_area{
+	display:inline-block;
+    margin-left: 40px;
+    margin-top: 20px;
+      
+}
+
+   
+
+.tab_cntt{
+	background-color:#134074;
+	color: #fff;
+	border-radius: 3px;
+}	
+
+
+.tabbtn_area > [type="button"] {
+	display: inline-table;
+    /* float: left; */
+    width: 90px;
+    /* border: 1px solid gray; */
+    font-size: 11pt;
+    text-align: center;
+    background-color: #8DA9C4;
+    border: 0;
+    margin-right: 5px;
+    margin-bottom: 1px;
+    border-radius: 3px; 
+    font-weight: bold;
+}
+
+.tabbtn_area > .on{
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.tabbtn_area > [type="button"]:hover {
+	background-color: #134074;
+	color: #FFFFFF;
+	cursor: pointer;
+}
+
+.tabbtn_back {
+	margin-left: 285px;
+}
+
+.tab_txtt{
+	display: inline-block;
+	width: 40px;
+    font-size: 11pt;
+    text-align: center;
+  	margin-left: 45px;
+    margin-top: 10px;
+  	background-color: #134074;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.tab_txttt{
+	display: inline-block;
+    width: 110px;
+    background-color: gray;
+    font-size: 18px;
+    text-align: center;
+    margin-left: 560px;
+    vertical-align: top;
+    margin-top: -40px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+    
+.inputDate{
+	font-size: 12pt;
+	text-align: center;
+}
+
+.selectbox{
+	width: 100%;	
+	font-size: 11pt;
+	height: 23px;
+}
+
+#addrSearchBtn:hover, #postNo:hover, #addr:hover{
+	cursor: pointer;
+}
+
+#dtlAddr {
+	margin-top: 5px;
+}
+
+#addrSearchBtn {
+	margin-right: 85px;
+	background-color: #134074;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 0;
+    height: 22px;
+}
+
+#milserv_rank, #disa_con{
+	text-align: center;
+}
+
+#profileDiv {
+	display: none;
+}
+
+/* 학력 */
+
+.aabty_btn_box {
+	text-align: right;
+}
+
+.aabty_btn_box [type="button"] {
+	background-color: #134074;
+	color: #FFFFFF; 
+	font-size: 13pt;
+	border: 0;
+	border-radius: 3px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 25px;
+}
+
+
+#aabtyPlusBtn {
+	margin-left: 3px;
+	margin-right: 68px
+}
+
+.aabty_table{
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: 82px;
+}
+
+.aabty_table thead{
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.aabty_table thead tr td {
+	border: 1px solid #8DA9C4;
+	height: 40px;
+}
+
+.aabty_table tbody {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.aabty_table tbody tr td {
+	border: 1px solid #8DA9C4;
+	font-size: 11pt;
+	height: 30px;
+}
+
+.sc_box, .degree_box {
+	width: 147px;
+	height: 30px;
+}
+
+.scName, .scMajor {
+	text-align: center;
+	width: 193px;
+	height: 24px;
+} 
+
+.scGrdDay {
+	text-align: center;
+	width: 143px;
+	height: 24px;
+}
+
+/* 자격증 */
+
+.license_btn_box {
+	text-align: right;
+}
+
+.license_btn_box [type="button"] {
+	background-color: #134074;
+	color: #FFFFFF; 
+	font-size: 13pt;
+	border: 0;
+	border-radius: 3px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 25px;
+}
+
+#licensePlusBtn{
+	margin-left: 3px;
+	margin-right: 45px;
+}
+
+.license_table{
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: 55px;
+}
+
+.license_table thead{
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.license_table thead tr td {
+	border: 1px solid #8DA9C4;
+	height: 40px;
+}
+
+.license_table tbody {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.license_table tbody tr td {
+	border: 1px solid #8DA9C4;
+	font-size: 11pt;
+	height: 30px;
+}
+
+.licenseName, .licenseOlfcNo {
+	text-align: center;
+	width: 243px;
+    height: 24px;
+}
+
+.getDay{
+	text-align: center;
+	height: 24px;
+    width: 175px;
+}
+
+.licensePubc{
+	text-align: center;
+	width: 193px;
+	height: 24px;
+}
+
+/* 경력 */
+
+.career_btn_box {
+	text-align: right;
+}
+
+.career_btn_box [type="button"] {
+	background-color: #134074;
+	color: #FFFFFF; 
+	font-size: 13pt;
+	border: 0;
+	border-radius: 3px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 25px;
+}
+
+#careerPlusBtn{
+	margin-left: 3px;
+	margin-right: 10px;
+}
+
+.career_table{
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: 10px;
+}
+
+.career_table thead{
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.career_table thead tr td {
+	border: 1px solid #8DA9C4;
+	height: 40px;
+}
+
+.career_table tbody {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.career_table tbody tr td {
+	border: 1px solid #8DA9C4;
+	font-size: 11pt;
+	height: 30px;
+}
+
+.wplaceName {
+	text-align: center;
+	width: 243px;
+    height: 24px;
+}
+
+.posiName {
+	text-align: center;
+	width: 143px;
+    height: 24px;
+}
+
+.workStart, .workFnsh {
+	text-align: center;
+	width: 125px;
+	height: 24px;
+}
+
+.task {
+	text-align: center;
+	width: 273px;
+	height: 24px;
+}
+
+/* 가족 */
+.family_btn_box {
+	text-align: right;
+}
+
+.family_btn_box [type="button"] {
+	background-color: #134074;
+	color: #FFFFFF; 
+	font-size: 13pt;
+	border: 0;
+	border-radius: 3px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 25px;
+}
+
+#familyPlusBtn{
+	margin-left: 3px;
+	margin-right: 240px;
+}
+
+.family_table{
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: 210px;
+}
+
+.family_table thead{
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.family_table thead tr td {
+	border: 1px solid #8DA9C4;
+	height: 40px;
+}
+
+.family_table tbody {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.family_table tbody tr td {
+	border: 1px solid #8DA9C4;
+	font-size: 11pt;
+	height: 30px;
+}
+
+.familyName {
+	text-align: center;
+	width: 193px;
+	height: 24px;
+}
+
+.familyBirth {
+	text-align: center;
+	width: 175px;
+	height: 24px;
+}
+
+.fam_div {
+	width: 147px;
+    height: 30px;
+}
+
+/* 인사발령 */
+
+.hrApnt_table{
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: 210px;
+	margin-top: 23px;
+}
+
+.hrApnt_table thead{
+	font-size: 12pt;
+	font-weight: bold;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.hrApnt_table thead tr td {
+	border: 1px solid #8DA9C4;
+	height: 40px;
+}
+
+.hrApnt_table tbody {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.hrApnt_table tbody tr td {
+	border: 1px solid #8DA9C4;
+	font-size: 11pt;
+	height: 30px;
+}
+
+.selectBox {
+	font-size: 11pt;
+	width: 197px;
+    height: 30px;
+}
+
+/* 인사기록카드 수정 */
+#updateCancel {
+	margin-left: 380px;
+}
+
+
+#updateCancel, #updateBtn, #cancelBtn, #hmitemRegBtn {
+	background-color: #134074;
+    color: #FFF;
+}

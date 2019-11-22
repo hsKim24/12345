@@ -1,0 +1,204 @@
+@charset "UTF-8";
+
+/* 급여 명세 내역 팝업 */
+.salBkdwnHistTable {
+	border-collapse: collapse;
+	color: black;
+	font-size: 11pt;
+}
+
+.salBkdwnHistTable th{
+	border: 1px solid #444444;
+}
+
+.salBkdwnHistTable thead td{
+	border: 1px solid #444444;
+	text-align: center;
+}
+
+.salBkdwnHistTable tbody td{
+	border: 1px solid #444444;
+	text-align: right;
+}
+
+.salBkdwnHistTable .title {
+    background-color: #8da9c4;
+    color: black;
+}
+
+.salBkdwnHistTable .subTitle {
+    background-color: #8da9c4;
+    color: black;
+}
+
+.salBkdwnHistTable .menu {
+    color: black;
+}
+
+/* 컨텐츠 영역 */
+.data_search_area {
+	width: 800px;
+	height: 45px;
+	color: #000000;
+	background-color: #8da9c4;
+	border-radius: 3px;
+	margin: 20px 40px;
+	border: 1px solid #cccccc;
+}
+
+.data_search_area > .data_search_menu {
+	display: inline-block;
+	vertical-align: top;
+	width: 135px;
+	height: 43px;
+	line-height: 43px;
+	font-size: 11pt;
+	font-weight: bold;
+	text-align: left;
+	text-indent: 50px;
+}
+
+.data_search_area > .data_search_input {
+	display: inline-block;
+	vertical-align: top;
+	width: 175px;
+	height: 43px;
+	line-height: 56px;
+	text-align: left;
+}
+
+.data_search_area > .data_search_icon {
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 43px;
+	line-height: 56px;
+}
+
+.data_search_area > .data_search_btn {
+	display: inline-block;
+	vertical-align: top;
+	width: 80px;
+	height: 43px;
+	line-height: 56px;
+}
+
+.data_search_area > .data_search_input > .slt {
+	width: 175px;
+	height: 30px;
+	font-size: 11pt;
+}
+
+.data_search_area > .data_search_input > .txt {
+	width: 170px;
+	height: 20px;
+	font-size: 11pt;
+}
+
+.data_search_area > .data_search_input > #stdDate {
+	width: 155px;
+	height: 20px;
+	font-size: 11pt;
+}
+
+.data_search_area > .data_search_btn > .btn {
+	width: 100%;
+	font-size: 11pt;
+}
+
+.data_info_area {
+	width: 800px;
+	height: 540px;
+	margin: 10px 40px;
+}
+
+.data_info_area > .data_info_table {
+	width: 800px;
+	font-size: 11pt;
+	color: #000000;
+	background-color: #dee6ef;
+	text-align: center;
+	border-collapse: collapse;
+	border-radius: 3px;
+	overflow: hidden;
+	box-shadow: 0px 0px 1px 1px #CCCCCC;
+}
+
+.data_info_area > .data_info_table .first_tr {
+	color: #ffffff;
+	background-color: #134074;
+	border-bottom: 1px solid #cccccc;
+}
+
+.data_info_area > .data_info_table .top_tr {
+	background-color: #ffffff;
+	border-top: 1px solid #bbbbbb;
+	border-bottom: 1px solid #bbbbbb;
+}
+
+.data_info_area > .data_info_table .top_tr:hover{
+	color: #134074;
+	background-color: #b0daec;
+}
+
+.data_info_area > .data_info_table .bottom_tr:hover{
+	color: #134074;
+	background-color: #b0daec;
+}
+
+.data_info_area > .data_info_table > tbody tr {
+	height: 40px;
+}
+
+/* 페이징 영역 */
+.data_info_area > .pagingArea {
+	margin: 10px 0px;
+	height: 40px;
+	text-align: center;
+}
+
+.data_info_area > .pagingArea > [type="button"] {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+   color: #134074;
+}
+
+.data_info_area > .pagingArea > [type="button"]:hover {
+   cursor: pointer;
+   background-color: #134074;
+    color: #FFFFFF;
+} 
+
+.data_info_area > .pagingArea > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.data_info_area > .pagingArea > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+
+/* 하단 버튼 영역 */
+.data_btn_area{
+	width: 800px;
+	height: 30px;
+	margin: 0px 40px;
+	text-align: right;
+}
+
+.data_btn_area > .btn{
+	width: 100px;
+	height: 30px;
+	font-size: 11pt;
+	color: #ffffff;
+	background-color: #134074;
+	margin-left: 10px;
+}

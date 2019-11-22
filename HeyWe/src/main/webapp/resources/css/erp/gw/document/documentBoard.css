@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+table{
+ 	margin-left: 40px;
+ 	border-collapse: collapse;
+ 	text-align: center;
+ 	margin-top: 9px;
+ 	min-width: 1005px;
+ }
+ 
+thead{
+ 	background-color: #134074;
+ 	color: white;
+ }
+ 
+td{
+	min-width: 100px;
+	height: 48px;
+}
+
+.td_date{
+ 	min-width: 115px;
+}
+
+.top_box {
+	width : 80%;
+	height : 20px;
+	margin-left : 40px;
+	margin-bottom : 10px;
+	margin-top : 10px;
+}
+
+.total_doc{
+	display:inline-block;
+	width : 50%;
+ 	height : 20px;
+	font-size : 20px;
+	text-align: left;
+	vertical-align : middle;
+}
+
+table>tbody tr:hover {
+	background-color: #b0daec;
+	color: #134074;
+	cursor: pointer;
+}
+
+.article_main{
+	font-weight: bold;
+ 	font-size : 11pt;
+ 	text-align: center;
+}
+
+tr:nth-child(2n) {
+	font-size: 11pt;
+ 	color: black;
+	background-color: #dee6ef;
+	
+}
+
+#article_title{
+ 	text-align: left;
+ 	min-width: 580px;
+}
+ 
+.container_box{
+	width:1005px;
+	height: 750px;
+	background-color: white;
+	font-size: 11pt;
+	text-align: center;
+	margin-left: 5px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+h3{
+	margin: -4px;
+}
+.board{
+	background-color: red;
+	width: 390px;
+	height: 750px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+ 	font-family: "맑은고딕";
+}
+
+.layer1{
+	margin-left: 40px;
+	width: 700px;
+	height: 700px;
+	background-color:#DEE6EF;
+	margin-top: 13px;
+	border-radius: 16px;
+	color: black;
+	font-size: 15pt;
+}
+
+.article_board{
+ 	width: 300px;
+ 	height: 50px;
+ 	background-color: white;
+ 	color: black;
+ 	font-size: 24px;
+	text-align: left;
+	margin-left: 40px;
+}
+.document_board{
+ 	width: 600px;
+ 	height: 60px;
+ 	background-color: white;
+ 	text-align: left;
+ 	font-size: 27pt;
+}
+
+ .confirmation_template{
+ 	color: gray;
+ 	font-size: 13pt;
+ 	text-align: left;
+ }
+  
+.SearchDiv{
+	margin-left:280px;
+	width: 600px;
+}
+
+#searchtxt{
+ 	width: 380px;
+ 	height: 32px;
+ 	border-radius: 3px;
+}
+
+#searchBtn{
+ 	width: 70px;
+ 	height: 37px;
+ 	border-radius: 3px;
+}
+
+#writeBtn{
+	float : right;
+ 	width: 70px;
+ 	height: 37px;
+ 	border-radius: 3px;
+ 	margin-top: -60px;
+    margin-right: -21px;
+}
+ 
+#pagingArea {
+   line-height: 5;   
+}
+
+#checked {
+   background-color: #8DA9C4!important;
+}
+ 
+#pagingArea input{
+   display: inline-block;
+   margin-top: 30px;
+   width: 30px;
+   height: 30px;
+   border: 2px solid #8DA9C4;
+   border-radius: 2px;
+   background-color: #FFFFFF;
+   color: black;
+   font-size: 15px;
+   margin-left: 1px;
+}
+
+
+#pagingArea input:hover {
+   background-color: #8DA9C4;
+   color: #FFFFFF;
+   cursor: pointer;
+}

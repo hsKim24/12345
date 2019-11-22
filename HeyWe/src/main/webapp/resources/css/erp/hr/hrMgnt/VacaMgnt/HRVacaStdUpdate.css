@@ -1,0 +1,199 @@
+@charset "UTF-8";
+
+input[type="button"]{
+	cursor: pointer;
+}
+.paging_group {
+    width: 1010px;
+    height: 30px;
+    /* margin-top: 20px; */
+    text-align: center;
+}
+
+.paging_group > div {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+}
+
+.paging_group > div:hover {
+   cursor: pointer;
+    background-color: #134074;
+   color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+.content_area > .content_area_table_area{
+    border-radius: 3px;
+    margin-top: 40px;
+    /* border: 3px solid #000000; */
+    /* background-color: #DEE6EF; */
+    margin-left: 40px;
+    /* margin-right: 100px; */
+    min-width: 1000px;
+    max-width: 1350px;
+    text-align: center;
+}
+#forBtnRight{
+    width: 1000px;
+    text-align: right;
+    height: 35px;
+    /* margin-left: 100px; */
+    margin-bottom: 10px;
+    background-color: #DEE6EF;
+    line-height: 46px;
+    padding-right: 10px;
+}
+
+#table_va{
+    background-color: white;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 12pt;
+    height: 25px;
+    color: #FFFFFF;
+    width: 1010px;
+    border: 0px;
+}
+
+#table_va #table_color{
+	background-color: #134074;
+}
+#table_va td {
+	font-size : 11pt;
+	color : black;
+    border: 0px;
+}
+#table_va th {
+	height : 30px;
+	border : 0px;
+}
+.A{
+	background-color : #FFFFFF;
+	color : black;
+}
+
+.B{
+	background-color : #DEE6EF;
+	color : black;
+}
+.A:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+.B:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+/* input[type="button"]{
+	background-color: #134074;
+	border-radius: 3px;
+	border : 1px solid #8DA9C4;
+	margin-bottom : 5px;
+	cursor: pointer;
+	font-weight: bold;
+	color : white;
+	width : 60px;
+} */
+#modBtn, #delBtn{
+	/* visibility: collapse; */
+	
+}
+
+
+
+ #close{
+    font-size: 12px;
+    width: 100px;
+    /* height: 40px; */
+    position: absolute;
+    top: calc(100% - 35px);
+    left: calc(100% - 117px);
+    /* border: 1px solid #134074; */
+    /* border-radius: 3px; */
+    /* background-color: #134074; */
+    color: #000000;
+    font-weight: bold;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+ #close:hover{
+	background-color: #FFFFFF;
+	color : #000000;
+	
+}
+/*  #bg {
+   position: absolute;
+   width: 600px;
+   height: 800px;
+   background-color: rgba(0,0,0,0.7);
+   left: calc(50% - 300px);
+   top:  calc(50% - 400px);
+   z-index: 100;
+} */
+
+#popup{
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   left : 0%;
+   top : 0%;
+   background-color: rgba(0,0,0,0.8);
+   z-index: 200;
+   visibility: hidden;
+}
+
+#popupBox{
+	border-radius : 5px;
+	  position: absolute;
+	  width : 300px;
+	  height : 350px;
+	  background-color: #FFFFFF;
+	  left: calc(50% - 150px);
+	  top: calc(50% - 175px);
+	  z-index: 300;
+	  visibility: hidden;
+}
+
+#popupBox > div{
+	visibility: hidden;
+	font-size: 15px;
+	height: 20px;
+	color : #000000;
+	margin-left: 20px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	font-weight: bold;
+	
+}
+
+#popupBox > input[type="text"]{
+	margin-left : 20px;
+	visibility: hidden;
+
+}
+#comment{
+	width: 250px;
+	
+}
+
+
+

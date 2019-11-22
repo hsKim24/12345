@@ -1,0 +1,241 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	White : rgb(255,255,255), #FFFFFF
+ */
+.menuname {
+	display: inline_block;
+	width: 100%;
+	font-size: 30px;
+	margin-left: 40px;
+	font-weight: bold;
+}
+
+.title {
+	margin-left: 390px;
+}
+
+.title>.title_txt {
+	width: 200px;
+	font-size: 14pt;
+	display: inline-block;
+}
+
+#writeImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 430px;
+}
+
+#backImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 10px;
+}
+
+.crmInfo {
+	margin-top: 20px;
+	margin-left: 40px;
+	min-width: 65%;
+	height: 700px;
+}
+
+tbody tr {
+	height: 50px;
+}
+
+#hr_2 {
+	height: 1px;
+	margin-top: 20px;
+	width: 870px;
+	background-color: black;
+}
+
+#tdleft {
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: center;
+	background-color: #8da9c4;
+	text-align: center;
+}
+
+.blockList {
+	width: 88%;
+}
+
+.leftblock {
+	display: inline-block;
+	vertical-align: top;
+	height: 100%;
+}
+
+#imgBlock {
+	margin: 7px;
+}
+
+#imgBlock img {
+	width: 25px;
+	height: 25px;
+}
+
+.block {
+	display: inline-block;
+	height: 90px;
+	width: 825px;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+.block_1 {
+	height: 90px;
+	width: 640px;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+#upName {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 12pt;
+	color: #505050;
+	font-weight: bold;
+}
+
+#upName_1 {
+	font-size: 12pt;
+	color: #505050;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+#writeBtn {
+	margin: 10px;
+    width: 100px;
+    height: 70px;
+    background-color: #3498DB;
+    font-weight: bold;
+    color: white;
+    border-radius: 3px;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+#Cbox {
+	margin-top: 20px;
+	font-size: 10pt;
+}
+
+#Cselect {
+	margin-right: 560px;
+}
+
+#td_1 {
+	padding: 10px;
+	font-size: 11pt;
+}
+
+#uploadFile>table {
+	text-align: center;
+}
+
+tbody #tbtop {
+	background-color: #8da9c4;
+}
+
+#txtWrite {
+	display: inline-block;
+    height: 90px;
+    width: 765px;
+    border: 1px solid black;
+    margin-top: 10px;
+    vertical-align: top;
+}
+
+#writeBtn {
+	display: inline-block;
+	margin-top: 18px;
+	width: 80px;
+	height: 80px;
+}
+
+.talk {
+	width: 100%;
+}
+
+#talk1 {
+	display: inline-block;
+	height: 100%;
+	vertical-align: top;
+}
+
+#talk2 {
+	display: inline-block;
+	width: 20%;
+	height: 100%;
+}
+
+.contentList {
+	width: 765px;
+    padding: 5px;
+}
+
+.contentList #contentTop {
+	padding: 5px;
+	height: 40%;
+}
+
+#contentname {
+	display: inline-block;
+	height: 100%;
+	vertical-align: top;
+	font-size: 16px;
+	font-weight: bolder;
+}
+
+#contentday {
+	display: inline-block;
+	height: 100%;
+	font-size: 14px;
+	font-weight: lighter;
+	margin-left: 15px;
+}
+
+.contentList #contentBottom {
+	height: 60%;
+    font-size: 16px;
+    padding-bottom: 5px;
+    margin-left: 5px;
+    border-bottom: 1px solid;
+}
+
+#tdfile {
+	font-size: 12pt;
+	font-weight: bold;
+	width: 870px;
+}
+
+#tbMiddle {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#tdfile_1 {
+	font-size: 11pt;
+}
+
+#div1 {
+	font-size: 12pt;
+	margin-top: 10px;
+}
+
+#oppage {
+	margin-top: 30px;
+    margin-left: 26%;
+    font-size: 7pt;
+}
+
+#trashBtn {
+	margin-left: 10px;
+}

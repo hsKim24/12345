@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+
+<!-- 게시글 작성 -->
+<insert id="insertWrite" parameterType="hashmap">
+	INSERT INTO ARTICLE(ARTICLE_NO, BOARD_MNGT_NO, EMP_NO, TITLE, CON, WRITE_DATE, OPINION_CON)
+	VALUES (#{articleNo}, #{boardMngtNo},#{empNo},#{title},#{contents}, SYSDATE, 1)
+</insert>
+
+<!-- 게시글 조회수 -->
+<update id="AritcleHit" parameterType="hashMap">
+	UPDATE ARTICLE
+	SET HIT = HIT + 1
+	WHERE ARTICLE_NO = #{no}
+</update>	
+<!-- 게시물 -->
+<select id="getArticle" parameterType="hashMap" resultType="hashMap">
+	SELECT A.ARTICLE_NO, A.NAME, A.EMP_NO, A.DEPT_NO, A.TITLE, A.CON, A.WRITE_DATE, A.HIT
+	FROM (
+	SELECT A.ARTICLE_NO,
+	       E.NAME,
+	       A.EMP_NO,
+	       HA.DEPT_NO,
+	       A.TITLE,
+	       A.CON, 
+	       CASE WHEN TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	       THEN TO_CHAR(WRITE_DATE, 'AM HH : MI')
+	       ELSE TO_CHAR(WRITE_DATE, 'YYYY-MM-DD')
+	       END AS WRITE_DATE,
+	       ROW_NUMBER() OVER(ORDER BY WRITE_DATE DESC) AS RNUM, HIT
+	FROM ARTICLE A INNER JOIN EMP E
+	                       ON A.EMP_NO = E.EMP_NO
+	               INNER JOIN (SELECT EMP_NO, DEPT_NO, ROW_NUMBER() OVER(PARTITION BY EMP_NO ORDER BY APNT_DATE DESC) AS RNUM
+	                           FROM HR_APNT) HA
+	                       ON E.EMP_NO = HA.EMP_NO
+	                      AND HA.RNUM = 1
+	                      <if test="sDeptNo != null and sDeptNo != ''">
+	                      AND HA.DEPT_NO = #{sDeptNo}
+	                      </if>
+	               INNER JOIN DEPT D
+	                       ON HA.DEPT_NO = D.DEPT_NO
+	               INNER JOIN BOARD_MNGT BG
+	                       ON A.BOARD_MNGT_NO = BG.BOARD_MNGT_NO
+	                      AND BG.BOARD_MNGT_NO = #{boardMngtNo}
+	WHERE A.OPINION_CON = 1
+	<if test="searchTxt != null and searchTxt !=''">
+		<choose>
+			<when test="searchGbn == 0"> 
+				AND TITLE LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 1">
+				AND CON LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 2">
+				AND E.NAME LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 3">
+				AND (TITLE LIKE '%' || #{searchTxt} || '%' OR CON LIKE '%' || #{searchTxt} || '%')
+			</when>
+		</choose>
+	</if>) A
+	WHERE A.RNUM BETWEEN  #{startCnt} AND #{endCnt} 
+</select>
+<!-- 게시글 카운트 -->
+<select id="getArticleCnt" resultType="Integer" parameterType="hashMap">
+	SELECT COUNT(*) AS CNT
+	FROM ARTICLE A INNER JOIN EMP E
+	                       ON A.EMP_NO = E.EMP_NO
+	               INNER JOIN (SELECT EMP_NO, DEPT_NO, ROW_NUMBER() OVER(PARTITION BY EMP_NO ORDER BY APNT_DATE DESC) AS RNUM
+	                           FROM HR_APNT) HA
+	                       ON E.EMP_NO = HA.EMP_NO
+	                      AND HA.RNUM = 1
+	                      <if test="sDeptNo != null and sDeptNo != ''">
+	                      AND HA.DEPT_NO = #{sDeptNo}
+	                      </if>
+	               INNER JOIN DEPT D
+	                       ON HA.DEPT_NO = D.DEPT_NO
+	               INNER JOIN BOARD_MNGT BG
+	                       ON A.BOARD_MNGT_NO = BG.BOARD_MNGT_NO
+	                      AND BG.BOARD_MNGT_NO = #{boardMngtNo}
+	WHERE A.OPINION_CON = 1
+	 <if test="searchTxt != null and searchTxt !=''">
+		<choose>
+			<when test="searchGbn == 0"> 
+				AND TITLE LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 1">
+				AND CON LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 2">
+				AND NAME LIKE '%' || #{searchTxt} || '%'
+			</when>
+			<when test="searchGbn == 3">
+				AND (TITLE LIKE '%' || #{searchTxt} || '%' OR CON LIKE '%' || #{searchTxt} || '%')
+			</when>
+		</choose>
+	</if>
+</select>
+
+<select id="AritcleDtl" parameterType="hashMap" resultType="hashMap">
+	SELECT ARTICLE_NO, TITLE, CON, TO_CHAR(WRITE_DATE, 'YYYY/MM/DD AM HH:MI') AS WRITE_DATE, NAME, A.EMP_NO, A.BOARD_MNGT_NO
+	FROM ARTICLE A INNER JOIN EMP E
+	                       ON A.EMP_NO = E.EMP_NO
+	               INNER JOIN BOARD_MNGT BM
+	                       ON A.BOARD_MNGT_NO = BM.BOARD_MNGT_NO
+	WHERE ARTICLE_NO = #{no}
+</select>
+
+<update id="ArticleUpdate" parameterType="hashMap">
+	UPDATE ARTICLE
+	SET TITLE = #{title}, CON = #{contents} 
+	WHERE ARTICLE_NO = #{no}
+</update>
+
+<update id="ArticleDelete" parameterType="hashMap">
+	UPDATE ARTICLE
+	SET OPINION_CON = 0
+	WHERE ARTICLE_NO = #{no}
+</update>
+
+<insert id="ArticleUpload" parameterType="hashMap">
+	INSERT INTO BOARD_ATT_FILE
+	VALUES (BOARD_ATT_FILE_SEQ.NEXTVAL, #{uploadSEQ} , #{upload})
+</insert>
+
+<select id="ArticleNoSEQ" resultType="Integer">
+	SELECT ARTICLE_SEQ.NEXTVAL
+	FROM DUAL
+</select>
+
+<select id="fileDown" resultType="hashMap">
+	SELECT *
+	FROM BOARD_ATT_FILE
+	WHERE ARTICLE_NO = #{no}
+</select>
+
+<delete id="ArticleFileDelete" parameterType="hashMap">
+	DELETE FROM BOARD_ATT_FILE
+	WHERE ARTICLE_NO= #{no}
+	<if test="existAttFiles != '' and existAttFiles != null">
+		AND ATT_FILE_NO NOT IN(${existAttFiles})
+	</if>
+</delete>
+
+<select id="ArticleDtlAtt" resultType="hashMap">
+	SELECT *
+	FROM BOARD_ATT_FILE
+	WHERE ARTICLE_NO = #{no}
+</select>
+
+</mapper>

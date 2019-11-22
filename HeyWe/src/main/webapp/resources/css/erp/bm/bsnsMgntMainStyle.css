@@ -1,0 +1,264 @@
+@charset "UTF-8";
+
+/* 경영관리 메인 캘린더 영역 */
+ 
+.calArea{
+	width: 100%;
+	height : 75%;
+}
+
+.conArea{
+	width: 50%;
+    display: inline-block;
+    margin-left: 40px;
+    margin-top: 20px;
+}
+.schListArea{
+	width: 30%;
+    height: 100%;
+    display: inline-block;
+    background-color: white;
+    vertical-align: top;
+    margin-top: 20px;
+}
+.cal{
+	width : 100%;
+	height : 92%;
+	font-size : 10pt!important;
+	
+}
+.category{
+	width : 100%;
+	height : 8%;
+	background-color: white;
+}
+.category1{
+	margin-left:68%;
+	width: 15%;
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+}
+.category1_1{
+	width: 30%;
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+}
+.category1_2{
+	width: 70%;
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+	font-size: 18px;
+	margin-top: 8%;
+}
+.category2{
+	width: 15%;
+	height: 100%;
+	display: inline-block;
+}
+.category2_1{
+	width: 30%;
+	height: 100%;
+	display: inline-block;
+}
+.category2_2{
+	width: 70%;
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+	font-size: 18px;
+	margin-top: 8%;
+}
+.schListBg{
+	width: 90%;
+    height: 90%;
+    background-color: white;
+    margin-left: 20px;
+    border-radius: 3px;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+}
+.schListDate{
+	width : 100%;
+	height : 12%;
+	background-color:#8da9c4;
+	border-bottom-color: black;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+.schListCon{
+	width : 100%;
+	height : 86%;
+	background-color:white;
+}
+.schListConTable{
+	width:100%;
+	height : 100%;
+	text-align: center;
+}
+.schListDateTable{
+	width:100%;
+	height : 100%;
+	text-align: center;
+}
+.schListDateTableIcon{
+	width:10%;
+	text-align: center;
+}
+.schListDateTableCon{
+	width: 60%;
+	font-size: 20pt;
+	text-align: left;
+	font-weight: bold;
+}
+.schListConTable_1{
+	width:10%;
+	text-align: center;
+}
+.schListConTable_2{
+	width: 40%;
+	font-size: 11pt;
+	text-align: center;
+}
+.schListConTable_3{
+	width:50%;
+	font-size: 11pt;
+	text-align: left;
+}
+#redBtn{
+	width: 30px;
+	height: 30px;
+	margin-top: 25%;
+}
+#blueBtn{
+	width: 30px;
+	height: 30px;
+	margin-top: 25%;
+}
+#red2{
+	width: 20px;
+	height: 20px;	
+}
+#blue2{
+	width: 20px;
+	height: 20px;	
+}
+.moktc{
+	background-color: #FAFAFA;
+}
+#cal{
+	margin-top: 5px;
+}
+#pen{
+	margin-top: 5px;
+}
+#popup {
+   display: inline-block;
+   width: 600px;
+   height: 300px;
+   position: absolute;
+   top: calc(50% - 150px);
+   left: calc(50% - 300px);
+   background-color: #FFFFFF;
+   z-index: 300;
+   text-align: center;
+   vertical-align: middle;
+}
+#popupTop {
+   display: inline-block;
+   width: 560px;
+   font-size: 20px;
+   background-color: #27aae1;
+   height: 10%;
+   padding: 10px;
+   padding-left: 30px;
+   text-align: left;
+   font-weight: bold;
+   color: white;
+   font-size: 20px;
+}
+#cname {
+   display: inline-block;
+   width: 50px; height : 20px; vertical-align : top;
+   font-size: 16px;
+   height: 20px;
+   vertical-align: top;
+   padding-top: 10px;
+   padding-right: 260px;
+}
+
+#popupTop img {
+   margin-left: 480px;
+   color:white;
+}
+
+#popupMiddle {
+   text-align: left;
+   padding: 20px;
+   padding-left: 70px;
+}
+
+#popupBottom {
+   overflow-y: auto;
+   max-height:140px;
+   padding-top: 15px;
+}
+
+#popupBottomBlock {
+   display: inline-block;
+   width: 450px;
+   height: 50px;
+   padding-left: 15px;
+   border: 1px solid #444444;
+   margin-bottom: 10px;
+   border: 1px solid #444444;
+}
+
+#popCompany {
+
+   display: inline-block;
+   width: 100px;
+   height: 20px;
+   vertical-align: top;
+   font-size: 16px;
+   padding-top: 10px;
+}
+#popTxt {
+   height: 30px;
+   width: 400px;
+   padding-left: 10px;
+   vertical-align: bottom;
+}
+
+#popSearch {
+   margin-top: 10px;
+   margin-left: 10px;
+}
+.wripopup{
+	position: relative;
+}
+.wripopup2{
+	margin-top : 20%;
+	position: absolute;
+	width: 90px;
+	height: 200px;
+	background-color: white;
+	border-width: thin;
+	border-style: solid;
+	border-radius: 5px;
+}
+.a{
+	width : 100%;
+	height : 100%;
+}
+.a_1{
+	width : 20%;
+}
+.a_2{
+	font-size: 18px;
+	font-weight: bold;
+	text-align: left;
+}

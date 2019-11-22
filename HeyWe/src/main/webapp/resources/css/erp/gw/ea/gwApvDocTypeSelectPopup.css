@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+.select_cdType_searchOutput {
+	display: inline-block;
+	width: 90%;
+	height: 95%;
+	background-color: #FFFFFF;
+	border: 3px solid #DEE6EF;
+	border-radius: 3px;
+	margin-top: 10px;
+	margin-left: 6px;
+	user-select:none;
+}
+
+.select_cdType_searchBar {
+	display: inline-block;
+	width: 100%;
+	height: 10%;
+	background-color: #FFFFFF; 
+	vertical-align: top;
+	padding-top: 5px;
+}
+
+.select_cdType_searchBar [type="text"] {
+	width: 145px;
+	height: 20px;
+	font-size: 12pt;
+}
+
+div.searching {
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	vertical-align: top;
+}
+
+img[alt="search"] {
+	width: 25px;
+	height: 25px;
+	vertical-align:top;
+}
+
+img[alt="reset"] {
+	width: 20px;
+	height: 20px;
+	vertical-align: bottom;
+	border: 2px solid #000;
+	margin-left: 5px;
+	border-radius: 5px;
+}
+img[alt="reset"]:hover {
+	cursor: pointer;
+	background-color: #DFDFDF;
+}
+
+img[alt="folder"], img[alt="doc"]{
+	width: 20px;
+	height: 20px;
+	vertical-align: top;
+}
+
+.select_cdType_searchBar [type="button"] {
+	width: 50px;
+    height: 26px;
+    font-size: 12pt;
+    vertical-align: top;
+    background-color: #134074;
+    color: #FFF;
+    font-weight: bold;
+    outline : none;
+}
+
+.select_cdType_searchBar [type="button"]:hover {
+	cursor: pointer;
+}
+
+.select_cdType_searchList {
+	width: 95%;
+	height: 85%;
+	background-color: #FFFFFF;
+	padding: 4px;
+	border-top: 1px solid #134074;
+	overflow-y: scroll;
+	text-align: left;
+	font-size: 12pt;
+}
+
+.select_cdType_searchList span.apvTypeDiv:hover, .select_cdType_searchList span.apvDocType[check='no']:hover {
+	cursor:pointer;
+	background-color: #DEE6EF;
+}
+

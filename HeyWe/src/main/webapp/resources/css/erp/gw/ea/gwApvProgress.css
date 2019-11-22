@@ -1,0 +1,77 @@
+@charset "UTF-8";
+.bg2{
+	width: 845px;
+}
+
+.bg3 {
+	display: inline-block;
+    width: 100%;
+    margin-top: 50px;
+    font-size: 12pt;
+    text-align: left;
+}
+
+.bg3 .commentArea {
+	width: calc(100%-10px);
+	height: 90px;
+	border-top: 2px solid #134074;
+	padding: 5px;
+}
+
+img[alt="approval"], img[alt="allapproval"], img[alt="turndown"]{
+	width: 50px;
+	height: 50px;
+}
+
+ img[alt="user"] {
+ 	width: 50px;
+	height: 60px;
+	border-radius: 5px;
+ }
+
+.commentArea_profill {
+	display: inline-block;
+	width: 20%;
+	height: 100%;
+}
+
+.apvComment {
+	display: inline-block;
+	width: calc(75% - 2px);
+	height: calc(100% - 2px);
+	border: 1px solid #B0DAEC;
+	border-radius: 5px;
+	vertical-align: top;
+}
+
+.commentArea a#allapproval {
+	color: purple;
+	font-weight: bold;
+}
+
+.commentArea a#turndown {
+	color: blue;
+	font-weight: bold;
+}
+
+.comment_profill {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.expCon>*{
+	width: 100%;
+	margin:auto;
+}
+
+.bg2 table td{
+	font-weight: normal;
+}
+
+.attFileArea .fakeArea {
+	padding:0;
+}
+
+.fakeArea .attFileList{
+	width:100%;
+}

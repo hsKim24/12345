@@ -1,0 +1,81 @@
+@charset "UTF-8";
+
+#Ariticle{
+	padding-left: 40px;
+	padding-right: 80px;
+	width: 900px;
+	font-size: 13pt;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+#SelectD{
+	width: 100%;
+	height: 50px;
+}
+#SelectF{
+	width: 100%;
+	height: 50px;
+}
+
+#SelectG{
+	width: 100%;
+	height: 520px;
+}
+
+#title{
+	width: 560px;
+	height: 27px;
+	font-size: 15pt;
+	margin-left: 30px;
+}
+
+#contents{
+	width: 760px;
+	height: 400px;
+	overflow-y:scroll;
+	overflow-x: hidden;
+	font-size: 15pt;
+	margin-left: 85px;
+}
+
+input[type=button] {
+	border: 0px;
+	background-color: #8DA9C4;
+	width: 72px;
+	height: 34px;
+	border-radius: 4px;
+	color: white;
+	font-size: 12pt;
+	margin-top : 1px;
+}
+
+#selectOp{
+	margin-left: 30px;
+	width: 100px;
+	height: 37px; 
+}
+#backBtn{
+	float : right;
+	margin-right : 3px;
+}
+#insertBtn{
+	float : right;
+	
+}
+#updateBtn{
+	float : right;
+}
+.attFileArea{
+	width:100%;
+	height : 150px;
+	border : solid 1px #DEE6EF;
+	margin-top : 3px;
+}
+.fRight input[type=button] {
+	height: auto;
+}
+
+}
+

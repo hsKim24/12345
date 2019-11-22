@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="as">
+	<insert id="ASRegiSol" parameterType="hashmap">
+		INSERT INTO SOL(SOL_NO, SOL_NAME, SOL_MINIMUM_TASK_PPL, SOL_PRICE,
+                SOL_MON_M_COST, SOL_MANUAL_FILE, SOL_BROC_FILE)
+		VALUES (SOL_SEQ.NEXTVAL, #{solNm}, #{solPp}, #{solCost}, #{solMcost}, #{solMn}, #{solBro})
+	</insert>
+	
+	<select id="ASGetSolCnt" parameterType="hashmap" resultType="Integer">
+      SELECT COUNT(*) AS CNT
+              FROM SOL
+                     WHERE DEL_WHETHER = 1
+            <!-- searchTxt가 비어있지 않다면 -->
+            <if test="searchTxt != null and searchTxt !=''">   
+               <choose>
+               <!-- 보유솔루션(검색) -->
+               <when test="searchGbn == 0">
+                  AND SOL_NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 단가(검색) -->
+               <when test="searchGbn == 1">
+                  AND SOL_PRICE LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 보유솔루션 + 단가 -->
+               <when test="searchGbn == 2">
+                  AND (SOL_NAME LIKE '%' || #{searchTxt} || '%'
+                         OR SOL_PRICE LIKE '%' || #{searchTxt} || '%')
+               </when>
+               </choose>
+            </if>
+              
+	</select>
+	
+	<select id="ASGetSolList" parameterType="hashmap" resultType="hashmap">
+	SELECT T.SOL_NO, T.SOL_NAME, T.SOL_MINIMUM_TASK_PPL, T.SOL_PRICE, T.SOL_MON_M_COST, T.SOL_MANUAL_FILE, SOL_BROC_FILE
+      FROM(SELECT SOL_NO, SOL_NAME, SOL_MINIMUM_TASK_PPL, SOL_PRICE, SOL_MON_M_COST,
+                       TO_CHAR(SOL_LAUNCH_DAY, 'YYYY-MM-DD') AS SOL_LAUNCH_DAY,
+                       TO_CHAR(SOL_DSTR_DAY, 'YYYY-MM-DD') AS SOL_DSTR_DAY,
+                       ROW_NUMBER() OVER(ORDER BY SOL_NO DESC) AS RNUM,
+                       SOL_MANUAL_FILE, SOL_BROC_FILE
+              FROM SOL
+                    WHERE DEL_WHETHER = 1
+            <!-- searchTxt가 비어있지 않다면 -->
+            <if test="searchTxt != null and searchTxt !=''">   
+               <choose>
+               <!-- 보유솔루션(검색) -->
+               <when test="searchGbn == 0">
+                  AND SOL_NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 단가(검색) -->
+               <when test="searchGbn == 1">
+                  AND SOL_PRICE LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 보유솔루션 + 단가 -->
+               <when test="searchGbn == 2">
+                  AND (SOL_NAME LIKE '%' || #{searchTxt} || '%'
+                         OR SOL_PRICE LIKE '%' || #{searchTxt} || '%')
+               </when>
+               </choose>
+            </if>
+              )T
+      WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+   </select>
+
+	<select id="AsSolDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT SOL_NO, SOL_NAME, SOL_MINIMUM_TASK_PPL, SOL_PRICE, SOL_MON_M_COST, 
+				TO_CHAR(SOL_LAUNCH_DAY, 'YYYY-MM-DD') AS SOL_LAUNCH_DAY,
+				TO_CHAR(SOL_DSTR_DAY, 'YYYY-MM-DD') AS SOL_DSTR_DAY
+		FROM SOL
+		WHERE SOL_NO = #{solNo}
+	</select>
+		
+	<update id="AsSolUpdate" parameterType="hashmap">
+		UPDATE SOL SET SOL_NO = #{solNo}, SOL_NAME = #{solNm}, SOL_MINIMUM_TASK_PPL = #{solPp}, SOL_PRICE = #{solCost},
+					   SOL_MON_M_COST = #{solMcost}
+        WHERE SOL_NO = #{solNo}
+	</update>
+	
+	<update id="AsSolDelete" parameterType="hashmap">
+		UPDATE SOL
+		SET DEL_WHETHER = 0, SOL_DSTR_DAY = SYSDATE
+		WHERE SOL_NO = #{solNo}
+	</update>
+	
+	<insert id="ASRegiEmp" parameterType="hashmap">
+		INSERT INTO OUT_EMP(OUT_EMP_NO, OUT_EMP_NAME, OUT_EMP_AGE, OUT_EMP_MOBILE_NO,
+                    OUT_EMP_EMAIL, OUT_EMP_POST_NO, OUT_EMP_ADDR, OUT_EMP_DTL_ADDR, OUT_EMP_SKILL, OUT_EMP_PIC)
+		VALUES (OUT_EMP_SEQ.NEXTVAL, #{empNm}, #{empAge}, #{empPn}, #{empMail}, #{empPo}, #{empAd}, #{empAdD}, #{empSk}, #{empPic})
+	</insert>
+
+	<insert id="ASRegiQl" parameterType="hashmap">
+		INSERT INTO OUT_EMP_QLFC_LICENSE(OUT_EMP_QLFC_LICENSE_NO, OUT_EMP_NO, 
+							OUT_EMP_PROOF_NAME, OUT_EMP_GET_PUBC, OUT_EMP_QLFC_NO)
+		VALUES (OUT_EMP_QLFC_LICENSE_SEQ.NEXTVAL, '2', #{qlNm}, #{qlPb}, #{qlNo})
+	</insert>
+
+
+	
+	<select id="AsEmpDtl" parameterType="hashmap" resultType="hashmap">
+SELECT A.EMP_NO, A.FLAG, A.NAME, A.POSI_NAME, A.AGE, A.SKILL, A.SUM_WORK, A.IP_CNT, A.MOBILE_NO, A.EMAIL, A.ADDR, A.DTL_ADDR, A.DEL_WHETHER, A.PIC
+FROM (SELECT E.EMP_NO,
+      '내부' AS FLAG,
+       E.NAME,
+       P.POSI_NAME,
+       TO_CHAR(SYSDATE,'YYYY') - 1899 - SUBSTR(E.RRNUM1,1,2) AS AGE, '-' AS SKILL,       
+       NVL(C.SUM_WORK, 0) + HW.SUM_WORK AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       E.MOBILE_NO,
+       E.EMAIL,
+       E.ADDR, E.DTL_ADDR, 1 AS DEL_WHETHER,
+       E.PIC
+FROM EMP E INNER JOIN HR_APNT HA
+                   ON E.EMP_NO = HA.EMP_NO
+                  AND HA.FNSH_DATE IS NULL
+           INNER JOIN POSI P
+                   ON HA.POSI_NO = P.POSI_NO
+           INNER JOIN (SELECT EMP_NO, ROUND(SUM(NVL(FNSH_DATE, SYSDATE) - APNT_DATE) / 365, 0) AS SUM_WORK
+                       FROM HR_APNT
+                       GROUP BY EMP_NO) HW
+                   ON E.EMP_NO = HW.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, ROUND(SUM(WORK_FNSH - WORK_START) / 365, 0) AS SUM_WORK
+                            FROM CAREER
+                            GROUP BY EMP_NO) C
+                        ON E.EMP_NO = C.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, COUNT(*) AS IP_CNT
+                            FROM INPUT_PPL
+                            WHERE EMP_NO IS NULL
+                            GROUP BY EMP_NO) IP
+                        ON E.EMP_NO = IP.EMP_NO
+           LEFT OUTER JOIN INPUT_PPL IPL
+                        ON E.EMP_NO = IPL.EMP_NO
+                       AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+
+                        
+                        UNION
+                        
+SELECT OE.OUT_EMP_NO,
+       '외부' AS FLAG,
+       OE.OUT_EMP_NAME, '-',
+       OE.OUT_EMP_AGE,
+       OE2.OUT_EMP_SKILL,
+       NVL(C.SUM_WORK, 0) AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       OE.OUT_EMP_MOBILE_NO,
+       OE.OUT_EMP_EMAIL,
+       OE.OUT_EMP_ADDR,
+       OE.OUT_EMP_DTL_ADDR,
+       OE.DEL_WHETHER,
+       OE.OUT_EMP_PIC
+FROM OUT_EMP OE LEFT OUTER JOIN (SELECT OUT_EMP_NO, ROUND(SUM(CAREER_WORK_FNSH - CAREER_WORK_START) / 365, 0) AS SUM_WORK
+                                 FROM OUT_EMP_CAREER
+                                 GROUP BY OUT_EMP_NO) C
+                             ON OE.OUT_EMP_NO = C.OUT_EMP_NO
+                LEFT OUTER JOIN (SELECT OUT_EMP_NO, COUNT(*) AS IP_CNT
+                                 FROM INPUT_PPL
+                                 WHERE EMP_NO IS NULL
+                                 GROUP BY OUT_EMP_NO) IP
+                             ON OE.OUT_EMP_NO = IP.OUT_EMP_NO
+                LEFT OUTER JOIN INPUT_PPL IPL
+                             ON OE.OUT_EMP_NO = IPL.OUT_EMP_NO
+                            AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+                LEFT OUTER JOIN (SELECT OUT_EMP_NO, OUT_EMP_SKILL
+                                 FROM OUT_EMP) OE2
+                            ON OE.OUT_EMP_NO = OE2.OUT_EMP_NO
+                            WHERE DEL_WHETHER = 1) A
+                            WHERE EMP_NO = #{empNo}
+	</select>
+		
+	<update id="AsEmpUpdate" parameterType="hashmap">
+		UPDATE OUT_EMP SET OUT_EMP_NO = #{empNo}, OUT_EMP_NAME = #{empNm}, OUT_EMP_AGE = #{empAge},
+			   OUT_EMP_SKILL = #{empSk}, OUT_EMP_MOBILE_NO = #{empPn}, OUT_EMP_EMAIL = #{empMail},
+			   OUT_EMP_ADDR = #{empAd}, OUT_EMP_DTL_ADDR = #{empAdD}
+        WHERE OUT_EMP_NO = #{empNo}
+	</update>
+	
+	<delete id="AsEmpDelete" parameterType="hashmap">
+		UPDATE OUT_EMP SET DEL_WHETHER = 0
+		WHERE OUT_EMP_NO = #{empNo}
+	</delete>
+	
+	
+	
+	<select id="ASGetEmpCnt" parameterType="hashmap" resultType="Integer">
+SELECT COUNT(*) AS CNT
+FROM (SELECT A.EMP_NO, A.NAME, A.AGE, A.FLAG, A.SUM_WORK, A.IP_CNT, A.INPUT_FLAG, A.POSI_NAME, ROW_NUMBER() OVER(ORDER BY A.EMP_NO DESC) AS RNUM
+FROM(SELECT E.EMP_NO, E.NAME, 
+       E.AGE, FLAG,
+       NVL(C.SUM_WORK, 0) + HW.SUM_WORK AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       CASE WHEN INPUT_PPL_NO IS NULL
+            THEN 'NO'
+            ELSE 'YES'
+       END AS INPUT_FLAG, P.POSI_NAME
+FROM (SELECT EMP_NO, 
+       NAME, 
+       TO_CHAR(SYSDATE,'YYYY') - 1899 - SUBSTR(RRNUM1,1,2) AS AGE,
+       '내부' AS FLAG
+FROM EMP
+WHERE AUTH_NO = 6
+OR AUTH_NO = 7) E INNER JOIN HR_APNT HA
+                   ON E.EMP_NO = HA.EMP_NO
+                  AND HA.FNSH_DATE IS NULL
+           INNER JOIN POSI P
+                   ON HA.POSI_NO = P.POSI_NO
+           INNER JOIN (SELECT EMP_NO, ROUND(SUM(NVL(FNSH_DATE, SYSDATE) - APNT_DATE) / 365, 0) AS SUM_WORK
+                       FROM HR_APNT
+                       GROUP BY EMP_NO) HW
+                   ON E.EMP_NO = HW.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, ROUND(SUM(WORK_FNSH - WORK_START) / 365, 0) AS SUM_WORK
+                            FROM CAREER
+                            GROUP BY EMP_NO) C
+                        ON E.EMP_NO = C.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, COUNT(*) AS IP_CNT
+                            FROM INPUT_PPL
+                            WHERE EMP_NO IS NULL
+                            GROUP BY EMP_NO) IP
+                        ON E.EMP_NO = IP.EMP_NO
+           LEFT OUTER JOIN INPUT_PPL IPL
+                        ON E.EMP_NO = IPL.EMP_NO
+                       AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+UNION
+SELECT OE.OUT_EMP_NO,
+       OE.OUT_EMP_NAME,
+       OE.OUT_EMP_AGE,
+       '외부' AS FLAG,
+       NVL(C.SUM_WORK, 0) AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       CASE WHEN INPUT_PPL_NO IS NULL
+            THEN 'NO'
+            ELSE 'YES'
+       END AS INPUT_FLAG, '-'
+FROM OUT_EMP OE LEFT OUTER JOIN (SELECT OUT_EMP_NO, ROUND(SUM(CAREER_WORK_FNSH - CAREER_WORK_START) / 365, 0) AS SUM_WORK
+                                 FROM OUT_EMP_CAREER
+                                 GROUP BY OUT_EMP_NO) C
+                             ON OE.OUT_EMP_NO = C.OUT_EMP_NO
+                LEFT OUTER JOIN (SELECT OUT_EMP_NO, COUNT(*) AS IP_CNT
+                                 FROM INPUT_PPL
+                                 WHERE EMP_NO IS NULL
+                                 GROUP BY OUT_EMP_NO) IP
+                             ON OE.OUT_EMP_NO = IP.OUT_EMP_NO
+                LEFT OUTER JOIN INPUT_PPL IPL
+                             ON OE.OUT_EMP_NO = IPL.OUT_EMP_NO
+                            AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+				WHERE DEL_WHETHER = 1)A
+				WHERE 1 = 1
+				<!-- searchTxt가 비어있지 않다면 -->
+            <if test="searchTxt != null and searchTxt !=''">   
+               <choose>
+               <!-- 성 명(검색) -->
+               <when test="searchGbn == 0">
+                  AND A.NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 직 급(검색) -->
+               <when test="searchGbn == 1">
+                  AND A.POSI_NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 성명 + 직급 -->
+               <when test="searchGbn == 2">
+                  AND (A.NAME LIKE '%' || #{searchTxt} || '%'
+                         OR A.POSI_NAME LIKE '%' || #{searchTxt} || '%')
+               </when>
+               </choose>
+            </if>
+				)
+				WHERE 1=1
+
+	</select>
+	
+	<select id="ASGetEmpList" parameterType="hashmap" resultType="hashmap">
+SELECT T.EMP_NO, T.NAME, T.AGE, T.FLAG, T.SUM_WORK, T.IP_CNT, T.INPUT_FLAG, T.POSI_NAME
+FROM(SELECT A.EMP_NO, A.NAME, A.AGE, A.FLAG, A.SUM_WORK, A.IP_CNT, A.INPUT_FLAG, A.POSI_NAME, ROW_NUMBER() OVER(ORDER BY A.EMP_NO DESC) AS RNUM
+FROM(SELECT E.EMP_NO, E.NAME, 
+       E.AGE, FLAG,
+       NVL(C.SUM_WORK, 0) + HW.SUM_WORK AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       CASE WHEN INPUT_PPL_NO IS NULL
+            THEN 'NO'
+            ELSE 'YES'
+       END AS INPUT_FLAG, P.POSI_NAME
+FROM (SELECT EMP_NO, 
+       NAME, 
+       TO_CHAR(SYSDATE,'YYYY') - 1899 - SUBSTR(RRNUM1,1,2) AS AGE,
+       '내부' AS FLAG
+FROM EMP
+WHERE AUTH_NO = 6
+OR AUTH_NO = 7) E INNER JOIN HR_APNT HA
+                   ON E.EMP_NO = HA.EMP_NO
+                  AND HA.FNSH_DATE IS NULL
+           INNER JOIN POSI P
+                   ON HA.POSI_NO = P.POSI_NO
+           INNER JOIN (SELECT EMP_NO, ROUND(SUM(NVL(FNSH_DATE, SYSDATE) - APNT_DATE) / 365, 0) AS SUM_WORK
+                       FROM HR_APNT
+                       GROUP BY EMP_NO) HW
+                   ON E.EMP_NO = HW.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, ROUND(SUM(WORK_FNSH - WORK_START) / 365, 0) AS SUM_WORK
+                            FROM CAREER
+                            GROUP BY EMP_NO) C
+                        ON E.EMP_NO = C.EMP_NO
+           LEFT OUTER JOIN (SELECT EMP_NO, COUNT(*) AS IP_CNT
+                            FROM INPUT_PPL
+                            WHERE EMP_NO IS NULL
+                            GROUP BY EMP_NO) IP
+                        ON E.EMP_NO = IP.EMP_NO
+           LEFT OUTER JOIN INPUT_PPL IPL
+                        ON E.EMP_NO = IPL.EMP_NO
+                       AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+UNION
+SELECT OE.OUT_EMP_NO,
+       OE.OUT_EMP_NAME,
+       OE.OUT_EMP_AGE,
+       '외부' AS FLAG,
+       NVL(C.SUM_WORK, 0) AS SUM_WORK,
+       NVL(IP.IP_CNT, 0) AS IP_CNT,
+       CASE WHEN INPUT_PPL_NO IS NULL
+            THEN 'NO'
+            ELSE 'YES'
+       END AS INPUT_FLAG, '-'
+FROM OUT_EMP OE LEFT OUTER JOIN (SELECT OUT_EMP_NO, ROUND(SUM(CAREER_WORK_FNSH - CAREER_WORK_START) / 365, 0) AS SUM_WORK
+                                 FROM OUT_EMP_CAREER
+                                 GROUP BY OUT_EMP_NO) C
+                             ON OE.OUT_EMP_NO = C.OUT_EMP_NO
+                LEFT OUTER JOIN (SELECT OUT_EMP_NO, COUNT(*) AS IP_CNT
+                                 FROM INPUT_PPL
+                                 WHERE EMP_NO IS NULL
+                                 GROUP BY OUT_EMP_NO) IP
+                             ON OE.OUT_EMP_NO = IP.OUT_EMP_NO
+                LEFT OUTER JOIN INPUT_PPL IPL
+                             ON OE.OUT_EMP_NO = IPL.OUT_EMP_NO
+                            AND SYSDATE BETWEEN INPUT_PPL_START_DAY AND INPUT_PPL_FNSH_DAY
+					WHERE DEL_WHETHER = 1
+            	)A
+            	WHERE 1 = 1
+            <!-- searchTxt가 비어있지 않다면 -->
+            <if test="searchTxt != null and searchTxt !=''">   
+               <choose>
+               <!-- 성 명(검색) -->
+               <when test="searchGbn == 0">
+                  AND A.NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 직 급(검색) -->
+               <when test="searchGbn == 1">
+                  AND A.POSI_NAME LIKE '%' || #{searchTxt} || '%'
+               </when>
+               <!-- 성명 + 직급 -->
+               <when test="searchGbn == 2">
+                  AND (A.NAME LIKE '%' || #{searchTxt} || '%'
+                         OR A.POSI_NAME LIKE '%' || #{searchTxt} || '%')
+               </when>
+               </choose>
+            </if>
+              )T
+      WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+   </select>
+
+	<insert id="ASRegiCar" parameterType="hashmap">
+		INSERT INTO OUT_EMP_CAREER(CAREER_NO, OUT_EMP_NO, CAREER_WPLACE_NAME, CAREER_POSI, CAREER_WORK_START, CAREER_WORK_FNSH, CAREER_TASK)
+		VALUES (OUT_EMP_CAREER_SEQ.NEXTVAL, #{empNo}, #{carNm}, #{carPs}, #{WrkSt}, #{WrkEnd}, #{WrkTsk})
+	</insert>
+	
+	<select id="AsTableDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO AS ENO, E.NAME AS ENM, PJ.PROJ_NO AS PNO, SL.SOL_NAME AS SOLNM, SL.SOL_NO AS SOLNO,   
+				PJ.PROJ_PPL AS PPL, PJ.PROJ_TYPE AS PTYPE, ARE.AREA_NAME AS ARNM, ARE.AREA_NO AS ARNO, MK.MARK_NO AS MKNO,
+       			TO_CHAR(PJ.PROJ_START_DAY, 'YYYY-MM-DD') AS PSTD,TO_CHAR(PJ.PROJ_FNSH_DAY, 'YYYY-MM-DD') AS PFND,    
+       			 PJ.PROJ_APPSOL AS PAPPSOL, MK.NAME AS MKNM, ROW_NUMBER() OVER(ORDER BY PJ.PROJ_NO DESC) AS RNUM
+			FROM PROJ PJ INNER JOIN SOL SL
+	          			  ON PJ.SOL_NO = SL.SOL_NO
+	        	   		 INNER JOIN AREA ARE
+	           			  ON  PJ.AREA_NO = ARE.AREA_NO
+	          			 INNER JOIN EMP E
+	           			  ON PJ.EMP_NO = E.EMP_NO   
+	           			 INNER JOIN MARK MK
+	            		  ON PJ.MARK_NO = MK. MARK_NO
+	            		  WHERE E.EMP_NO = #{empNo}
+	</select>
+
+</mapper>

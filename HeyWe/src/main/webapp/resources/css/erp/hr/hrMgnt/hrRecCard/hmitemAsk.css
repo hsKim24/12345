@@ -1,0 +1,423 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	SteelBlue : rgb(70, 130, 180), #4682b4
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	LightSkyBlue : rgb(176,218,236), #B0DAEC
+	White : rgb(255,255,255), #FFFFFF
+ */
+
+<!--  인적사항    ------------->
+
+
+/* .tab_table{
+    margin-top: -170px;
+    margin-left: 165px;
+    width: 820px;
+    table-layout: fixed;
+    color: #131a74;
+    border-spacing: 15px;
+    background-color: #fff;
+}
+ */
+
+.tabbtn:hover 	{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+.bg{
+   	
+ 	padding: 20px; 
+   	margin-left: 40px;
+   	width: 1000px;
+   	height: 550px;
+  	background-color: #8DA9C4;
+  	
+}	 
+
+.tabcnt_area {
+	display: inline-block;
+	vertical-align: top;
+	width: 165px;
+	/* height: 400px; */
+	 padding: 5px 0px; 
+}
+
+.tabcnt_area > .tabcnt_img {
+	display: inline-block;
+	width: 160px;
+	height: 160px;
+	vertical-align: top;
+	margin-right: 10px;
+}
+.tabcnt_area > .tabcnt_img > img {
+	width: 135px;
+    height: 140px;
+}	
+.tab_txt{
+	width: 100px;
+    font-size: 18px;
+    text-align: right;
+    margin-left: 150px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+
+.tab_table_a{
+    margin-top: -165px;
+    margin-left: 165px;
+    width: 820px;
+    table-layout: fixed;
+    color: #131a74;
+    border-spacing: 15px;
+    background-color: #DEE6EF; 
+}
+.tab_tables{
+
+    margin-left: 165px;
+    width: 820px;
+    height: 100px;
+    table-layout: fixed;
+    color: #134074;
+    border-spacing: 15px;  
+	background-color: #DEE6EF;    
+	}
+
+	
+.tab_cnt{
+	font-weight: bold;
+	
+	font-size: 12pt;
+	text-align:center;
+	/* border-right:0px ;
+	color: #000000;
+	border-bottom: 1px solid #ccc;
+	border-left:  0px ;
+	border-top:  1px solid #ccc; */
+}	
+	
+
+ .tabbtn_area{
+	display:inline-block;
+      margin-left: 40px;
+      margin-top: 20px;
+      
+ }
+
+/*    
+.tabbtn{
+    display: inline-table;
+    float: left;
+    width: 90px;
+    border: 1px solid gray;
+    font-size: 20px;
+    text-align: center;
+    margin-right: 5px;
+    background-color: #134074;
+    color: #fff;
+    cursor: pointer;
+} */
+
+.tab_cntt{
+	
+
+	border:1px solid #000;
+	background-color:#134074;
+	color: #fff;
+
+}	
+
+.tab_a{
+	border:1px solid #000;
+	color: #000000;
+	background-color: #FFF;
+
+}	
+.tabbtn_area_save{
+	/* position:absolute */;
+	display:inline-block;
+    margin-top: 25px;
+    
+}
+
+.tabbtn_save {
+	display: inline-table;
+    /* float: left; */
+    width: 90px;
+    /* border: 1px solid gray; */
+    font-size: 20px;
+    text-align: center;
+    background-color: #134074;
+    color: #fff; 
+    cursor: pointer;
+    margin-left: 500px;
+}
+
+.tab_txtt{
+	display: inline-block;
+	width: 40px;
+    font-size: 18px;
+    text-align: center;
+  	margin-left: 25px;
+  	border: 1px solid;
+  	background-color: #134074;
+    font-weight: bold;
+    color: #fff;
+}
+
+.tab_txttt{
+	display: inline-block;
+    width: 110px;
+    background-color: gray;
+    font-size: 18px;
+    text-align: center;
+    margin-left: 560px;
+    vertical-align: top;
+    margin-top: -40px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+    
+.tabbtn_area > [type="button"] {
+   display: inline-table;
+    /* float: left; */
+    width: 90px;
+    /* border: 1px solid gray; */
+    font-size: 11pt;
+    text-align: center;
+    background-color: #8DA9C4;
+    border: 0;
+    margin-right: 5px;
+    margin-bottom: 1px;
+    border-radius: 3px; 
+    font-weight: bold;
+}
+
+.tabbtn_area > .on{
+   background-color: #134074;
+   color: #FFFFFF;
+}    
+
+
+<!-- 인사기록카드 조회  경력 -->
+
+
+
+
+/* .tabcnt_area {
+	display: inline-block;
+	vertical-align: top;
+	width: 165px;
+	height: 160px;
+	 padding: 5px 0px; 
+}
+
+.tabcnt_area > .tabcnt_img {
+	display: inline-block;
+	width: 160px;
+	height: 160px;
+	vertical-align: top;
+	margin-right: 10px;
+}
+.tabcnt_area > .tabcnt_img > img {
+	width: 135px;
+    height: 140px;
+    margin: 15px; */
+}	
+ .tab_txt_area{
+    width: 80px;
+    margin-left: 40px;
+    
+   
+} 
+
+.tab_txt_area > .tab_txt_area_head{
+	margin-left: 100px;
+	font-size: 18px;
+	font-weight: bold;
+
+}
+
+.tab_table{
+   	margin-top: 10px;
+	margin-left: 95px;
+	width: 800px;	
+	
+}
+.tabtitle{
+	background-color: #134074;
+	font-size: 12pt;
+	color: #fff;
+	height: 50px;
+	text-align:center;
+	
+}	
+.tab_cnt_a{
+	
+	background-color: #fff;
+	font-size: 12pt;
+	height: 50px;
+	color: #000000;
+	margin-left: 20px;
+	text-align:center;
+}	
+	
+
+.tab_cntA{
+	
+	background-color: #DEE6EF;
+	font-size: 17px;
+	height: 50px;
+	color: #000000;
+	margin-left: 20px;
+	text-align:center;
+}	
+
+
+/* 
+.bg{
+   	
+ 	padding: 20px; 
+   	margin-left: 40px;
+   	width: 950px;
+   	height: 400px;
+  	background-color: #DEE6EF;
+  	
+}	 */ 	 
+
+/* .tabbtn:hover 	{
+	background-color: #b0daec;
+	color: #134074;
+}
+ */
+
+.not{
+	 font-size: 12pt; 
+	 text-align: center;
+     background-color: #FFF;
+}
+
+
+#update{
+	margin-left: 380px;
+}
+
+#update, #reg {
+	background-color: #134074;
+    color: #FFF;
+}
+
+.tabbtn_area > [type="button"]:hover{
+	background-color: #134074;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+/* 사원검색팝업 */
+
+#empSearch{
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+#empSearch > #search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#empSearch > #search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	
+	font-weight: bold;
+    cursor: pointer;
+    background-color: #134074;
+    border-radius: 3px;
+    color: #FFFFFF;
+    border: 0px;
+}
+
+#list {
+	margin-left: 20px;
+    margin-top: 15px;
+    /* height: 245px; */
+}
+
+#listTop{
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse; 
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color:#134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+
+#listCon{ 
+	border-collapse: collapse; 
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100% - 230px) !important;
+	min-width: 630px !important;
+}
+#listCon tr td{
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listCon tr:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+
+#listCon .odd_row {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+#listCon .even_row {
+	background-color: #DEE6EF;
+	color: #000000;
+}
+#listDiv {
+	height: 180px;
+	width: 630px !important;
+}
+
+#listDiv tbody tr  {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}
+
+
+
+
+
+
+
+

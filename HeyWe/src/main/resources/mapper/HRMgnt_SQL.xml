@@ -1,0 +1,1042 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HRMgnt">
+	<!-- 부서조회 -->
+	<select id="getDeptName" resultType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME
+		FROM DEPT
+		WHERE CLOSE_WHETHER = 1
+		AND DEPT_NO != 0
+		ORDER BY DEPT_NO ASC
+	</select>
+	
+	<!-- 부서이름 중복확인 -->
+	<select id="deptOverlapCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(DEPT_NAME) AS CNT
+		FROM DEPT
+		WHERE DEPT_NAME = #{formDeptName}
+		AND CLOSE_WHETHER = 1
+	</select>
+	
+	<!-- 추가할 부서 번호 -->
+	<select id="getInsertDeptNo" resultType="Integer">
+		SELECT DEPT_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
+	
+	<!-- 부서추가 -->
+	<insert id="deptAdd" parameterType="hashmap">
+		INSERT INTO DEPT(DEPT_NO, DEPT_NAME)
+		VALUES (#{deptNo}, #{formDeptName})
+	</insert>
+	
+	<!-- 추가한 부서 -->
+	<select id="getLastDept" parameterType="hashmap" resultType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME
+		FROM DEPT
+		WHERE DEPT_NO = #{deptNo}
+	</select>
+	
+	<!-- 부서이름수정 -->
+	<update id="deptNameUpdate" parameterType="hashmap">
+		UPDATE DEPT
+		SET DEPT_NAME = #{formDeptName}
+		WHERE DEPT_NO = #{formDeptNo}
+	</update>
+	
+	<!-- 부서삭제가능여부 -->
+	<select id="deptDeleteCheck" parameterType="hashmap" resultType="Integer">
+		SELECT SUM(T.CNT) AS CNT
+		FROM(   SELECT COUNT(*) AS CNT
+		        FROM HR_APNT
+		        WHERE FNSH_DATE IS NULL
+		        AND DEPT_NO = #{formDeptNo}
+		        UNION ALL
+		        SELECT COUNT(*) AS CNT
+		        FROM TEMP_HR_APNT
+		        WHERE APNT_DATE > SYSDATE
+		        AND DEPT_NO = #{formDeptNo} ) T
+	</select>
+	
+	<!-- 부서삭제 -->
+	<update id="deptDelete" parameterType="hashmap">
+		UPDATE DEPT
+		SET CLOSE_WHETHER = 0
+		WHERE DEPT_NO = #{formDeptNo}
+	</update>
+	
+	<!-- 직위조회 -->
+	<select id="getPosiName" resultType="hashmap">
+		SELECT POSI_NO,POSI_NAME
+		FROM POSI
+		WHERE POSI_NO != 0
+		ORDER BY RANGE_SEQ ASC
+	</select>
+	
+	<!-- 인사발령기록조회 -->
+	<select id="getHrApntRecAsk" parameterType="hashmap" resultType="hashmap">
+		SELECT TT.RNUM, TT.NAME, TT.EMP_NO, TT.POSI_NAME, TT.DEPT_NAME, TT.APNT_DATE, TT.HR_APNT_NO, TT.APNT_REASON
+		        ,CASE WHEN TT.APV_STATE = 0 OR TT.APV_STATE = 1
+		              THEN '결재대기'
+		              WHEN TT.APV_STATE = 2 OR TT.APV_STATE = 3
+		              THEN '승인'
+		              ELSE '반려'
+		          END APV_STATE
+		FROM (	SELECT ROW_NUMBER() OVER(ORDER BY T.HR_APNT_NO DESC) AS RNUM
+		                ,T.NAME, T.EMP_NO, T.POSI_NAME, T.DEPT_NAME, T.APNT_DATE
+		                , T.APV_STATE, T.HR_APNT_NO, T.APNT_REASON
+		        FROM (  SELECT E.NAME, E.EMP_NO, P.POSI_NAME, D.DEPT_NAME, TO_CHAR(HR.APNT_DATE, 'YYYY-MM-DD')AS APNT_DATE
+		                        , A.APV_STATE, HR.HR_APNT_NO, HR.APNT_REASON
+		                FROM HR_APNT HR INNER JOIN DEPT D
+		                                        ON HR.DEPT_NO = D.DEPT_NO
+		                                        <choose>
+		                                            <when test="startDate != '' and endDate != ''">
+		                                                AND HR.APNT_DATE BETWEEN #{startDate} AND #{endDate}
+		                                            </when>
+		                                            <when test="formDeptNo != 1000">
+		                                                AND D.DEPT_NO = #{formDeptNo}
+		                                            </when>
+		                                        </choose>
+		                                INNER JOIN POSI P
+		                                        ON HR.POSI_NO = P.POSI_NO
+		                                        <if test="formPosiNo != 1000">
+		                                            AND P.POSI_NO = #{formPosiNo}
+		                                        </if>
+		                                INNER JOIN EMP E
+		                                        ON HR.EMP_NO = E.EMP_NO
+		                                        <if test="formEmpNo != 1000">
+		                                            AND E.EMP_NO = #{formEmpNo}
+		                                        </if>
+		                                INNER JOIN (SELECT 2 AS APV_STATE
+		                                            FROM DUAL ) A
+		                                        ON 1=1
+		                WHERE HR.HR_APNT_NO != 0
+		                UNION ALL
+		                SELECT E1.NAME, E1.EMP_NO, P1.POSI_NAME, D1.DEPT_NAME, TO_CHAR(THR.APNT_DATE, 'YYYY-MM-DD')AS APNT_DATE
+		                        , A1.APV_STATE, THR.HR_APNT_NO, THR.APNT_REASON
+		                FROM TEMP_HR_APNT THR INNER JOIN DEPT D1
+		                                        ON THR.BATCH_DIV = 1
+		                                        AND THR.DEPT_NO = D1.DEPT_NO
+		                                        <choose>
+		                                            <when test="startDate != '' and endDate != ''">
+		                                                AND THR.APNT_DATE BETWEEN #{startDate} AND #{endDate}
+		                                            </when>
+		                                            <when test="formDeptNo != 1000">
+		                                                AND D1.DEPT_NO = #{formDeptNo}
+		                                            </when>
+		                                        </choose>
+		                                INNER JOIN POSI P1
+		                                        ON THR.POSI_NO = P1.POSI_NO
+		                                        <if test="formPosiNo != 1000">
+		                                            AND P.POSI_NO = #{formPosiNo}
+		                                        </if>
+		                                INNER JOIN EMP E1
+		                                        ON THR.EMP_NO = E1.EMP_NO
+		                                        <if test="formEmpNo != 1000">
+		                                            AND E1.EMP_NO = #{formEmpNo}
+		                                        </if>
+		                                INNER JOIN APV A2 
+		                                        ON A2.CNCT_NO = THR.HR_APNT_NO
+		                                        AND A2.OUT_APV_TYPE_NO = 0
+		                                INNER JOIN (SELECT A.APV_NO, 
+		                                            CASE WHEN (SELECT COUNT(*)
+		                                                        FROM APV_LINE AL
+		                                                        WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                                                        FROM APV_LINE AL
+		                                                                                        WHERE A.APV_NO = AL.APV_NO
+		                                                                                        AND AL.APV_STATE_NO = 0)
+		                                                 THEN 0                                                  
+		                                                 WHEN (SELECT COUNT(*)
+		                                                        FROM APV_LINE AL
+		                                                        WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                                                        FROM APV_LINE AL
+		                                                                                        WHERE A.APV_NO = AL.APV_NO
+		                                                                                        AND AL.APV_STATE_NO = 3)  
+		                                                 THEN 2
+		                                                 WHEN (SELECT COUNT(*)
+		                                                        FROM APV_LINE AL
+		                                                        WHERE A.APV_NO = AL.APV_NO
+		                                                        AND AL.APV_STATE_NO = 2) >= 1  
+		                                                 THEN 3
+		                                                 WHEN (SELECT COUNT(*)
+		                                                        FROM APV_LINE AL
+		                                                        WHERE A.APV_NO = AL.APV_NO
+		                                                        AND AL.APV_STATE_NO = 1) >= 1  
+		                                                 THEN 4
+		                                                 ELSE 1
+		                                            END AS APV_STATE
+		                                            FROM APV A ) A1
+		                                        ON A1.APV_NO = A2.APV_NO
+		                ) T
+				<choose>
+					<when test="formApvNo == 0">
+						WHERE T.APV_STATE = 0 OR T.APV_STATE = 1
+					</when>
+					<when test="formApvNo == 1">
+						WHERE T.APV_STATE = 2 OR T.APV_STATE = 3
+					</when>
+					<when test="formApvNo == 2">
+						WHERE T.APV_STATE = 4
+					</when>
+				</choose>
+		    )TT
+		WHERE TT.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<!-- 인사발령기록 카운트 -->
+	<select id="getHrApntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+	        FROM (  SELECT E.NAME, E.EMP_NO, P.POSI_NAME, D.DEPT_NAME, TO_CHAR(HR.APNT_DATE, 'YYYY-MM-DD')AS APNT_DATE
+	                        , A.APV_STATE, HR.HR_APNT_NO
+	                FROM HR_APNT HR INNER JOIN DEPT D
+	                                        ON HR.DEPT_NO = D.DEPT_NO
+	                                        <choose>
+	                                            <when test="startDate != '' and endDate != ''">
+	                                                AND HR.APNT_DATE BETWEEN #{startDate} AND #{endDate}
+	                                            </when>
+	                                            <when test="formDeptNo != 1000">
+	                                                AND D.DEPT_NO = #{formDeptNo}
+	                                            </when>
+	                                        </choose>
+	                                INNER JOIN POSI P
+	                                        ON HR.POSI_NO = P.POSI_NO
+	                                        <if test="formPosiNo != 1000">
+	                                            AND P.POSI_NO = #{formPosiNo}
+	                                        </if>
+	                                INNER JOIN EMP E
+	                                        ON HR.EMP_NO = E.EMP_NO
+	                                        <if test="formEmpNo != 1000">
+	                                            AND E.EMP_NO = #{formEmpNo}
+	                                        </if>
+	                                INNER JOIN (SELECT 2 AS APV_STATE
+	                                            FROM DUAL ) A
+	                                        ON 1=1
+	                WHERE HR.HR_APNT_NO != 0
+	                UNION ALL
+	                SELECT E1.NAME, E1.EMP_NO, P1.POSI_NAME, D1.DEPT_NAME, TO_CHAR(THR.APNT_DATE, 'YYYY-MM-DD')AS APNT_DATE
+	                        , A1.APV_STATE, THR.HR_APNT_NO
+	                FROM TEMP_HR_APNT THR INNER JOIN DEPT D1
+	                						ON THR.BATCH_DIV = 1
+	                                        AND THR.DEPT_NO = D1.DEPT_NO
+	                                        <choose>
+	                                            <when test="startDate != '' and endDate != ''">
+	                                                AND THR.APNT_DATE BETWEEN #{startDate} AND #{endDate}
+	                                            </when>
+	                                            <when test="formDeptNo != 1000">
+	                                                AND D1.DEPT_NO = #{formDeptNo}
+	                                            </when>
+	                                        </choose>
+	                                INNER JOIN POSI P1
+	                                        ON THR.POSI_NO = P1.POSI_NO
+	                                        <if test="formPosiNo != 1000">
+	                                            AND P.POSI_NO = #{formPosiNo}
+	                                        </if>
+	                                INNER JOIN EMP E1
+	                                        ON THR.EMP_NO = E1.EMP_NO
+	                                        <if test="formEmpNo != 1000">
+	                                            AND E1.EMP_NO = #{formEmpNo}
+	                                        </if>
+	                                INNER JOIN APV A2 
+	                                        ON A2.CNCT_NO = THR.HR_APNT_NO
+	                                        AND A2.OUT_APV_TYPE_NO = 0
+	                                INNER JOIN (SELECT A.APV_NO, 
+	                                            CASE WHEN (SELECT COUNT(*)
+	                                                        FROM APV_LINE AL
+	                                                        WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+	                                                                                        FROM APV_LINE AL
+	                                                                                        WHERE A.APV_NO = AL.APV_NO
+	                                                                                        AND AL.APV_STATE_NO = 0)
+	                                                 THEN 0                                                  
+	                                                 WHEN (SELECT COUNT(*)
+	                                                        FROM APV_LINE AL
+	                                                        WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+	                                                                                        FROM APV_LINE AL
+	                                                                                        WHERE A.APV_NO = AL.APV_NO
+	                                                                                        AND AL.APV_STATE_NO = 3)  
+	                                                 THEN 2
+	                                                 WHEN (SELECT COUNT(*)
+	                                                        FROM APV_LINE AL
+	                                                        WHERE A.APV_NO = AL.APV_NO
+	                                                        AND AL.APV_STATE_NO = 2) >= 1  
+	                                                 THEN 3
+	                                                 WHEN (SELECT COUNT(*)
+	                                                        FROM APV_LINE AL
+	                                                        WHERE A.APV_NO = AL.APV_NO
+	                                                        AND AL.APV_STATE_NO = 1) >= 1  
+	                                                 THEN 4
+	                                                 ELSE 1
+	                                            END AS APV_STATE
+	                                            FROM APV A ) A1
+	                                        ON A1.APV_NO = A2.APV_NO
+	                ) T
+			<choose>
+				<when test="formApvNo == 0">
+					WHERE T.APV_STATE = 0 OR T.APV_STATE = 1
+				</when>
+				<when test="formApvNo == 1">
+					WHERE T.APV_STATE = 2 OR T.APV_STATE = 3
+				</when>
+				<when test="formApvNo == 2">
+					WHERE T.APV_STATE = 4
+				</when>
+			</choose>
+	</select>
+	
+	<!-- 사원검색팝업 -->
+	<select id="getEmpSearchPopup" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO, D.DEPT_NAME, E.NAME, E.PIC
+		FROM HR_APNT HR INNER JOIN EMP E
+		                        ON HR.EMP_NO = E.EMP_NO
+		                        AND HR.FNSH_DATE IS NULL
+		                        AND HR.HR_APNT_NO != 0
+		                        <if test="empSearchTxt != null and empSearchTxt != ''">
+		                        	AND E.NAME LIKE '%' || #{empSearchTxt} || '%'
+		                        </if>
+		                INNER JOIN DEPT D
+		                        ON HR.DEPT_NO = D.DEPT_NO
+		ORDER BY D.DEPT_NO , E.EMP_NO
+	</select>
+	
+	<!-- 등록할 인사발령 번호 -->
+	<select id="getHrApntNo" resultType="Integer">
+		SELECT HR_APNT_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
+	
+	<!-- 인사발령등록 -->
+	<insert id="hrApntReg" parameterType="hashmap">
+		INSERT INTO TEMP_HR_APNT(HR_APNT_NO, DEPT_NO, POSI_NO, EMP_NO, DMNGR_DIV, APNT_DATE, APNT_REASON)
+		VALUES (#{hrApntNo}, #{formDeptNo}, #{formPosiNo}, #{formEmpNo}, #{formDmngrDiv}, #{formApntDate}, #{formNote})
+	</insert>
+	
+	<!-- 인사부서장 사원번호 -->
+	<select id="getHrDmngr" resultType="Integer">
+		SELECT EMP_NO
+		FROM HR_APNT
+		WHERE DMNGR_DIV = 0
+		AND FNSH_DATE IS NULL
+		AND DEPT_NO = 1
+	</select>
+	
+	<!-- 인사발령이 나는 부서의 부서장 사원번호 -->
+	<select id="getDeptDmngr" parameterType="hashmap" resultType="String">
+		SELECT EMP_NO
+		FROM HR_APNT
+		WHERE DMNGR_DIV = 0
+		AND FNSH_DATE IS NULL
+		AND DEPT_NO = #{formDeptNo}
+	</select>
+	
+	<!-- 대표 사원번호 -->
+	<select id="getRepresentEmpNo" resultType="Integer">
+		SELECT EMP_NO
+		FROM HR_APNT
+		WHERE POSI_NO = 8
+		AND FNSH_DATE IS NULL
+	</select>
+	
+	<!-- TEMP_HR_APNT에서 결재가 승인 된 것중 오늘날짜로 발령나는 사람 가져오기 -->
+	<select id="getTempHrApntBatch" parameterType="String" resultType="hashmap">
+		SELECT THR.HR_APNT_NO, THR.DEPT_NO, THR.POSI_NO, THR.EMP_NO, THR.DMNGR_DIV, THR.APNT_DATE, THR.APNT_REASON, THR.BATCH_DIV, A1.APV_STATE
+		FROM TEMP_HR_APNT THR INNER JOIN APV A2 
+		                            ON A2.CNCT_NO = THR.HR_APNT_NO
+		                            AND A2.OUT_APV_TYPE_NO = 0
+		                    INNER JOIN (SELECT A.APV_NO, 
+		                                CASE WHEN (SELECT COUNT(*)
+		                                            FROM APV_LINE AL
+		                                            WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                                            FROM APV_LINE AL
+		                                                                            WHERE A.APV_NO = AL.APV_NO
+		                                                                            AND AL.APV_STATE_NO = 0)
+		                                     THEN 0                                                  
+		                                     WHEN (SELECT COUNT(*)
+		                                            FROM APV_LINE AL
+		                                            WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                                            FROM APV_LINE AL
+		                                                                            WHERE A.APV_NO = AL.APV_NO
+		                                                                            AND AL.APV_STATE_NO = 3)  
+		                                     THEN 2
+		                                     WHEN (SELECT COUNT(*)
+		                                            FROM APV_LINE AL
+		                                            WHERE A.APV_NO = AL.APV_NO
+		                                            AND AL.APV_STATE_NO = 2) >= 1  
+		                                     THEN 3
+		                                     WHEN (SELECT COUNT(*)
+		                                            FROM APV_LINE AL
+		                                            WHERE A.APV_NO = AL.APV_NO
+		                                            AND AL.APV_STATE_NO = 1) >= 1  
+		                                     THEN 4
+		                                     ELSE 1
+		                                END AS APV_STATE
+		                                FROM APV A ) A1
+		                            ON A1.APV_NO = A2.APV_NO
+		                            AND THR.BATCH_DIV = 1
+		                            AND THR.APNT_DATE = #{date}
+		                            AND (A1.APV_STATE = 2 OR A1.APV_STATE = 3)
+	</select>
+	
+	<!-- 인사발령이 날 사원의 현재 인사발령을 종료 -->
+	<update id="hrApntFnshUpdate" parameterType="hashmap">
+		UPDATE HR_APNT
+		SET FNSH_DATE = #{prevDate}
+		<if test="flag == 0">
+			, APNT_REASON = #{APNT_REASON}
+		</if>
+		WHERE FNSH_DATE IS NULL
+		AND EMP_NO = #{EMP_NO}
+	</update>
+	
+	<!-- TEMP_HR_APNT에서 발령된 데이터를 HR_APNT로 삽입 -->
+	<insert id="hrApntBatchInsert" parameterType="hashmap">
+		INSERT INTO HR_APNT (HR_APNT_NO, DEPT_NO, POSI_NO, EMP_NO, DMNGR_DIV, APNT_DATE, APNT_REASON)
+		VALUES (#{HR_APNT_NO}, #{DEPT_NO}, #{POSI_NO}, #{EMP_NO}, #{DMNGR_DIV}, #{APNT_DATE}, #{APNT_REASON})
+	</insert>
+	
+	<!-- TEMP_HR_APNT테이블의 BATCH_DIV 변경 -->
+	<update id="hrApntBatchDivUpdate" parameterType="hashmap">
+		UPDATE TEMP_HR_APNT
+		SET BATCH_DIV = 0
+		WHERE HR_APNT_NO = #{HR_APNT_NO}
+	</update>
+	
+	<!-- 등록할 사원 번호 -->
+	<select id="getEmpNo" resultType="Integer">
+		SELECT TO_CHAR(SYSDATE, 'YYYY') || LPAD(EMP_SEQ.NEXTVAL, 4,'0')
+		FROM DUAL
+	</select>
+	
+	<!-- 인사기록카드 사원등록 -->
+	<insert id="empReg" parameterType="hashmap">
+		INSERT INTO EMP (EMP_NO, PW, NAME, RRNUM1, RRNUM2, MOBILE_NO, EXTE, EMAIL, POST_NO, ADDR, DTL_ADDR, PIC, AUTH_NO)
+		VALUES (#{empNo}, #{defaultPw}, #{formName}, #{formRrnum1} ,#{formRrnum2}, #{formMobileNo}
+				, #{formExte}, #{formEmail}, #{formPostNo}, #{formAddr}, #{formDtlAddr}, #{formProfileImg}, #{formAuth})
+	</insert>
+	
+	<!-- 마지막으로 등록한 사원 -->
+	<select id="getLastRegEmp" resultType="hashmap">
+		SELECT MAX(EMP_NO) AS EMP_NO
+		FROM EMP
+	</select>
+	
+	<!-- 인적사항등록 -->
+	<insert id="hmStateReg" parameterType="hashmap">
+		INSERT INTO HM_STATE(EMP_NO, MARRY_WHETHER, DISA_WHETHER, DISA_CON, MILSERV_DIV, MILRNK)
+		VALUES (#{empNo}, #{formMarry}, #{formDisa}, #{formDisaCon}, #{formMilserv}, #{formMilservRank})
+	</insert>
+	
+	<!-- 학력등록 -->
+	<insert id="aabtyReg" parameterType="hashmap">
+		INSERT INTO AABTY(AABTY_NO, EMP_NO, SC_DIV, SC_NAME, MAJOR, GRD_DAY, DEGREE_DIV)
+		VALUES (AABTY_SEQ.NEXTVAL, #{empNo}, #{scDiv}, #{scName}, #{scMajor}, #{scGrdDay}, #{scDegreeDiv} )
+	</insert>
+	
+	<!-- 자격면허등록 -->
+	<insert id="licenseReg" parameterType="hashmap">
+		INSERT INTO QLFC_LICENSE(QLFC_LICENSE_NO, EMP_NO, PROOF_NAME, GET_DAY, GET_PUBC, QLFC_NO)
+		VALUES (QLFC_LICENSE_SEQ.NEXTVAL, #{empNo}, #{licenseName}, #{getDay}, #{licensePubc}, #{licenseOlfcNo})
+	</insert>
+	
+	<!-- 경력등록 -->
+	<insert id="careerReg" parameterType="hashmap">
+		INSERT INTO CAREER (CAREER_NO, EMP_NO, WPLACE_NAME, POSI_NAME, WORK_START, WORK_FNSH, TASK)
+		VALUES (CAREER_SEQ.NEXTVAL, #{empNo}, #{wplaceName}, #{posiName}, #{workStart}, #{workFnsh}, #{task})
+	</insert>
+	
+	<!-- 가족등록 -->
+	<insert id="familyReg" parameterType="hashmap">
+		INSERT INTO FAM_INFO(FAM_INFO_NO, EMP_NO, NAME, BIRTH, FAM_DIV)
+		VALUES(FAM_INFO_SEQ.NEXTVAL, #{empNo}, #{familyName}, #{familyBirth}, #{famDiv})
+	</insert>
+	
+	<!-- 인사발령등록 -->
+	<insert id="empRegHrApnt" parameterType="hashmap">
+		INSERT INTO HR_APNT(HR_APNT_NO, DEPT_NO, POSI_NO, EMP_NO, DMNGR_DIV, APNT_DATE, APNT_REASON)
+		VALUES(HR_APNT_SEQ.NEXTVAL, #{formDeptNo}, #{formPosiNo}, #{empNo}, #{formDmngrDiv}, SYSDATE, '입사')
+	</insert>
+	
+	<!-- 인사기록카드수정 - 사원정보 -->
+	<update id="empUpdate" parameterType="hashmap">
+		UPDATE EMP
+		SET NAME = #{formName}, RRNUM1 = #{formRrnum1}, RRNUM2 = #{formRrnum2}, MOBILE_NO = #{formMobileNo}, EXTE = #{formExte},
+		    EMAIL = #{formEmail}, POST_NO = #{formPostNo}, ADDR = #{formAddr}, DTL_ADDR = #{formDtlAddr}, PIC = #{formProfileImg}
+		    <if test="formAuth != null and formAuth != ''">
+			    , AUTH_NO = #{formAuth}
+		    </if>
+		    <if test="formPW != null and formPW != ''">
+			    , PW = #{formPW}
+		    </if>
+		WHERE EMP_NO = #{empNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 인적사항 -->
+	<update id="hmStateUpdate" parameterType="hashmap">
+		UPDATE HM_STATE
+		SET MARRY_WHETHER = #{formMarry}, DISA_WHETHER = #{formDisa}, DISA_CON = #{formDisaCon},
+			MILSERV_DIV = #{formMilserv}, MILRNK = #{formMilservRank}
+		WHERE EMP_NO = #{empNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 학력삭제 -->
+	<delete id="aabtyDelete" parameterType="hashmap">
+		DELETE
+		FROM AABTY
+		WHERE EMP_NO = #{empNo} 
+		AND AABTY_NO NOT IN (${formAabtyNo})
+	</delete>
+	
+	<!-- 인사기록카드수정 - 학력수정 -->
+	<update id="aabtyUpdate" parameterType="hashmap">
+		UPDATE AABTY
+		SET SC_DIV = #{scDiv}, SC_NAME = #{scName}, MAJOR = #{scMajor}, GRD_DAY = #{scGrdDay}, DEGREE_DIV = #{degreeDiv}
+		WHERE AABTY_NO = #{aabtyNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 학력추가 -->
+	<insert id="aabtyInsert">
+		INSERT INTO AABTY (AABTY_NO, EMP_NO, SC_DIV, SC_NAME, MAJOR, GRD_DAY, DEGREE_DIV)
+		VALUES (AABTY_SEQ.NEXTVAL, #{empNo}, #{scDiv}, #{scName}, #{scMajor}, #{scGrdDay}, #{degreeDiv})
+	</insert>
+	
+	<!-- 인사기록카드수정 - 자격면허삭제 -->
+	<delete id="licenseDelete" parameterType="hashmap">
+		DELETE
+		FROM QLFC_LICENSE
+		WHERE EMP_NO = #{empNo}
+		<if test="licenseNoLength != 1000">
+			AND QLFC_LICENSE_NO NOT IN (${formLicenseNo})
+		</if>
+	</delete>
+	
+	<!-- 인사기록카드수정 - 자격면허수정 -->
+	<update id="licenseUpdate" parameterType="hashmap">
+		UPDATE QLFC_LICENSE
+		SET PROOF_NAME = #{licenseName}, GET_DAY = #{getDay}, GET_PUBC = #{licensePubc}, QLFC_NO = #{licenseOlfcNo}
+		WHERE QLFC_LICENSE_NO = #{licenseNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 자격면허추가 -->
+	<insert id="licenseInsert">
+		INSERT INTO QLFC_LICENSE (QLFC_LICENSE_NO, EMP_NO, PROOF_NAME, GET_DAY, GET_PUBC, QLFC_NO)
+		VALUES (QLFC_LICENSE_SEQ.NEXTVAL, #{empNo}, #{licenseName}, #{getDay}, #{licensePubc}, #{licenseOlfcNo})
+	</insert>
+	
+	<!-- 인사기록카드수정 - 경력삭제 -->
+	<delete id="careerDelete" parameterType="hashmap">
+		DELETE
+		FROM CAREER
+		WHERE EMP_NO = #{empNo}
+		<if test="careerNoLength != 1000">
+			AND CAREER_NO NOT IN (${formCareerNo})
+		</if>
+	</delete>
+	
+	<!-- 인사기록카드수정 - 경력수정 -->
+	<update id="careerUpdate" parameterType="hashmap">
+		UPDATE CAREER
+		SET WPLACE_NAME = #{wplaceName}, POSI_NAME = #{posiName}, WORK_START = #{workStart}, WORK_FNSH = #{workFnsh}, TASK = #{task}
+		WHERE CAREER_NO = #{careerNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 자격면허추가 -->
+	<insert id="careerInsert">
+		INSERT INTO CAREER (CAREER_NO, EMP_NO, WPLACE_NAME, POSI_NAME, WORK_START, WORK_FNSH, TASK)
+		VALUES (CAREER_SEQ.NEXTVAL, #{empNo}, #{wplaceName}, #{posiName}, #{workStart}, #{workFnsh}, #{task})
+	</insert>
+	
+	<!-- 인사기록카드수정 - 가족삭제 -->
+	<delete id="familyDelete" parameterType="hashmap">
+		DELETE
+		FROM FAM_INFO
+		WHERE EMP_NO = #{empNo}
+		<if test="familyNoLength != 1000">
+			AND FAM_INFO_NO NOT IN (${formFamilyNo})
+		</if>
+	</delete>
+	
+	<!-- 인사기록카드수정 - 가족수정 -->
+	<update id="familyUpdate" parameterType="hashmap">
+		UPDATE FAM_INFO
+		SET NAME = #{familyName}, BIRTH = #{familyBirth}, FAM_DIV = #{famDiv}
+		WHERE FAM_INFO_NO = #{familyNo}
+	</update>
+	
+	<!-- 인사기록카드수정 - 자격면허추가 -->
+	<insert id="familyInsert">
+		INSERT INTO FAM_INFO (FAM_INFO_NO, EMP_NO, NAME, BIRTH, FAM_DIV)
+		VALUES (FAM_INFO_SEQ.NEXTVAL, #{empNo}, #{familyName}, #{familyBirth}, #{famDiv})
+	</insert>
+	
+	<!-- EMP SEQUENCE 삭제-->
+	<delete id="dropEmpSequence">
+		DROP SEQUENCE EMP_SEQ
+	</delete>
+	
+	<!-- 새로운 EMP SEQUENCE 생성 -->
+	<insert id="initEmpSequence">
+		CREATE SEQUENCE EMP_SEQ
+		MINVALUE 1
+		MAXVALUE 9999999999999999999999999
+		START WITH 1
+		INCREMENT BY 1
+	</insert>
+	
+	<!-- 오수현 -->
+	<!-- 인적사항조회  -->
+	<select id="hmitem" parameterType="hashmap" resultType="hashmap">
+		SELECT NAME, RRNUM1, RRNUM2, MOBILE_NO, NVL(E.EXTE, ' ') AS EXTE, EMAIL, POST_NO, ADDR, DTL_ADDR, POSI_NAME, DEPT_NAME,
+             		PIC, TO_CHAR(APNT_DATE, 'YYYY-MM-DD') AS APNT_DATE, CMN.CD_NAME AS CD_MARRY, CMN2.CD_NAME AS CD_DISA, CMN3.CD_NAME AS CD_MILSERV,
+             		NVL(HM.DISA_CON, ' ') AS DISA_CON, NVL(HM.MILRNK, ' ') AS MILRNK , HM.MARRY_WHETHER, HM.DISA_WHETHER, HM.MILSERV_DIV, AU.AUTH_NO, AU.AUTH_NAME, PW
+		FROM EMP E INNER JOIN HR_APNT HR
+			               ON E.EMP_NO = HR.EMP_NO
+			               AND HR.FNSH_DATE IS NULL
+			            INNER JOIN DEPT D
+			               ON HR.DEPT_NO = D.DEPT_NO
+			            INNER JOIN POSI P
+			               ON HR.POSI_NO = P.POSI_NO
+			            INNER JOIN HM_STATE HM
+			               ON E.EMP_NO = HM.EMP_NO
+			            INNER JOIN CMN_CD CMN
+			               ON CMN.CD_L = 9
+			               AND CMN.CD_S = HM.MARRY_WHETHER
+			            INNER JOIN CMN_CD CMN2
+			               ON CMN2.CD_L = 1
+			               AND CMN2.CD_S = HM.DISA_WHETHER
+			            INNER JOIN CMN_CD CMN3
+			               ON CMN3.CD_L = 4
+			               AND CMN3.CD_S = HM.MILSERV_DIV
+			            INNER JOIN AUTH AU
+			               ON AU.AUTH_NO = E.AUTH_NO
+		WHERE EMP_NO = #{empNo}
+	</select>
+	
+	<select id="auth" parameterType="hashmap" resultType="hashmap">
+		SELECT AUTH_NAME
+		FROM AUTH
+		WHERE AUTH_NO = #{authNo}
+	</select>
+	
+	<!-- 자격증조회  -->
+	<select id="qlfc" parameterType="hashmap" resultType="hashmap">
+		SELECT PROOF_NAME, TO_CHAR(GET_DAY,'YYYY-MM-DD')AS GET_DAY , GET_PUBC, QLFC_NO, QLFC_LICENSE_NO, ROW_NUMBER() OVER(ORDER BY QLFC_LICENSE_NO) AS NO
+		FROM EMP E INNER JOIN QLFC_LICENSE QLFC
+                ON E.EMP_NO = QLFC.EMP_NO
+		WHERE E.EMP_NO = #{empNo}
+	</select>
+	
+	<!-- 경력조회  -->
+	<select id="career" parameterType="hashmap" resultType="hashmap">
+		SELECT WPLACE_NAME, POSI_NAME, TO_CHAR(WORK_START, 'YYYY-MM-DD')AS WORK_START, TO_CHAR(WORK_FNSH, 'YYYY-MM-DD')AS WORK_FNSH, TASK, CAREER_NO, ROW_NUMBER() OVER(ORDER BY CAREER_NO) AS NO
+		FROM EMP E INNER JOIN CAREER C
+                ON E.EMP_NO = C.EMP_NO
+		WHERE E.EMP_NO = #{empNo}
+	</select>
+	
+	<!-- 학력조회 -->
+	<select id="AAbty" parameterType="hashmap" resultType="hashmap">
+		SELECT SC_NAME, CMN2.CD_NAME AS SC_DIV , GRD_DAY, NVL(A.MAJOR, ' ')AS MAJOR, CMN.CD_NAME AS DEGREE, A.SC_DIV AS SCDIV, A.DEGREE_DIV, A.AABTY_NO 
+		FROM EMP E INNER JOIN AABTY A
+                		ON E.EMP_NO = A.EMP_NO
+           		 INNER JOIN CMN_CD CMN
+                		ON CMN.CD_L = 3
+           				AND CMN.CD_S = DEGREE_DIV
+           		 INNER JOIN CMN_CD CMN2
+                		ON CMN2.CD_L = 12
+                		AND CMN2.CD_S = SC_DIV
+		WHERE E.EMP_NO = #{empNo}
+		ORDER BY CMN2.CD_S
+	</select>
+
+
+	<!-- 가족사항조회  -->
+    <select id="family" parameterType="hashmap" resultType="hashmap">
+    SELECT F.NAME,  TO_CHAR(F.BIRTH,'YYYY-MM-DD')AS BIRTH, CMN.CD_NAME AS FAM, FAM_INFO_NO, FAM_DIV, ROW_NUMBER() OVER(ORDER BY FAM_INFO_NO) AS NO
+	FROM EMP E INNER JOIN FAM_INFO F
+            ON E.EMP_NO = F.EMP_NO
+           INNER JOIN CMN_CD CMN
+            ON CMN.CD_L = 5
+            AND CMN.CD_S = F.FAM_DIV
+	WHERE E.EMP_NO = #{empNo} 
+     </select>
+
+	<select id="hmitemApnt" parameterType="hashmap" resultType="hashmap">
+	SELECT  T.APNT_DATE
+	FROM (  SELECT ROW_NUMBER() OVER(PARTITION BY EMP_NO ORDER BY APNT_DATE) AS RNK,  TO_CHAR(APNT_DATE, 'YYYY-MM-DD') AS APNT_DATE
+        FROM HR_APNT 
+        WHERE EMP_NO = #{empNo} ) T
+	WHERE T.RNK = 1
+	</select>
+
+	<!-- 강호빈 휴가관리 부분 -->
+	
+	<!-- 남은 휴가 뽑아오기 -->
+	<select id="getVacaStd" parameterType="hashmap" resultType="hashmap">
+		SELECT 0 AS VACA_STD_NO,'연차' AS VACA_NAME, AL.CRT_YEAR + AL.ADD_YEAR AS BASIC_DAY, AL.CRT_YEAR + AL.ADD_YEAR - NVL(VA.VACA_SUM, 0) AS LEFT_VACA
+		FROM ALEAVE AL LEFT OUTER JOIN (SELECT EMP_NO, SUM(END_DATE - START_DATE + 1) AS VACA_SUM
+		                                FROM VACA_REQ_REC
+		                                WHERE VACA_NO = 0
+		                                GROUP BY EMP_NO) VA
+		                           ON AL.EMP_NO = VA.EMP_NO
+		WHERE AL.EMP_NO = #{sEmpNo} AND AL.STD_YEAR = '2019'
+		UNION
+		SELECT  VS.VACA_STD_NO, VS.VACA_NAME, VS.BASIC_DAY, VS.BASIC_DAY -  NVL(VV.VACA_SUM, 0) AS LEFT_VACA
+		FROM VACA_STD VS LEFT OUTER JOIN (
+		    SELECT EMP_NO, VACA_NO, SUM(VACA_SUM) AS VACA_SUM
+		    FROM (SELECT EMP_NO, VACA_NO, END_DATE - START_DATE + 1 AS VACA_SUM
+		        FROM VACA_REQ_REC
+		        WHERE EMP_NO = #{sEmpNo}
+		        
+		        )
+		    GROUP BY EMP_NO,VACA_NO
+		    HAVING VACA_NO > 0
+		    ) VV
+		        ON VS.VACA_STD_NO = VV.VACA_NO
+		WHERE VS.VACA_STD_NO > 0 AND VS.DEL_WHETHER = 1
+	</select>
+	
+	<!-- 부서이름뽑아오기 -->
+	<select id="getDeptList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		FROM DEPT
+		WHERE CLOSE_WHETHER = 1
+		ORDER BY DEPT_NO
+	</select>
+	
+	<!-- 직위이름뽑아오기 -->
+	<select id="getPosiList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		FROM POSI
+		ORDER BY RANGE_SEQ
+	</select>
+	
+	<!-- 사원검색 팝업 -->
+	<select id="getEmpSearch1Popup" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO, D.DEPT_NAME, E.NAME
+		FROM HR_APNT HR INNER JOIN EMP E
+		                        ON HR.EMP_NO = E.EMP_NO
+		                        AND HR.FNSH_DATE IS NULL
+		                        AND HR.HR_APNT_NO != 0
+		                        <if test="empSearchTxt != null and empSearchTxt != ''">
+		                        	AND E.NAME LIKE '%' || #{empSearchTxt} || '%'
+		                        </if>
+		                INNER JOIN DEPT D
+		                        ON HR.DEPT_NO = D.DEPT_NO AND D.DEPT_NO = #{sDeptNo}
+		WHERE E.EMP_NO != #{sEmpNo}  
+		ORDER BY E.EMP_NO
+	</select>
+	
+	<!-- 남은 휴가일수 체크 하기 위한 것 -->
+	<select id="checkLeftDate" parameterType="hashmap" resultType="hashmap">
+		SELECT VACA_STD_NO,VACA_NAME,BASIC_DAY, LEFT_VACA
+		FROM (SELECT 0 AS VACA_STD_NO,'연차' AS VACA_NAME, AL.CRT_YEAR + AL.ADD_YEAR AS BASIC_DAY, AL.CRT_YEAR + AL.ADD_YEAR - NVL(VA.VACA_SUM, 0) AS LEFT_VACA
+				FROM ALEAVE AL LEFT OUTER JOIN (SELECT EMP_NO, SUM(END_DATE - START_DATE + 1) AS VACA_SUM
+				                                FROM VACA_REQ_REC
+				                                WHERE VACA_NO = 0
+				                                GROUP BY EMP_NO) VA
+				                           ON AL.EMP_NO = VA.EMP_NO
+				WHERE AL.EMP_NO = #{sEmpNo} AND AL.STD_YEAR = '2019'
+				UNION
+				SELECT  VS.VACA_STD_NO, VS.VACA_NAME, VS.BASIC_DAY, VS.BASIC_DAY -  NVL(VV.VACA_SUM, 0) AS LEFT_VACA
+				FROM VACA_STD VS LEFT OUTER JOIN (
+				    SELECT EMP_NO, VACA_NO, SUM(VACA_SUM) AS VACA_SUM
+				    FROM (SELECT EMP_NO, VACA_NO, END_DATE - START_DATE + 1 AS VACA_SUM
+				        FROM VACA_REQ_REC
+				        WHERE EMP_NO = #{sEmpNo}
+				        )
+				    GROUP BY EMP_NO,VACA_NO
+				    HAVING VACA_NO > 0
+				    ) VV
+				        ON VS.VACA_STD_NO = VV.VACA_NO
+				WHERE VS.VACA_STD_NO > 0)
+		WHERE VACA_STD_NO = #{vacaGbn}
+	</select>
+	
+	<!-- 휴가신청 -->
+	<insert id="insertvacaReq" parameterType="hashmap" >
+		INSERT INTO VACA_REQ_REC
+		VALUES(#{vacaSeq}, #{sEmpNo}, #{vacaGbn}, #{dptyNo}, 
+		#{startDate},#{endDate},SYSDATE,#{vacaReason},0)
+	</insert>
+	
+	<!-- 잔여휴가 관리자모드로 뽑아오기 -->
+	<select id="leftVacaList" parameterType="hashmap" resultType="hashmap">
+	SELECT RNUM,EMP_NO,DEPT_NAME,POSI_NAME,EMP_NAME,TOT_USE_FVACA,LEFT_FVACA,SUM_YVACA,USE_YVACA,LEFT_YVACA
+	FROM (SELECT ROW_NUMBER() OVER(ORDER BY E.EMP_NO) AS RNUM, E.EMP_NO AS EMP_NO, PODE.DEPT_NAME AS DEPT_NAME, PODE.POSI_NAME AS POSI_NAME, E.NAME AS EMP_NAME, TOT_USE_FVACA, LEFT_FVACA, SUM_YVACA, USE_YVACA, LEFT_YVACA
+	        FROM EMP E LEFT OUTER JOIN 
+	        (SELECT FV.EMP_NO, TOT_USE_FVACA, LEFT_FVACA, (CASE NVL(SUM_VACA,0)
+	                                        WHEN 0
+	                                        THEN 15
+	                                        ELSE NVL(SUM_VACA,0)
+	                                        END) AS SUM_YVACA, NVL(USE_VACA,0) AS USE_YVACA, (CASE NVL(LEFT_VACA,0)
+	                                        WHEN 0
+	                                        THEN 15
+	                                        ELSE NVL(LEFT_VACA,0)
+	                                        END) AS LEFT_YVACA
+	        FROM (SELECT T.EMP_NO, SUM(NVL(T.USE_VACA,0)) AS TOT_USE_FVACA, 5 - SUM(NVL(T.USE_VACA,0)) AS LEFT_FVACA
+	        FROM (SELECT E.EMP_NO,E.NAME, (VRR.END_DATE - VRR.START_DATE + 1) AS USE_VACA
+	        FROM EMP E LEFT OUTER JOIN VACA_REQ_REC VRR
+	        ON E.EMP_NO = VRR.EMP_NO AND VRR.VACA_NO = 1
+	        <if test="empSearch != null and empSearch !=''">
+        	  WHERE E.NAME LIKE '%' || #{empSearch} || '%'
+	        </if>) T
+	        GROUP BY T.EMP_NO) FV
+	        LEFT OUTER JOIN
+	        (SELECT AL.EMP_NO, (AL.CRT_YEAR + AL.ADD_YEAR) AS SUM_VACA, NVL(VA.VACA_SUM, 0) AS USE_VACA,
+	        AL.CRT_YEAR + AL.ADD_YEAR - NVL(VA.VACA_SUM, 0) AS LEFT_VACA
+	        FROM ALEAVE AL LEFT OUTER JOIN (SELECT EMP_NO, SUM(END_DATE - START_DATE + 1) AS VACA_SUM
+	                            FROM VACA_REQ_REC
+	                            WHERE VACA_NO = 0
+	                            GROUP BY EMP_NO) VA
+	                       ON AL.EMP_NO = VA.EMP_NO) YV
+	        ON FV.EMP_NO = YV.EMP_NO
+	        ) VAC ON E.EMP_NO = VAC.EMP_NO INNER JOIN (SELECT D.DEPT_NAME, HA.EMP_NO, P.POSI_NAME
+	        FROM HR_APNT HA INNER JOIN DEPT D
+	        ON HA.DEPT_NO = D.DEPT_NO AND HA.FNSH_DATE IS NULL
+	        INNER JOIN POSI P
+	        ON P.POSI_NO = HA.POSI_NO
+	        <if test="deptGbn != 'all' and deptGbn != null">
+	       		 WHERE D.DEPT_NAME = #{deptGbn}
+	        </if> ) PODE
+	        ON VAC.EMP_NO = PODE.EMP_NO
+	        ) 
+	WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+	<!-- ASDASD -->
+	</select>
+	<!-- 총 글 개수 가져오기 -->	
+	<select id="empCnt" parameterType="hashmap" resultType="integer">
+	SELECT COUNT(*)
+	FROM (SELECT ROW_NUMBER() OVER(ORDER BY E.EMP_NO) AS RNUM, E.EMP_NO AS EMP_NO, PODE.DEPT_NAME AS DEPT_NAME, PODE.POSI_NAME AS POSI_NAME, E.NAME AS EMP_NAME, TOT_USE_FVACA, LEFT_FVACA, SUM_YVACA, USE_YVACA, LEFT_YVACA
+	        FROM EMP E LEFT OUTER JOIN 
+	        (SELECT FV.EMP_NO, TOT_USE_FVACA, LEFT_FVACA, (CASE NVL(SUM_VACA,0)
+	                                        WHEN 0
+	                                        THEN 15
+	                                        ELSE NVL(SUM_VACA,0)
+	                                        END) AS SUM_YVACA, NVL(USE_VACA,0) AS USE_YVACA, (CASE NVL(LEFT_VACA,0)
+	                                        WHEN 0
+	                                        THEN 15
+	                                        ELSE NVL(LEFT_VACA,0)
+	                                        END) AS LEFT_YVACA
+	        FROM (SELECT T.EMP_NO, SUM(NVL(T.USE_VACA,0)) AS TOT_USE_FVACA, 5 - SUM(NVL(T.USE_VACA,0)) AS LEFT_FVACA
+	        FROM (SELECT E.EMP_NO,E.NAME, (VRR.END_DATE - VRR.START_DATE + 1) AS USE_VACA
+	        FROM EMP E LEFT OUTER JOIN VACA_REQ_REC VRR
+	        ON E.EMP_NO = VRR.EMP_NO AND VRR.VACA_NO = 1
+	        <if test="empSearch != null and empSearch !=''">
+        	  WHERE E.NAME LIKE '%' || #{empSearch} || '%'
+	        </if>) T
+	        GROUP BY T.EMP_NO) FV
+	        LEFT OUTER JOIN
+	        (SELECT AL.EMP_NO, (AL.CRT_YEAR + AL.ADD_YEAR) AS SUM_VACA, NVL(VA.VACA_SUM, 0) AS USE_VACA,
+	        AL.CRT_YEAR + AL.ADD_YEAR - NVL(VA.VACA_SUM, 0) AS LEFT_VACA
+	        FROM ALEAVE AL LEFT OUTER JOIN (SELECT EMP_NO, SUM(END_DATE - START_DATE + 1) AS VACA_SUM
+	                            FROM VACA_REQ_REC
+	                            WHERE VACA_NO = 0
+	                            GROUP BY EMP_NO) VA
+	                       ON AL.EMP_NO = VA.EMP_NO) YV
+	        ON FV.EMP_NO = YV.EMP_NO
+	        
+	        ) VAC ON E.EMP_NO = VAC.EMP_NO INNER JOIN (SELECT D.DEPT_NAME, HA.EMP_NO, P.POSI_NAME
+	        FROM HR_APNT HA INNER JOIN DEPT D
+	        ON HA.DEPT_NO = D.DEPT_NO AND HA.FNSH_DATE IS NULL
+	        INNER JOIN POSI P
+	        ON P.POSI_NO = HA.POSI_NO
+	       <if test="deptGbn != 'all' and deptGbn != null">
+	       		 WHERE D.DEPT_NAME = #{deptGbn}
+	        </if>
+	        )  PODE
+	        ON VAC.EMP_NO = PODE.EMP_NO )
+	</select>
+	<!-- VACA_STD 가져오기 -->
+	<select id="vacaStdList" parameterType="hashmap" resultType="hashmap">
+		SELECT T.*
+		FROM 
+		(SELECT ROW_NUMBER() OVER(ORDER BY VACA_STD_NO) AS RNUM, VACA_STD_NO + 1 AS VACA_STD_NO , VACA_NAME, CASE VACA_STD_NO WHEN 0 THEN 15 ELSE BASIC_DAY END AS BASIC_DAY, CASE SAL_DIV WHEN 0 THEN '유급' ELSE '무급' END AS SAL_DIV, NOTE
+		FROM VACA_STD
+		WHERE DEL_WHETHER = 1
+		) T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		ORDER BY T.VACA_STD_NO ASC
+		
+	</select>
+	<!-- VACA_STD 길이 -->
+	<select id="vacaStdListCnt" parameterType="hashmap" resultType="integer">
+	SELECT COUNT(*)
+	FROM VACA_STD
+	WHERE DEL_WHETHER = 1
+	</select>
+	
+	<!-- vacastd 삭제 -->
+	<update id="delVacaStd"  parameterType="hashmap" >
+		UPDATE VACA_STD SET DEL_WHETHER = 0
+		WHERE VACA_STD_NO = #{stdNo}
+	</update>
+	<!-- vacastd 수정 -->
+	<update id="updateVacaStd"  parameterType="hashmap" >
+		UPDATE VACA_STD SET VACA_NAME = #{vacaName}, SAL_DIV = #{salDiv}, BASIC_DAY= #{basicDay}, NOTE = #{note}
+		WHERE VACA_STD_NO = #{stdNo}
+	</update>
+	
+	<!-- vacaStd 추가 -->
+	<insert id="insertVacaStd" parameterType="hashmap" >
+		INSERT INTO VACA_STD
+		VALUES(VACA_STD_SEQ.NEXTVAL,#{vacaName},#{salDiv},#{basicDay},#{note},1)
+	</insert>
+	
+	<!-- VACA_REQ_REC 가져오기 -->
+	<select id="VacaReqRecList" parameterType="hashmap" resultType="hashmap">
+		SELECT VRR.VACA_REQ_REC_NO, VRR.EMP_NO, VS.VACA_NAME, VRR.VACA_NO, TO_CHAR(VRR.START_DATE,'YY/MM/DD') AS START_DATE, TO_CHAR(VRR.END_DATE,'YY/MM/DD') AS END_DATE, CC.CD_NAME
+		FROM VACA_REQ_REC VRR INNER JOIN CMN_CD CC
+		        ON CC.CD_L = 2 AND VRR.APV_WHETHER = CC.CD_S INNER JOIN VACA_STD VS
+		                                                            ON VS.VACA_STD_NO = VRR.VACA_NO
+		WHERE VRR.EMP_NO = #{sEmpNo} AND VRR.START_DATE >= (#{stdDate} || '/01') 
+		 AND VRR.START_DATE <![CDATA[<]]> (#{endDate} || '/01')
+		ORDER BY VRR.APV_WHETHER,VRR.START_DATE
+	</select>
+	
+	<!-- VACA_REQ_REC 취소하기 -->
+	<delete id="HRcancelVacaReqAjax" parameterType="hashmap">
+		DELETE FROM VACA_REQ_REC
+		WHERE VACA_REQ_REC_NO = #{vacaReqRecNo}
+	</delete>
+	
+	<!-- 캘린더 가져오기 -->
+	<select id="getcalList" parameterType="hashmap" resultType="hashmap">
+	
+		SELECT D.DAY AS "START", COUNT(*) || '명 휴가' AS TITLE,
+		       CASE WHEN COUNT(*) &lt;= 4
+		            THEN '#008000'
+		            WHEN COUNT(*) &lt;= 9
+		            THEN '#ffff00'
+		            ELSE '#ff0000'
+		       END AS COLOR
+		FROM VACA_REQ_REC VRR INNER JOIN CMN_CD CC
+		                              ON CC.CD_L = 2 
+		                             AND VRR.APV_WHETHER = CC.CD_S 
+		                      INNER JOIN VACA_STD VS
+		                              ON VS.VACA_STD_NO = VRR.VACA_NO
+		                      INNER JOIN (SELECT E.EMP_NO, E.NAME, D.DEPT_NAME
+		                                  FROM EMP E INNER JOIN HR_APNT HA
+		                                                     ON E.EMP_NO = HA.EMP_NO 
+		                                                    AND FNSH_DATE IS NULL 
+		                                             INNER JOIN DEPT D
+		                                                     ON HA.DEPT_NO = D.DEPT_NO) E
+		                              ON VRR.EMP_NO = E.EMP_NO
+		                       INNER JOIN (SELECT TO_CHAR( TO_DATE( '20180101', 'YYYYMMDD' ) + LEVEL-1, 'YYYY-MM-DD' ) AS DAY 
+                                   FROM DUAL 
+                                   CONNECT BY LEVEL &lt;=( TO_DATE( '20210101', 'YYYYMMDD' )- 1 - TO_DATE( '20180101', 'YYYYMMDD' ) +1 )) D
+                               		  ON D.DAY BETWEEN VRR.START_DATE AND VRR.END_DATE
+		<!-- WHERE VRR.APV_WHETHER = 3 AND --> 
+		WHERE E.DEPT_NAME = #{deptGbn}
+		GROUP BY D.DAY
+		ORDER BY D.DAY ASC
+	</select>
+	
+	<!-- vaca list dtl 가져오기 -->
+	<select id="getVacaReqDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT VRR.VACA_REQ_REC_NO, E.NAME AS "TITLE", E.EMP_NO AS EMP_NO, 
+		        VS.VACA_NAME, VRR.VACA_NO, TO_CHAR(VRR.START_DATE,'YYYY-MM-DD') AS "START",
+		        TO_CHAR(VRR.END_DATE,'YYYY-MM-DD') AS "END", CC.CD_NAME, E.DEPT_NAME, P.POSI_NAME
+		FROM VACA_REQ_REC VRR INNER JOIN CMN_CD CC
+		        ON CC.CD_L = 2 AND VRR.APV_WHETHER = CC.CD_S INNER JOIN VACA_STD VS
+		                                                            ON VS.VACA_STD_NO = VRR.VACA_NO
+		                                                    INNER JOIN (SELECT E.EMP_NO, E.NAME, D.DEPT_NAME, HA.POSI_NO
+		                                                    FROM EMP E INNER JOIN HR_APNT HA
+		                                                        ON E.EMP_NO = HA.EMP_NO AND FNSH_DATE IS NULL INNER JOIN DEPT D
+		                                                        ON HA.DEPT_NO = D.DEPT_NO) E
+		                                                    ON VRR.EMP_NO = E.EMP_NO
+		                                                    INNER JOIN POSI P
+		                                                        ON E.POSI_NO = P.POSI_NO
+		WHERE VRR.APV_WHETHER = 3 AND E.DEPT_NAME = #{deptGbn} AND #{stdDate} BETWEEN VRR.START_DATE AND VRR.END_DATE
+		ORDER BY VRR.START_DATE
+	</select>
+	<!-- vaca req top cnt 가져오기 -->
+	<select id="HRgetconnectNo" parameterType="hashmap" resultType="integer">
+		SELECT VACA_REQ_REC_SEQ.NEXTVAL AS VACA_REQ_REC_SEQ
+		FROM DUAL
+	</select>
+	<!-- 휴가 결재권자 가져오기 -->
+	<select id="HRgetApvEmpNo" parameterType="hashmap" resultType="String">
+		SELECT B.EMP_NO
+		FROM (SELECT EMP_NO, D.DEPT_NAME, D.DEPT_NO, H.POSI_NO
+		     FROM DEPT D INNER JOIN (SELECT *
+		                             FROM HR_APNT
+		                             WHERE FNSH_DATE IS NULL AND POSI_NO >= 6) H
+		                 ON D.DEPT_NO = H.DEPT_NO) B
+		     INNER JOIN 
+		     (SELECT D.DEPT_NO, D.DEPT_NAME, H.POSI_NO
+		                               FROM DEPT D INNER JOIN 
+		                            (SELECT DEPT_NO,POSI_NO
+		                               FROM HR_APNT
+		                              WHERE EMP_NO = #{sEmpNo} AND FNSH_DATE IS NULL) H
+		                                      ON D.DEPT_NO = H.DEPT_NO AND CLOSE_WHETHER = 1) C
+		                ON B.DEPT_NO = C.DEPT_NO
+	</select>
+	<!-- 기연 -->
+	<select id="getEmpList" parameterType="hashmap" resultType="hashmap">
+		
+		SELECT A.DEPT_NAME, A.POSI_NAME, A.EMP_NO,A.NAME, TO_CHAR(A.APNT_DATE) AS APNT_DATE, A.RNUM
+		FROM
+		(SELECT D.DEPT_NAME,P.POSI_NAME,E.EMP_NO,E.NAME,Z.APNT_DATE, 
+		ROW_NUMBER() OVER (ORDER BY E.EMP_NO DESC) AS RNUM
+		FROM EMP E INNER JOIN HR_APNT H
+		                    ON E.EMP_NO = H.EMP_NO
+		                    AND H.FNSH_DATE IS NULL
+		                    AND H.HR_APNT_NO != 0
+		            INNER JOIN DEPT D
+		                    ON H.DEPT_NO = D.DEPT_NO
+		                    <if test="deptNo != 1000">
+								AND D.DEPT_NO = #{deptNo}
+							</if>
+		            INNER JOIN POSI P
+		                    ON H.POSI_NO = P.POSI_NO
+		                    <if test="posiNo != 1000">
+								AND P.POSI_NO = #{posiNo}
+							</if>					
+		            INNER JOIN (    SELECT EMP_NO, APNT_DATE
+		                            FROM HR_APNT
+		                            WHERE APNT_REASON = '입사'  ) Z
+		                    ON E.EMP_NO = Z.EMP_NO
+		                    
+		                    WHERE 1 = 1 
+		                     <if test="searchTxt!=null and searchTxt!='' ">
+		                    	AND E.NAME LIKE '%' ||  #{searchTxt} || '%' 
+		                    </if> ) A
+		      WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getTestCnt" parameterType="hashmap" resultType="integer">
+		SELECT COUNT(DISTINCT(E.NAME)) AS CNT
+		FROM EMP E INNER JOIN HR_APNT H
+		                    ON E.EMP_NO = H.EMP_NO
+		            INNER JOIN DEPT D
+		                    ON H.DEPT_NO = D.DEPT_NO
+		            INNER JOIN POSI P
+		                    ON H.POSI_NO = P.POSI_NO
+                            WHERE D.DEPT_NO !=0
+                           
+		
+	</select>
+	
+	<select id="getEmpDtlData" parameterType="hashmap" resultType="hashmap" >
+	  SELECT EMP_NO,NAME, RRNUM1, RRNUM2, MOBILE_NO, EXTE,TO_CHAR(HR.APNT_DATE), EMAIL, POST_NO, ADDR, DTL_ADDR, POSI_NAME, DEPT_NAME, PIC,
+                       TO_CHAR(APNT_DATE, 'YYYY-MM-DD') AS APNT_DATE, CMN.CD_NAME AS CD_MARRY, CMN2.CD_NAME AS CD_DISA, CMN3.CD_NAME AS CD_MILSERV, NVL(HM.DISA_CON, '미대상') AS DISA_CON, HM.MILRNK
+      FROM EMP E INNER JOIN HR_APNT HR
+                ON E.EMP_NO = HR.EMP_NO
+            INNER JOIN DEPT D
+                ON HR.DEPT_NO = D.DEPT_NO
+            INNER JOIN POSI P
+                ON HR.POSI_NO = P.POSI_NO
+            INNER JOIN HM_STATE HM
+                ON E.EMP_NO = HM.EMP_NO
+            INNER JOIN CMN_CD CMN
+                ON CMN.CD_L = 9
+                AND CMN.CD_S = HM.MARRY_WHETHER
+            INNER JOIN CMN_CD CMN2
+                ON CMN2.CD_L = 1
+                AND CMN2.CD_S = HM.DISA_WHETHER
+            INNER JOIN CMN_CD CMN3
+                ON CMN3.CD_L = 4
+                AND CMN3.CD_S = HM.MILSERV_DIV
+	   WHERE FNSH_DATE IS NULL
+       AND EMP_NO = #{no}
+	
+	</select>
+</mapper>

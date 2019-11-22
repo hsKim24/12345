@@ -1,0 +1,225 @@
+@charset "UTF-8";
+
+input[type="button"]{
+	cursor: pointer;
+}
+/* 
+.content_title{
+	width: 100%;
+	text-indent: 40px;
+	color: #134074;
+}
+
+.content_title > .content_title_txt{
+	display : inline-block;
+	vertical-align : top;
+	font-size: 30px;
+	text-indent: 10px;
+	color: #134074;
+} */
+.content_area > .content_area_table_area{
+    /* margin-top: 100px; */
+    /* border-radius: 3px; */
+    /* border: 3px solid #000000; */
+    /* background-color: #DEE6EF; */
+    /* margin-left: 100px; */
+    /* margin-right: 100px; */
+    /* min-width: 1000px; */
+    /* max-width: 1350px; */
+    margin-left: 40px;
+    text-align: center;
+    display: inline-block;
+}
+
+#table_va{
+    background-color: white;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 12pt;
+    height: 25px;
+    color: #FFFFFF;
+    width: 1010px;
+    border: 0px;
+}
+
+#table_va #table_color{
+	background-color: #134074;
+}
+#table_va td {
+	font-size : 11pt;
+	color : black;
+    border: 0px;
+    height: 25px;
+}
+#table_va th {
+	height : 30px;
+	border : 0px;
+}
+.A{
+	background-color : #FFFFFF;
+	color : black;
+}
+
+.B{
+	background-color : #DEE6EF;
+	color : black;
+}
+.A:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+.B:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+#취소Btn{
+	visibility: hidden;
+	
+}
+#취소Btn1{
+cursor: pointer;
+	
+}
+#info{
+    margin-top: 40px;
+    display: inline-block;
+    background-color: #8DA9C4;
+    color: #FFFFFF;
+    font-size: 15px;
+    width: 300px;
+    height: 35px;
+    padding-top: 5px;
+    /* text-align: center; */
+    border-radius: 20px;
+    font-weight: bold;
+}
+#prev, #next{
+	border-radius: 15px;
+	height : 30px;
+	width : 60px;
+	text-align : center;
+	display: inline-block;
+	color : #FFFFFF;
+	background-color: #134074;
+	cursor:pointer;
+	line-height: 25px;
+}
+#prev:hover, #next:hover{
+	color: #000000;
+    background-color: #DEE6EF;
+    /* vertical-align: top; */
+}
+#month {
+    font-size: 25px;
+    height: 30px;
+    width: 140px;
+    text-align: center;
+    display: inline-block;
+    color: #FFFFFF;
+    font-weight: bold;
+    line-height: 25px;
+    vertical-align: top;
+    /* padding-top: 10px; */
+}
+
+
+ #close{
+    width: 100px;
+    /* height: 40px; */
+    position: absolute;
+    top: calc(100% - 30px);
+    left: calc(100% - 120px);
+    /* border: 1px solid #134074; */
+    /* border-radius: 3px; */
+    /* background-color: #134074; */
+    /* color: #FFFFFF; */
+    font-weight: bold;
+    cursor: pointer;
+}
+
+ #close:hover{
+	background-color: #FFFFFF;
+	color : #000000;
+}
+/*  #bg {
+   position: absolute;
+   width: 600px;
+   height: 800px;
+   background-color: rgba(0,0,0,0.7);
+   left: calc(50% - 300px);
+   top:  calc(50% - 400px);
+   z-index: 100;
+} */
+input[type="button"]{
+	cursor: pointer;
+}
+
+
+ #close:hover, #yesBtn:hover{
+	background-color: #FFFFFF;
+	color : #000000;
+	
+}
+/*  #bg {
+   position: absolute;
+   width: 600px;
+   height: 800px;
+   background-color: rgba(0,0,0,0.7);
+   left: calc(50% - 300px);
+   top:  calc(50% - 400px);
+   z-index: 100;
+} */
+
+#popup{
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   left : 0%;
+   top : 0%;
+   background-color: rgba(0,0,0,0.8);
+   z-index: 200;
+   visibility: hidden;
+}
+
+#popupBox{
+	border-radius : 5px;
+	  position: absolute;
+	  width : 300px;
+	  height : 100px;
+	  background-color: #FFFFFF;
+	  left: calc(50% - 150px);
+	  top: calc(50% - 50px);
+	  z-index: 300;
+	  visibility: hidden;
+}
+
+#popupBox > div{
+	visibility: hidden;
+	font-size: 15px;
+	height: 20px;
+	color : #000000;
+	margin-left: 20px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	font-weight: bold;
+	
+}
+ #yesBtn{
+    /* font-size: 20px; */
+    width: 100px;
+    /* height: 40px; */
+    position: absolute;
+    top: calc(100% - 30px);
+    left: 20px;
+    /* border: 1px solid #134074; */
+    /* border-radius: 3px; */
+    /* background-color: #134074; */
+    /* color: #FFFFFF; */
+    font-weight: bold;
+    cursor: pointer;
+    visibility: hidden;
+}
+

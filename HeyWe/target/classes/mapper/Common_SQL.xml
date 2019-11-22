@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+	<select id="loginCheck" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO,
+		       E.NAME,
+		       E.PIC,
+		       E.AUTH_NO,
+		       D.DEPT_NO,
+		       D.DEPT_NAME,
+		       P.POSI_NAME
+		FROM EMP E INNER JOIN (SELECT DEPT_NO,
+		                              POSI_NO,
+		                              EMP_NO
+		                       FROM HR_APNT
+		                       WHERE FNSH_DATE IS NULL) HA
+		                   ON E.EMP_NO = HA.EMP_NO
+		           INNER JOIN DEPT D
+		                   ON HA.DEPT_NO = D.DEPT_NO
+		           INNER JOIN POSI P
+		                   ON HA.POSI_NO = P.POSI_NO
+		WHERE E.EMP_NO = #{empNo}
+		AND E.PW = #{pw}
+	</select>
+	
+	<select id="menuAuthCheck" parameterType="hashmap" resultType="String">
+		SELECT AUTH_TYPE_NO
+		FROM MENU_AUTH
+		WHERE AUTH_NO = #{authNo}
+		AND MENU_NO = #{menuNo}
+	</select>
+	
+	<select id="getTopMenu" parameterType="String" resultType="hashmap">
+		SELECT M.MENU_NO, M.MENU_NAME, M.ADDR, SM.MENU_NO AS LEFT_MENU_NO
+		FROM MENU M INNER JOIN MENU_AUTH MA
+		                    ON M.MENU_NO = MA.MENU_NO
+		                   AND MA.AUTH_TYPE_NO IN (2, 3)
+		                   AND MA.AUTH_NO = #{authNo}
+		            LEFT OUTER JOIN (SELECT M.MENU_NO, M.ADDR
+		                             FROM MENU M INNER JOIN MENU_AUTH MA
+		                                                 ON M.MENU_NO = MA.MENU_NO
+		                                                AND MA.AUTH_TYPE_NO IN (2, 3)
+		                                                AND MA.AUTH_NO = #{authNo}
+		                             WHERE M.DEPTH != 1) SM
+		                         ON M.ADDR = SM.ADDR
+		                         
+		
+		WHERE M.DEPTH = 1
+		AND M.MENU_NO != 1
+		ORDER BY M.MENU_NO ASC
+	</select>
+	
+	<select id="getLeftMenu" parameterType="hashmap" resultType="hashmap">
+		SELECT M.MENU_NO, M.MENU_NAME, M.ADDR, M.DEPTH, M.CNT, M.MENU_FLOW
+		FROM (
+		SELECT M.MENU_NO, M.MENU_NAME, M.ADDR, M.DEPTH, NVL(SM.CNT, 0) AS CNT,
+		       SUBSTR(SYS_CONNECT_BY_PATH(M.MENU_NO, ','), 2) AS MENU_FLOW
+		FROM MENU M INNER JOIN MENU_AUTH MA
+		                    ON M.MENU_NO = MA.MENU_NO
+		                   AND MA.AUTH_TYPE_NO IN (2, 3)
+		                   AND MA.AUTH_NO = #{authNo}
+		            LEFT OUTER JOIN (SELECT M.SUPER_MENU_NO, COUNT(*) AS CNT
+		                             FROM MENU M INNER JOIN MENU_AUTH MA
+		                                                 ON M.MENU_NO = MA.MENU_NO
+		                                                AND MA.AUTH_TYPE_NO IN (2, 3)
+		                                                AND MA.AUTH_NO = #{authNo}
+									 <!-- 삭제예정조건 : 게시판 관리, 조직도, CRM-통계4종 -->
+									 WHERE M.MENU_NO NOT IN (11, 56, 35, 36, 37, 38)
+		                             GROUP BY M.SUPER_MENU_NO) SM
+		                         ON M.MENU_NO = SM.SUPER_MENU_NO
+		WHERE M.MENU_NO != 1
+		<!-- 삭제예정조건 : 게시판 관리, 조직도, CRM-통계4종 -->
+		AND M.MENU_NO NOT IN (11, 56, 35, 36, 37, 38)
+		START WITH DEPTH = 1
+		CONNECT BY PRIOR M.MENU_NO = M.SUPER_MENU_NO) M
+		<choose>
+			<when test="topMenuNo != null and topMenuNo != ''">
+				WHERE M.MENU_FLOW LIKE #{topMenuNo} || '%'
+			</when>
+			<otherwise>WHERE 1 != 1</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getCmnCdAjax" parameterType="Integer" resultType="hashmap">
+		SELECT CD_S, CD_NAME
+		FROM CMN_CD
+		WHERE CD_L = #{cdL}
+		ORDER BY RANGE_SEQ ASC, CD_S ASC
+	</select>
+	
+	<!-- Main일정가져오기ㅏ-->
+	<select id="selectCommonSchList" parameterType="hashmap" resultType="hashmap">
+		SELECT GW_SCH_NO AS SCHNO, TO_CHAR(START_DAY, 'YYYY-MM-DD') || 'T' || TO_CHAR(START_DAY, 'HH24:MI:SS') AS "START", TO_CHAR(END_DAY, 'YYYY-MM-DD') || 'T23:59:59'  AS "END", CON AS TITLE
+		FROM GW_SCH
+		WHERE GW_SCH_TYPE_NO = #{schTypeNo}
+		AND DEL_WHETHER = 1
+	</select>
+	
+	<!-- 일정 삭제 (DEL_WHETHER = 0) -->
+	<update id="deleteCommonSch" parameterType="hashmap">
+		UPDATE GW_SCH SET DEL_WHETHER = 0
+		WHERE GW_SCH_NO = #{schNo}
+	</update>
+	
+	<!-- 메인Page일정 등록 -->
+	<insert id="insertCommonSch" parameterType="hashmap">
+		INSERT INTO GW_SCH(GW_SCH_NO, GW_SCH_TYPE_NO, EMP_NO, START_DAY, END_DAY, CON)
+		VALUES (GW_SCH_SEQ.NEXTVAL, 0, #{sEmpNo}, TO_DATE(#{startDay},'YYYY-MM-DD'), TO_DATE(#{endDay}, 'YYYY-MM-DD'), #{con})
+	</insert>
+	
+	<!-- 공지사항 가져오기 -->
+	<select id="getArticle" parameterType="hashmap" resultType="hashmap">
+		SELECT ARTICLE_NO, TITLE, NAME, HIT, WRITE_DATE
+		FROM(SELECT ARTICLE_NO, TITLE, NAME, HIT, CASE WHEN TO_CHAR(WRITE_DATE, 'YY-MM-DD') = TO_CHAR(SYSDATE, 'YY-MM-DD')
+                                                  THEN TO_CHAR(WRITE_DATE, 'HH24:MI')
+                                                  ELSE TO_CHAR(WRITE_DATE, 'MM.DD') 
+                                                  END AS WRITE_DATE, RANK() OVER (ORDER BY WRITE_DATE DESC) AS RANK
+			 FROM ARTICLE A INNER JOIN EMP E
+		              		ON A.EMP_NO = E.EMP_NO
+			 WHERE BOARD_MNGT_NO = 0) X
+		WHERE RANK &lt; 8
+	</select>
+	
+	<!-- 채팅알람 개수 -->
+	<select id="getNotiCnt" parameterType="hashmap" resultType="Integer">
+		SELECT count(C.CHAT_NO) AS CNT
+		FROM CHATROOM CR INNER JOIN CHATROOM_EMP CRE
+		                         ON CR.CHATROOM_NO = CRE.CHATROOM_NO
+		                         AND CRE.EMP_NO = #{sEmpNo}
+		                 INNER JOIN CHAT C
+		                         ON CR.CHATROOM_NO = C.CHATROOM_NO
+		                         AND C.CHAT_NO &gt; CRE.LAST_CHAT_NO
+	</select>
+	
+	<!-- 각 채팅방에 마지막에 온 디테일정보 -->
+	<select id="getNotiDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT C.CHATROOM_NO, C.CHAT_NO, E.NAME, C.CON, C.ATT_FILE_NAME, CASE WHEN TO_CHAR(C.WRITE_DAY, 'MM.DD') = TO_CHAR(SYSDATE,'MM.DD')
+                                                                      THEN TO_CHAR(C.WRITE_DAY, 'HH24:MI')
+                                                                      ELSE TO_CHAR(C.WRITE_DAY, 'MM.DD') END AS WRITE_DAY, X.CHATROOM_NAME
+		FROM
+		(SELECT C.CHATROOM_NO, MAX(C.CHAT_NO) AS CHAT_NO, CR.CHATROOM_NAME
+		FROM CHATROOM CR INNER JOIN CHATROOM_EMP CRE
+		                         ON CR.CHATROOM_NO = CRE.CHATROOM_NO
+		                         AND CRE.EMP_NO = #{sEmpNo}
+		                 INNER JOIN CHAT C
+		                         ON CR.CHATROOM_NO = C.CHATROOM_NO
+		                         AND C.CHAT_NO > CRE.LAST_CHAT_NO
+		GROUP BY C.CHATROOM_NO, CR.CHATROOM_NAME) X INNER JOIN CHAT C
+		                                  ON X.CHATROOM_NO = C.CHATROOM_NO
+		                                  AND X.CHAT_NO = C.CHAT_NO
+		                          INNER JOIN EMP E
+		                                  ON C.EMP_NO = E.EMP_NO
+	</select>
+</mapper>
+
+
+
+
+
+
+

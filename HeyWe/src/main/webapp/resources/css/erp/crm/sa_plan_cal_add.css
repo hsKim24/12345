@@ -1,0 +1,379 @@
+@charset "UTF-8";
+.addPlan{
+	width: 100%;
+	height: 100%;
+}
+.addPlan_1{
+	margin-top:10px;
+	width:1020px;
+	height:10%;
+	margin-left: 80px;
+	border: 1px solid black;
+	background-color: #8DA9C4;
+}
+.addPlan_1_1{
+	width: 200px;
+	height: 50px;
+	display: inline-block;
+	background-color: #8DA9C4;
+	margin-left: 7%;
+	margin-top: 25px;
+}
+.addPlan0{
+	width:200px;
+	height: 30px;
+	font-size: 18px;
+	text-align: center;
+	background-color: white;
+	border-radius: 3px;
+}
+.addPlan_1_2{
+	width: 200px;
+	height: 50px;
+	margin-left: 5%;
+	display: inline-block;
+	background-color: #8DA9C4;
+	font-size: 18px;
+	text-align: center;
+}
+.addPlan_2{
+	width:1020px;
+	margin-top: 30px;
+	margin-bottom: 20px;
+	margin-left: 40px;
+	background-color: white;
+}
+.addPlan_2_1{
+	width: 100%;
+	height: 13%;
+	background-color: #DEE6EF;
+	margin-top: 1%;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}
+.addPlan_2_1:hover{
+	background-color: #B0DAEC;
+	color : #134074;
+}
+.addPlan_2_1_1{
+	width: 100%;
+	height: 50%;
+	border-radius: 3px;
+}
+.addPlan_2_1_2{
+	width: 100%;
+	height: 50%;
+	border-radius:3px;
+}
+.addPlan_2_1_1_1{
+	width: 40%;
+	height: 100%;
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 12pt;
+	font-weight: bold;
+	margin-left: 5%;
+	margin-top: 1%;
+}
+.addPlan_2_1_1_2{
+	width: 40%;
+	height: 100%;
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 11pt;
+	text-align: right;
+	margin-left: 10%;
+}
+.addPlan_2_1_2_1{
+	width: 40%;
+	height: 100%;
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 11pt;
+	margin-left: 5%;
+	margin-top: 1%;
+	margin-bottom: 10px;
+}
+.addPlan_2_1_2_2{
+	width: 40%;
+	height: 100%;
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 11pt;
+	text-align: right;
+	margin-left: 10%;
+}
+
+
+#popup {
+   display: inline-block;
+   width: 600px;
+   height: 300px;
+   position: absolute;
+   top: calc(50% - 150px);
+   left: calc(50% - 300px);
+   background-color: #FFFFFF;
+   z-index: 200;
+   text-align: center;
+   vertical-align: middle;
+   border: 1px solid #134074;
+}
+#popupTop {
+   display: inline-block;
+   width: 560px;
+   font-size: 20px;
+   background-color: #134074;
+   height: 10%;
+   padding: 10px;
+   padding-left: 30px;
+   text-align: left;
+   font-weight: bold;
+   color: white;
+   font-size: 20px;
+}
+#popupTop img {
+   margin-left: 460px;
+   color:white;
+}
+
+#popupMiddle {
+   text-align: left;
+   padding-left: 70px;
+   padding-bottom: 10px;
+}
+
+#popupBottom {
+   overflow-y: auto;
+   max-height:140px;
+   padding-top: 15px;
+   height: 100%;
+}
+
+#popupBottomBlock {
+   display: inline-block;
+   width: 450px;
+   height: 50px;
+   padding-left: 15px;
+   border: 1px solid #444444;
+   margin-bottom: 10px;
+}
+#popupBottomBlock:hover {
+	background-color : #B0DAEC;
+	color :#134074;
+	}
+
+#popCompany {
+	margin-top:1%;
+   width: 100px;
+   height: 20px;
+   font-size: 11pt;
+}
+#cname {
+   width: 50px; 
+   height : 20px;
+   font-size: 11pt;
+   height: 20px;
+}
+#popTxt {
+   height: 30px;
+   width: 180px;
+   padding-left: 10px;
+   vertical-align: bottom;
+}
+#popTxt3 {
+   height: 30px;
+   width: 380px;
+   padding-left: 10px;
+   vertical-align: bottom;
+}
+#popTxt2 {
+   height: 30px;
+   width: 180px;
+   margin-left: 5%;
+   padding-left: 10px;
+   vertical-align: bottom;
+}
+
+#popSearch {
+   margin-top: 10px;
+   margin-left: 10px;
+   vertical-align: bottom;
+}
+#bg {
+   display: inline-block;
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   background-color: #000000;
+   opacity: 0.7;
+   z-index: 100;
+}
+#selectB{
+	width: 194px;
+	height: 36px;
+	margin-top: -10px;
+}
+#listNum {
+	margin-top: 10px;
+    width: 850px;
+    height: 30px;
+    margin-left: 510px;
+    font-size: 9pt;
+}
+
+.search {
+   height: 250px;
+   width: 1020px;
+   min-width: 1020px;
+   min-height: 250px;
+   margin-left: 40px;
+   margin-top: 20px;
+   margin-bottom: 20px;
+   background-color: #8DA9C4;
+   border-radius: 3px;
+   border: 1px solid #ccc;
+   text-align: center;
+}
+.calmok{
+		width: 100%;
+		font-size: 30px;
+		margin-left: 40px;
+		color: #000000; 
+}
+.calmok>.calTxt{
+		font-size: 14pt;
+		color: #BDBDBD;
+		display: inline-block;
+		
+}
+.calmok>.mokTxt{
+		display: inline-block;
+		color: #000000;
+		font-size: 14pt;
+		margin-left: 20px;
+		
+}
+#txtt {
+   padding-left: 10px;
+   margin-top: 30px;
+   width: 300px;
+   height: 30px;
+}
+#txtt_1 {
+   padding-left: 10px;
+   margin-top: 30px;
+   width: 300px;
+   height: 30px;
+   margin-left: 70px;
+}
+
+#txtt2 {
+   padding-left: 10px;
+   margin-top: 30px;
+   margin-left: 70px;
+   width: 300px;
+   height: 30px;
+}
+
+#txtt3 {
+   padding-left: 10px;
+   margin-top: 30px;
+   margin-left: 70px;
+   width: 270px;
+   height: 30px;
+}
+#write {
+   width: 40px;
+   height: 40px;
+   margin-left: 1000px;
+   margin-top: 10px;
+}
+
+#write2 {
+   width: 38px;
+   height: 38px;
+   margin-left: 10px;
+   vertical-align: bottom;
+   text-align: right;
+   vertical-align: bottom;
+}
+#select2 {
+   padding-left: 10px;
+   margin-top: 30px;
+   margin-left: 15px;
+   width: 314px;
+   height: 36px;
+}
+.listNum {
+   margin-left: 430px;
+   height: 70px;
+   font-size: 16px;
+   left: 50%;
+   vertical-align: middle;
+}
+.listNum_1 {
+   text-align: center;
+   display: inline-block;
+   margin-top: 30px;
+   width: 30px;
+   height: 30px;
+   border: 2px solid #134074;
+   border-radius: 3px;
+   background-color: #FFFFFF;
+}
+
+#select1 {
+	padding-left: 10px;
+	margin-top: 30px;
+	margin-left: 40px;
+	width: 314px;
+	height: 36px;
+}
+
+#sel {
+	padding-left: 10px;
+    margin-top: 30px;
+    width: 300px;
+    height: 36px;
+    margin-left: 35px;
+    margin-right: 52px;
+
+}
+
+#sel2 {
+	padding-left: 10px;
+	margin-top: 30px;
+	width: 300px;
+	height: 36px;
+}
+
+#date_start {
+	padding-left: 10px;
+    margin-top: 30px;
+    width: 290px;
+    height: 30px;
+    margin-left: 37px;
+
+}
+#date_end {
+	padding-left: 10px;
+    margin-top: 30px;
+    width: 290px;
+    height: 30px;
+    margin-left: 2px;
+}
+
+#schName {
+	padding-left: 10px;
+	margin-top: 30px;
+	width: 300px;
+	height: 30px;
+}
+
+.ui-datepicker-trigger {
+	margin-right: 15px;
+    width: 22px;
+    margin-left: 10px;
+}

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gw">
+
+<!-- 제호 영역 -->
+	<insert id="insertSch" parameterType="hashmap">
+		INSERT INTO GW_SCH(GW_SCH_NO, GW_SCH_TYPE_NO, EMP_NO, START_DAY, END_DAY, CON)
+		VALUES (GW_SCH_SEQ.NEXTVAL, #{gwSchTypeNo}, #{empNo}, TO_DATE(#{startDay},'YYYY-MM-DD'), TO_DATE(#{endDay}, 'YYYY-MM-DD'), #{con})
+	</insert>
+
+	<select id="selectSchList" parameterType="hashmap" resultType="hashmap">
+		SELECT GW_SCH_NO, GW_SCH_TYPE_NO, EMP_NO, TO_CHAR(START_DAY, 'YYYY-MM-DD') AS START_DAY, TO_CHAR(END_DAY, 'YYYY-MM-DD') AS END_DAY,
+				CON, TO_CHAR(WRITE_DAY, 'YYYY-MM-DD') AS WRITE_DAY, DEL_WHETHER
+		FROM GW_SCH
+		WHERE DEL_WHETHER = 1
+		AND EMP_NO = #{empNo2}
+		AND TO_CHAR(START_DAY, 'YYYY-MM') = #{month}
+		AND GW_SCH_TYPE_NO != 0
+		ORDER BY START_DAY ASC
+	</select>
+
+	<select id="allSchList" parameterType="hashmap" resultType="hashmap">
+		SELECT GW_SCH_NO, GW_SCH_TYPE_NO, EMP_NO, TO_CHAR(START_DAY, 'YYYY-MM-DD') AS START_DAY, TO_CHAR(END_DAY, 'YYYY-MM-DD') AS END_DAY,
+				CON, TO_CHAR(WRITE_DAY, 'YYYY-MM-DD') AS WRITE_DAY, DEL_WHETHER
+		FROM GW_SCH
+		WHERE DEL_WHETHER = 1
+		AND EMP_NO = #{empNo3}
+		AND GW_SCH_TYPE_NO != 0
+	</select>
+	
+	<update id="delectSch" parameterType="hashmap">
+		UPDATE GW_SCH SET DEL_WHETHER = 0
+		WHERE GW_SCH_NO = #{gwSchNo}
+	</update>
+	
+	
+	<!-- 채팅 -->
+   <insert id="insertChat" parameterType="hashmap">
+           INSERT INTO CHAT(CHAT_NO, CHATROOM_NO, EMP_NO, CON
+           <if test="fileName != null and fileName != ''">
+           , ATT_FILE_NAME
+           </if>
+           )
+         VALUES(CHAT_SEQ.NEXTVAL, #{chatRoomNo2},#{empNo}, #{con}
+           <if test="fileName != null and fileName != ''">
+         , #{fileName}
+           </if>
+         )
+   </insert>
+   
+   <!-- 마지막 채팅번호 ( 어팬드로 추가하기위함 ) -->
+   <select id="getMaxNo" resultType="Integer">
+      SELECT NVL(MAX(CHAT_NO), 0) AS MAXNO
+      FROM CHAT
+      WHERE CHATROOM_NO = #{chatRoomNo}
+   </select>
+
+   <!-- 마지막 채팅번호를 기점으로 추가된 리스트를 어팬드 해주는 쿼리 -->
+   <select id="chatList" parameterType="hashmap" resultType="hashmap">
+      SELECT C.EMP_NO, C.CHAT_NO, C.CON,
+	         CASE WHEN TO_CHAR(C.WRITE_DAY, 'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD')
+	              THEN TO_CHAR(C.WRITE_DAY, 'HH24:MI')
+	              ELSE TO_CHAR(C.WRITE_DAY, 'MM-DD')
+	         END AS WRITE_DAY, E.NAME, NVL(CC.NO_READ_CNT, 0) AS NO_READ_CNT
+	  FROM CHAT C INNER JOIN EMP E
+	                      ON C.EMP_NO = E.EMP_NO
+	              LEFT OUTER JOIN (SELECT CR.CHATROOM_NO, C.CHAT_NO, COUNT(*) AS NO_READ_CNT
+	                               FROM CHATROOM_EMP CE INNER JOIN CHATROOM CR
+	                                                            ON CE.CHATROOM_NO = CR.CHATROOM_NO
+	                                                           AND CR.CHATROOM_NO = #{chatRoomNo}
+	                                                    INNER JOIN CHAT C
+	                                                            ON CR.CHATROOM_NO = C.CHATROOM_NO
+	                                                           AND CE.LAST_CHAT_NO &lt; C.CHAT_NO
+	                               WHERE CE.END_DAY IS NULL
+	                               GROUP BY CR.CHATROOM_NO, C.CHAT_NO) CC
+	                           ON C.CHAT_NO = CC.CHAT_NO
+	                          AND C.CHATROOM_NO = CC.CHATROOM_NO
+  	  WHERE C.CHAT_NO &gt; #{lastChatNo}
+	  AND C.CHATROOM_NO = #{chatRoomNo}
+	  ORDER BY C.CHAT_NO ASC
+   </select>
+	
+	<!-- 내 채팅방 목록 가져오기 -->
+	<select id="getChatRoomList" parameterType="hashmap" resultType="hashmap">
+		SELECT CR.CHATROOM_NO, CHATROOM_NAME, CR.CRT_NO, LAST_CHAT_NO
+		FROM CHATROOM CR INNER JOIN CHATROOM_EMP CRE
+		                         ON CR.CHATROOM_NO = CRE.CHATROOM_NO
+		WHERE CRE.EMP_NO = #{empNo}
+		AND END_DAY IS NULL
+	</select>
+	
+	<!-- 채팅방 만들기 -->
+	<insert id="insertChatRoom" parameterType="hashmap">
+		INSERT INTO CHATROOM(CHATROOM_NO, CHATROOM_NAME, CRT_NO)
+		VALUES ( CHATROOM_SEQ.NEXTVAL, #{chatRoomTitle}, SYSDATE)
+	</insert>
+	
+	<!-- 마지막읽은 채팅번호 업데이트! -->
+	<update id="updateLastChatNo" parameterType="hashmap">
+		UPDATE CHATROOM_EMP
+		SET LAST_CHAT_NO = #{lastChatNo}
+		WHERE CHATROOM_NO = #{chatRoomNo}
+		AND EMP_NO = #{sEmpNo}
+	</update>
+	
+	<!-- 채팅방 사원 만들기 -->
+	<insert id="insertChatRoomEmp" parameterType="hashmap">
+		INSERT INTO CHATROOM_EMP(CHATROOM_EMP_NO, CHATROOM_NO, EMP_NO) 
+		VALUES(CHATROOM_EMP_SEQ.NEXTVAL, #{chatRoomNo3}, #{chatRoomEmpNo})
+	</insert>
+	
+	<!-- 현재 채팅방에 사원 리스트 찾기 -->
+	<select id="selectChatRoomListEmp" parameterType="hashmap" resultType="hashmap">
+		SELECT CHE.EMP_NO, E.NAME
+		FROM CHATROOM_EMP CHE INNER JOIN EMP E
+                         		 ON CHE.EMP_NO = E.EMP_NO
+		WHERE CHATROOM_NO = #{chatRoomNo}
+	</select>
+	
+	<!-- 이게 있어야 채팅방에사원추가할수 있음 쮸발.. -->
+	<select id="makedChatRoom" parameterType="hashmap" resultType="hashmap">
+		SELECT X.CHATROOM_NO, X.CHATROOM_NAME, X.CRT_NO
+		FROM(
+		SELECT CHATROOM_NO, CHATROOM_NAME, CRT_NO, ROW_NUMBER()
+		                                            OVER (ORDER BY CRT_NO DESC) AS RANK
+		FROM CHATROOM
+		WHERE CHATROOM_NAME = #{chatRoomTitle}) X
+		WHERE X.RANK = 1
+	</select>
+	
+	<!-- 채팅방에서 나가기 -->
+	<delete id="deleteChatRoom" parameterType="hashmap">
+		DELETE CHATROOM_EMP
+		WHERE EMP_NO = #{exChatRoomEmpNo}
+		AND CHATROOM_NO = #{chatRoomNo}
+	</delete>
+	
+	<!-- 메인페이지에서 결재관련 서류 뿌려주기 -->
+	<select id="selectMainApvDoc" parameterType="hashmap" resultType="hashmap">
+		SELECT X.APV_NO, X.CONSULT_NO, X.APV_DOC_TYPE_NAME, X.TITLE, X.NAME, X.DRAFT_DATE, X.DOC_STATE
+		FROM
+		(SELECT A.APV_NO, A.CONSULT_NO, NVL(ADT.APV_DOC_TYPE_NAME, OAT.OUT_APV_TYPE_NAME)AS APV_DOC_TYPE_NAME, TITLE, E.NAME, TO_CHAR(A.DRAFT_DATE)AS DRAFT_DATE,
+		        NVL(TO_CHAR(A.IMP_DATE),' ')AS IMP_DATE,
+		        CASE WHEN ((SELECT COUNT(*)
+	                	       FROM APV_LINE AL
+	                           WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+	                                                          FROM APV_LINE AL
+	                                                          WHERE A.APV_NO = AL.APV_NO
+	                                                          AND AL.APV_STATE_NO = 3))
+                           OR
+                           ((SELECT COUNT(*)
+                                FROM APV_LINE AL
+                                WHERE A.APV_NO = AL.APV_NO
+                                AND AL.APV_STATE_NO = 2) >= 1)
+		             THEN (SELECT MAX(TO_CHAR(AL.APV_DATE))
+		                   FROM APV_LINE AL
+		                   WHERE A.APV_NO = AL.APV_NO)
+		           ELSE ' '
+		        END AS APV_DATE,
+		        NVL((SELECT E1.NAME
+		             FROM APV_LINE AL NATURAL JOIN EMP E1
+		             WHERE AL.APV_NO = A.APV_NO
+		             AND AL.APV_STATE_NO = 1),' ')AS REJER,
+		        NVL((SELECT TO_CHAR(AL.APV_DATE)
+		             FROM APV_LINE AL
+		             WHERE AL.APV_NO = A.APV_NO
+		             AND AL.APV_STATE_NO = 1),' ')AS REJ_DATE,
+		        CASE WHEN (SELECT COUNT(*)
+		                   FROM APV_LINE AL
+		                   WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                  FROM APV_LINE AL
+		                                                  WHERE A.APV_NO = AL.APV_NO
+		                                                  AND AL.APV_STATE_NO = 0)
+		             THEN 0                                                  
+		             WHEN (SELECT COUNT(*)
+		                   FROM APV_LINE AL
+		                   WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                  FROM APV_LINE AL
+		                                                  WHERE A.APV_NO = AL.APV_NO
+		                                                  AND AL.APV_STATE_NO = 3)  
+		             THEN 2
+		             WHEN (SELECT COUNT(*)
+		                   FROM APV_LINE AL
+		                   WHERE A.APV_NO = AL.APV_NO
+		                   AND AL.APV_STATE_NO = 2) >= 1  
+		             THEN 3
+		             WHEN (SELECT COUNT(*)
+		                   FROM APV_LINE AL
+		                   WHERE A.APV_NO = AL.APV_NO
+		                   AND AL.APV_STATE_NO = 1) >= 1  
+		             THEN 4
+		             ELSE 1
+		         END AS DOC_STATE,
+		         A.OUT_APV_TYPE_NO, CNCT_NO, OAT.OUT_APV_TYPE_NAME
+		         FROM APV A LEFT OUTER JOIN APV_DOC_TYPE ADT
+		                                 ON A.APV_DOC_TYPE_NO = ADT.APV_DOC_TYPE_NO
+		                         INNER JOIN EMP E
+		                                 ON A.EMP_NO = E.EMP_NO
+		                    LEFT OUTER JOIN OUT_APV_TYPE OAT
+		                                 ON A.OUT_APV_TYPE_NO = OAT.OUT_APV_TYPE_NO
+		         WHERE #{sEmpNo} IN(SELECT EMP_NO
+		                         FROM APV_LINE AL
+		                         WHERE A.APV_NO = AL.APV_NO)
+		         AND DEL_WHETHER = 1       
+		         ORDER BY A.CONSULT_NO DESC) X INNER JOIN (SELECT *
+		                                                    FROM APV_LINE
+		                                                    WHERE EMP_NO = #{sEmpNo}
+		                                                    AND APV_STATE_NO = 0) XX
+		                                          ON X.APV_NO = XX.APV_NO
+		         
+         WHERE X.DOC_STATE IN (0,1,2)
+	</select>
+	
+	<!-- 게시판 뿌리기 공지,전사, 자기부서 -->
+	<select id="selectArticleList" parameterType="hashmap" resultType="hashmap">
+		SELECT XX.ARTICLE_NO, XX.NAME, XX.TITLE, XX.HIT, XX.WRITE_DATE, XX.RANK
+		FROM
+		(SELECT X.ARTICLE_NO, X.NAME, X.TITLE, X.HIT, X.WRITE_DATE, ROW_NUMBER() OVER (ORDER BY X.ARTICLE_NO DESC) RANK
+		FROM
+		(SELECT A.ARTICLE_NO, A.EMP_NO, A.TITLE, CASE WHEN TO_CHAR(A.WRITE_DATE, 'MM.DD') = TO_CHAR(SYSDATE,'MM.DD')
+		                                              THEN TO_CHAR(A.WRITE_DATE, 'HH24:MI')
+		                                              ELSE TO_CHAR(A.WRITE_DATE, 'MM.DD') END AS WRITE_DATE, A.OPINION_CON, HA.HR_APNT_NO,A.HIT, HA.DEPT_NO, E.NAME
+		FROM ARTICLE A INNER JOIN HR_APNT HA
+		                       ON A.EMP_NO = HA.EMP_NO
+		               INNER JOIN EMP E
+		                       ON A.EMP_NO = E.EMP_NO
+		WHERE BOARD_MNGT_NO = 1
+		AND DEPT_NO = (SELECT DEPT_NO
+		               FROM HR_APNT HA
+		               WHERE HA.EMP_NO = #{sEmpNo} AND FNSH_DATE IS NULL)
+		UNION
+		SELECT A.ARTICLE_NO, A.EMP_NO, A.TITLE, CASE WHEN TO_CHAR(A.WRITE_DATE, 'MM.DD') = TO_CHAR(SYSDATE,'MM.DD')
+		                                              THEN TO_CHAR(A.WRITE_DATE, 'HH24:MI')
+		                                              ELSE TO_CHAR(A.WRITE_DATE, 'MM.DD') END AS WRITE_DATE, A.OPINION_CON, HA.HR_APNT_NO,A.HIT, HA.DEPT_NO, E.NAME
+		FROM ARTICLE A INNER JOIN HR_APNT HA
+		                       ON A.EMP_NO = HA.EMP_NO
+		               INNER JOIN EMP E
+		                       ON A.EMP_NO = E.EMP_NO
+		WHERE BOARD_MNGT_NO IN (0,2) AND FNSH_DATE IS NULL) X) XX
+		WHERE XX.RANK &lt; 8 
+	</select>
+	<!-- 제호 영역 -->
+	
+</mapper>

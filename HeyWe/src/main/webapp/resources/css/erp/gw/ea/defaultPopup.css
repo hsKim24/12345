@@ -1,0 +1,101 @@
+@charset "UTF-8";
+.popup_bg {
+	width: 100%; 
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 100;
+	background-color: #000;
+	opacity: 0.7;
+} 
+
+.popup_contents {
+	width: 300px; 
+	height: 200px;
+	position: absolute;
+	left: calc(50% - 150px);
+	top: calc(50% - 100px);
+	border: 1px solid #134074;
+	border-radius: 3px 3px 0px 0px;
+	background-color: #FFFFFF;
+	color: #134074;
+	z-index: 150;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.ms_top  {
+	display: inline-block;
+	width: 100%;
+	height: 20%;
+	background-color: #134074;
+	color: #FFF;
+}
+
+.ms_top .left{
+	display: inline-block;
+	width: calc(100% - 50px);
+	padding-top: 5px;
+	padding-left: 10px;
+	vertical-align: middle;
+	line-height: 2;
+} 
+
+.ms_top .right{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 2;
+} 
+
+[alt="exit"] {
+	width: 20px;
+	height: 20px;
+}
+
+[alt="exit"]:hover {
+	cursor: pointer;
+}
+
+.ms_mid {
+	width: calc(100% - 10px);
+	height: calc(52% - 8px);
+	background-color: white;
+	padding-top: 8px;
+	padding-left: 10px;
+}
+.ms_bot {
+	width: 100%;
+	height: calc(28% - 10px);
+	text-align: center;
+	padding-top: 10px;
+}
+
+.ms_btn {
+    border-radius: 3px;
+    width: 75px;
+    height: 35px;
+    padding: 5px;
+    background-color: #134074;
+    color: #FFF;
+    font-weight: bold;
+    margin-right: 15px;
+    margin-left: 15px;
+    box-shadow: 1px 1px 2px #000;
+}
+
+.ms_btn:hover, .ms_top .right {
+	cursor: pointer;
+}
+
+.ms_mid input[type="text"] {
+	width: 90%;
+}
+
+.ms_mid textarea {
+	resize: none;
+	font-size: 12pt;
+}

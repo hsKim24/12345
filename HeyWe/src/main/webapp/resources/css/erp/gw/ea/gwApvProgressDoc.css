@@ -1,0 +1,177 @@
+@charset "UTF-8";
+.gwApvProgressDocList {
+	width: 90%;
+	height: 100%;
+	font-size: 12pt;
+	color : black;
+	margin: 20px 0px 20px 40px;
+}
+
+/* 결재진행 문서함 상단 */
+.searchCondArea {
+	display: inline-block;
+	width: 75%;
+	height: 200px;
+	padding: 40px 0px 20px 0px;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+b{
+	vertical-align: middle;
+}
+
+.searchCondArea > div{
+	text-indent: 40px;
+	width: 100%;
+	height: 25%;
+}
+
+.searchCondArea div select {
+	width: 80px;
+	height: 30px;
+	font-size: 10pt;
+}
+
+.searchCondArea div [type="radio"], .searchCondArea div [type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+.searchCondArea div [type="text"] {
+	width: 150px;
+	height: 25px;
+	font-size: 10pt;
+	text-indent: 10px;
+}
+
+.searchCondArea > .searchDoc > [type="text"] {
+	width: 350px;
+}
+
+label[for="c2"], .state_A{color: black;}
+label[for="c3"], .state_B{color: green;}
+label[for="c4"], .state_C, label[for="r3"]{color: blue;}
+label[for="c5"], .state_D{color: purple;}
+label[for="c6"], .state_E, label[for="r2"]{color: red;}
+
+.searchCondArea label, .searchCondArea input {
+	vertical-align: middle;
+}
+.searchCondArea label:hover {
+	opacity: 0.5;
+}
+
+div.calendar, div.searching {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	vertical-align: top;
+	text-indent: 0px;
+}
+
+.ui-datepicker-trigger, .searching img {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+}
+
+.searchDoc input[type="button"] {
+	height: 31px;
+    background-color: #134074;
+    color: #FFF;
+    font-weight: bold;
+    outline: none;
+}
+.searchDoc input[type="button"]:hover{
+	cursor:pointer;
+}
+
+/* 결재진행 문서함 하단 */
+.cpd_search_output {
+	display: inline-block;
+	width: 75%;
+	height: 400px;
+	padding: 40px 0px 20px 0px;
+}
+
+.docList_table {
+	border-collapse: collapse;
+	min-width: 1080px;
+	width: 100%;
+}
+
+img[alt="updown"] {
+	width: 15px;
+	height: 15px;
+}
+
+.cpd_search_output thead tr {
+	background-color: #134074;
+	color: #FFF;
+	padding: 3px;
+}
+
+.docList_table thead th, tbody td{
+	padding: 5px;
+}
+
+.cpd_search_output tbody td, .docList_table tfoot td {
+	font-size: 11pt;	
+	text-align: center;
+}
+
+.row_even {
+	background-color: #DEE6EF;
+}
+ 
+tbody > tr:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+
+.docList_table tfoot > tr {
+	text-align: center;
+}
+
+.docList_table tfoot td[colspan="11"] {
+	line-height: 2;	
+}
+
+.docList_table tfoot tr td div{
+	display: inline-block;
+	margin-top: 30px;
+	width: 30px;
+	height: 30px;
+	vertical-align: top;
+}
+
+.docList_table tfoot tr td div:hover, #checked {
+	font-weight: bold;
+	color: #134074;
+	cursor: pointer;
+}
+
+.docList_table tfoot tr td div:hover {
+	margin-top: 25px;
+	margin-bottom: 5px;
+}
+
+.receive {color : red;}
+.send {color : blue;}
+
+
+/* 초기화 */
+img[alt="reset"] {
+	width: 20px;
+	height: 20px;
+	vertical-align: bottom;
+	border: 2px solid #000;
+	margin-left: 5px;
+	border-radius: 5px;
+}
+img[alt="reset"]:hover {
+	cursor: pointer;
+	background-color: #DFDFDF;
+}

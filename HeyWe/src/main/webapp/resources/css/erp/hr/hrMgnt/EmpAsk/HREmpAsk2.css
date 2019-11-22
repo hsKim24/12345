@@ -1,0 +1,269 @@
+@charset "UTF-8";
+
+.content {
+	margin-top: 20px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1200px;
+	height: 85px;
+	line-height: 85px;
+}
+
+.content > #deptSelectBox {
+	margin-left: 20px;
+	font-size: 12pt;
+	color: #000000;
+	width: 170px;
+    height: 35px;
+	display: inline-block;
+	font-weight: bold;
+	border-radius: 3px;
+}
+
+.content > #posiSelectBox {
+	margin-left: 20px;
+	font-size: 12pt;
+	color: #000000;
+	width: 200px;
+	height: 35px;
+	display: inline-block;
+	font-weight: bold;
+	border-radius: 3px;
+}
+
+
+.content > .사원명 {
+	font-size: 12pt;
+	display: inline-block;
+	margin-left: 80px;	
+	font-weight: bold;
+	border-radius: 3px;
+}
+
+
+.content > .사원명 >.사원이름 {
+	display: inline-block;
+	width: 200px;
+	height: 32px;
+	font-size: 12pt;
+	font-weight: bold;
+	border-radius: 3px;
+}
+.부서명 {
+	font-size: 12pt;
+	margin-left: 100px;
+	font-weight: bolder;
+	display: inline-block;
+}
+.직위명 {
+	font-size: 12pt;
+	margin-left: 40px;
+	font-weight: bolder;
+	display: inline-block;
+}
+
+.돋보기 {
+	cursor: pointer;
+	margin-left: 80px;
+	vertical-align: middle;
+	display: inline-block;
+	width: 50px;
+}
+
+.content_down {
+    margin-top: 20px;
+    padding-top: 30px;
+	margin-left: 40px;
+	background-color: #8DA9C4;
+	width: 1200px;
+	height: 500px;
+	border-radius: 3px;
+	/* line-height: 100px; */
+}
+
+.table {
+	margin-top: 30px;
+	margin-left: 55px;
+	border-radius: 3px;
+	width: 1100px;
+	
+	
+}
+.title {
+	margin-left: 20px;
+	background-color: #134074;
+	font-size: 12pt;
+	height: 50px;
+	color: white;
+	
+}
+.title_content {
+	cursor: pointer;
+	background-color: white;
+	font-size: 11pt;
+	height: 30px;
+	width: 100px;
+	text-align: center;
+	font-weight: bold;
+}
+.title_content_color {
+	cursor: pointer;
+	background-color: #DEE6EF;
+	font-size: 11pt;
+	height: 30px;
+}
+.title_content:hover{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+.title_content_color:hover{
+	background-color: #b0daec;
+	color: #134074;
+}
+
+
+
+.paging_group {
+   width: 100%;
+   height: 30px;
+   margin-top: 20px;
+   text-align: center;
+}
+
+.paging_group > [type="button"] {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+   color: #134074;
+}
+
+.paging_group > [type="button"]:hover {
+   cursor: pointer;
+   background-color: #134074;
+    color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+ .paging_group > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+} 
+/* 팝업추가 */
+#popup{
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   left : 0%;
+   top : 0%;
+   background-color: rgba(00,0,0,0.5);
+   z-index: 200;
+   
+ 
+}
+
+#popupBox{
+   	 border-radius : 5px;
+     position: absolute;
+     width : 1300px;
+     height : 650px;
+     background-color: #FFFFFF;
+     left: calc(50% - 650px);
+     top: calc(50% - 330px);
+     z-index: 300;
+}
+.main_name_a {
+	font-size: 20pt;
+	font-weight: bold;
+	margin-top: 40px;
+	margin-left: 100px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.main_name {
+	font-size: 20pt;
+	font-weight: bold;
+	margin-top: 40px;
+	margin-left: 50px;
+	display: inline-block;
+	vertical-align: top;
+}
+.tby{
+	display: inline-block;
+}
+
+.xBtn {
+	display: inline-block;
+	margin-left: 750px;
+	width: 50px;
+	height: 50px;
+	font-size: 20pt;
+}
+
+.picture {
+	margin-top: 40px;
+	margin-left: 50px;
+	width: 190px;
+	height: 192px;
+	background-color: #134074;
+	vertical-align: top;
+}
+
+.tb {
+	margin-left: 50px;
+	display: inline-block;
+	
+}
+.s_info1{
+	width:20%;
+	height:100%;
+		display: inline-block;
+	vertical-align: top;
+}
+
+.s_info2{
+	width:75%;
+	height:100%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+
+
+.gray_content {
+	
+	width: 200px;
+	height: 30px;
+	font-size: 14pt;
+	background-color: #DEE6EF;
+}
+.white_content {
+	
+	width: 200px;
+	height: 30px;
+	font-size: 14pt;
+	background-color: white;
+}
+
+.hope {
+	font-size: 14pt;
+	width: 150px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.tb_a {
+	margin-left: 10px;
+	display: inline-block;
+}

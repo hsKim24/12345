@@ -1,0 +1,357 @@
+@charset "UTF-8";
+img[alt="folder"]{
+	width: 20px;
+	height: 20px;
+	vertical-align: top;
+}
+
+.confirmation_line_management {
+	width: 70%;
+	height: 700px;
+	font-size: 12pt;
+	font-weight: bold;
+	color : #000;
+	padding: 20px;
+	margin-left: 40px;
+	margin-right: 40px;
+	user-select:none;
+}
+
+.confirmation_line_management [type='button']{
+	outline:none;
+}
+
+/* 결재라인 관리 상단 */
+.stored_line_list {
+	width: calc(100% - 0px);
+	height: calc(50% - 30px);
+/* 	border: 1px dotted #000; */
+	margin-bottom: 30px;
+}
+
+.stored_line_list_title {
+	width: 100%;
+	height: 50px;
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+.stored_line_list_table {
+	height: calc(100% - 54px);
+	border-top: 2px solid #134074;
+	border-bottom: 2px solid #134074;
+	overflow-y: auto; 
+}
+
+.stored_line_list_table table{
+	width: 100%;
+	vertical-align: top;
+	font-size: 12pt;
+	border-collapse: collapse;
+
+}
+
+.stored_line_list_table_header table thead th, .line_store_remove_contents > .mid > .mid_bot table thead th {
+	background-color: #134074;
+	color: #FFF;
+	height: 30px;
+}
+
+.stored_line_list_table table tbody tr, .line_store_remove_contents > .mid > .mid_bot table tbody tr {
+	background-color: #FFF;
+	text-align: center;
+	min-height: 30px;
+}
+
+table tbody tr.row_even {
+	background-color: #DEE6EF;
+	color: #000;
+}
+
+.stored_line_list_table table tbody tr:hover, .mid_bot table tbody tr:hover{
+	background-color: #B0DAEC;
+	color : #000;
+	cursor: pointer;
+}
+
+/* 결재라인 관리 하단 */
+.line_store_remove {
+	width: calc(100% - 0px);
+	height: calc(50% - 0px);
+/* 	border: 1px dotted #000; */
+}
+
+.line_store_remove_title {
+	width: 100%;
+	height: 50px;
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+.stored_line_list_table_header {
+	height: 30px;
+}
+
+.stored_line_list_table_header table {
+	width: 100%;
+	border-collapse:collapse;
+}
+
+.line_store_remove_contents {
+	width: 100%;
+	height: calc(100% - 100px);
+	font-size: 0px;
+}
+
+.orgArea {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+ 	border-top: 1px solid #134074; 
+ 	border-bottom: 1px solid #134074; 
+	overflow-y : auto;
+	background-color: #DEE6EF;
+	color: black;
+	font-size: 12pt;
+	letter-spacing: 1px;
+	padding: 5px;
+}
+
+.line_store_remove_contents > .mid {
+	display: inline-block;
+	width: calc(50% - 102px);
+	height: calc(100% - 0px);
+/* 	border: 1px dotted #000; */
+	margin-right: 30px; 
+	vertical-align: top;
+	font-size: 12pt;
+}
+
+.line_store_remove_contents > .mid > .mid_top {
+	width: calc(100% - 20px);
+	height: 30px;
+/* 	border: 1px dotted #000; */
+	text-align: right;
+	font-size: 12pt;
+	margin-right: 20px;
+	margin-bottom: 2px;
+}
+
+.line_store_remove_contents > .mid > .mid_top .searchImg {
+	display: inline-block;
+	width: 10%;
+	height: 100%;
+}
+
+.line_store_remove_contents > .mid > .mid_top .searchBar {
+	display: inline-block;
+	width: 60%;
+	height: 80%;
+	vertical-align: top;
+	
+}
+
+.line_store_remove_contents > .mid > .mid_top .searchImg img {
+	width: 30px;
+	height: 30px;
+}
+
+.line_store_remove_contents > .mid > .mid_top .searchBar input[type="text"] {
+	width: 100%;
+	height: 100%;
+	text-indent: 10px;	
+	font-size: 12pt;
+}
+
+.line_store_remove .mid input[type="button"] {
+	width: calc(20% - 30px);
+}
+
+.line_store_remove_contents input[type="button"] {
+	width: calc(20% - 0px);
+	height: calc(100% - 0px);
+	background-color: #134074;
+	/* border: 1px solid #134074; */
+	color: #FFF;
+	font-weight: bold;
+	vertical-align: top;
+}
+
+.line_store_remove_bot input[type="button"] {
+	height: calc(100% - 10px);
+}
+
+input[type="button"]:hover {
+	cursor: pointer;
+}
+
+
+.line_store_remove_contents > .mid > .mid_bot {
+	width: calc(100% - 0px);
+	height: calc(90% - 34px);
+ 	border-top: 1px solid #134074;
+ 	border-bottom: 1px solid #134074;
+	overflow-y: auto;
+}
+
+.line_store_remove_contents > .mid > .mid_bot table {
+	width: 100%;
+	vertical-align: top;
+	font-size: 12pt;
+	border-collapse: collapse;
+}
+
+.line_store_remove_contents>.mid input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+}
+
+/* .line_store_remove_contents > .mid > .mid_bot table thead th {
+	background-color: #B0DAEC;
+	border-right: 1px solid #DEE6EF;
+	height: 30px;
+} */
+
+.mid_bot table tbody td {
+	text-align: center;
+}
+
+.line_store_remove_contents > .mid > .mid_bot table tbody tr {
+	background-color: #FFF;
+	height: 30px;
+}
+.line_store_remove_contents > .mid > .mid_bot table tbody tr.row_even {
+	background-color: #DEE6EF;
+}
+
+.line_store_remove_contents > .mid > .mid_bot table tbody tr:hover {
+	background-color: #B0DAEC;
+}
+
+.line_store_remove_contents > .right {
+	display: inline-block;
+	width: calc(25% - 0px);
+	height: calc(100% - 0px);
+/* 	border: 1px dotted #000;  */
+	vertical-align: top;
+}
+
+.line_store_remove_contents > .right > .right_title {
+	width: 100%;
+	height: 30px;
+	font-size: 12pt;
+}
+
+.line_store_remove_contents > .right > .c_list {
+	width: calc(100% - 4px);
+	height: calc(100% - 34px);
+	border: 2px solid #B0DAEC;
+	background-color: #DEE6EF;
+}
+
+.line_store_remove_bot {
+	width: 100%;
+	height: calc(50px - 10px);
+	text-align: right;
+	margin-top: 10px;
+}
+
+.line_store_remove_bot input[type="button"] {
+	margin-left: 15%;
+	margin-right: 5px;
+}
+
+.c_list {
+	font-size: 12pt;
+}
+
+.c_list input[type="button"] {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-radius: 3px;
+	padding: 0px;
+}
+
+.confirmation_line_management tbody {
+	font-weight: normal;
+	font-size: 11pt;
+}
+
+.confirmation_line_management [type="button"] {
+	background-color: #134074;
+	/* border: 1px solid #134074; */
+	color: #FFF;
+	border-radius: 3px;
+	font-weight: bold;
+}
+
+
+.empListAreaHeader table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.empListAreaHeader thead th {
+	background-color: #134074;
+	height: 30px;
+	color: white;
+	padding:0;
+}
+
+.mid .empListArea{
+	height: 70%;
+}
+
+.mid_right .mid_right_bot {
+	height: 20%;
+	border: 1px solid #134074;
+	background-color: #DEE6EF;
+	overflow-y: auto; 
+}
+
+.c_list>div>div {
+	display: inline-block;
+	height: 25px;
+	background-color:white;
+	color: black;
+}
+
+.c_list .apvLeft {
+	width : 80%;
+	text-align: left;
+}
+.c_list .apvRight {
+	width : 20%;
+	text-align: right;
+}
+
+.c_list input[type="button"] {
+	width: 40px;
+    height: 20px;
+    padding: 0;
+    margin-right: 5px;
+    font-size: 10pt;
+    vertical-align: middle;
+}
+
+/* 초기화 */
+img[alt="reset"] {
+	width: 20px;
+	height: 20px;
+	vertical-align: bottom;
+	border: 2px solid #000;
+	margin-left: 5px;
+	border-radius: 5px;
+}
+img[alt="reset"]:hover {
+	cursor: pointer;
+	background-color: #DFDFDF;
+}
+
+.orgAreaWrap {
+	display: inline-block;
+	width: 30%;
+	height: 100%;
+	vertical-align: top;
+}

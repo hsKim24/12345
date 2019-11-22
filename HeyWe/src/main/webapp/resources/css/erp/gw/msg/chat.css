@@ -1,0 +1,844 @@
+@charset "UTF-8";
+
+/* 여기서부터 */
+input[type=search]{
+	width : 75%;
+	border-radius: 3px;
+	padding-left: 5px;
+	border-color: gray;
+	border : 1px solid #555;
+}
+
+.chat img {
+	vertical-align: middle;
+}
+
+.chat span {
+	display: table-cell;
+	vertical-align: bottom; 
+}
+
+.chat {
+	display : inline-block;
+	width : 1421px;
+	height : calc(100% - 132px); /* 1920 1080 크롬 100% 기준 */
+	min-height : 805px;
+	max-height : 1240px;
+	position: absolute;
+	margin-left : 40px;
+	}
+
+.chat > .left_chat {
+	display: inline-block;
+	width : 30%;
+	height : 100%;
+	overflow-x : hidden;
+	overflow-y : scroll;
+	border-left : 1px solid #dee6ef;
+	border-bottom : 1px solid #dee6ef;
+}
+
+
+.chat > .left_chat > .org {
+	width : 100%;
+	height : 40%;
+	background-color: white;
+}
+.chat > .left_chat > .org-fold {
+	width : 100%;
+	height : 35px;
+	background-color: white;
+}/* 접었을 때 모습 */
+
+.org_title {
+	display : inline-block;
+	width : 100%;
+	height : 33px;
+	background-color: #dee6ef;
+}
+.org_name{
+	display : inline-block;
+	vertical-align : middle;
+	width : calc(95% - 10px);
+	height : 33px;
+	text-align : center;
+	text-indent : 45px;
+	font-size: 20px;
+	font-weight : bold;
+	background-color: #dee6ef;
+}
+.org_search {
+	width : 100%;
+	height : 33px;
+	font-size: 20px;
+	background-color: white;
+}
+.org_con {
+	width : 100%;
+	height : calc(100% - 66px);
+	font-size: 20px;
+	text-align : center;
+}
+
+.chat > .left_chat > .profile {
+	width : 100%;
+	height : calc(20% - 15px);
+}
+.chat > .left_chat > .profile-fold {
+	width : 100%;
+	height : 35px;
+}/* 접었을 때 모습 */
+
+.profile_title {
+	display : inline-block;
+	width : 100%;
+	height : 33px;
+	font-size: 20px;
+	text-align : center;
+	background-color: #dee6ef;
+}
+
+.profile_name {
+	display : inline-block;
+	vertical-align : middle;
+	width : calc(95% - 10px);
+	height : 33px;
+	text-align : center;
+	text-indent : 45px;
+	font-size: 20px;
+	font-weight : bold;
+	background-color: #dee6ef;
+}
+
+.chat > .left_chat > .profile > .profile_con {
+	width : 100%;
+	height : calc(100% - 33px);
+	background-color: white;
+}
+
+.profile_con table{
+	width : 100%;
+	font-size: initial;
+	border-collapse : collapse;
+}
+
+td {
+	border-bottom: 1px solid #dee6ef;
+	text-align: center;
+}
+
+th {
+	border-bottom: 1px solid #dee6ef;
+	text-align: center;
+}
+
+.profile_con thead {
+	background-color: #8da9c4;
+	font-size : 1em;
+}
+
+.profile_con tbody {
+	font-size: 1em;
+}
+
+.chat > .left_chat > .chat_list {
+	width : 100%;
+	height : 40%;
+	background-color: white;
+}
+
+.chat > .left_chat > .chat_list > .chat_list_title {
+	display : inline-block;
+	width : 100%;
+	height : 33px;
+	font-size: 20px;
+	text-align : center;
+	background-color: #dee6ef;
+}
+.chat > .left_chat > .chat_list > .chat_list_title > .list_name {
+	display : inline-block;
+	vertical-align : middle;
+	width : calc(95% - 10px);
+	height : 33px;
+	text-align : center;
+	text-indent : 45px;
+	font-size: 20px;
+	font-weight : bold;
+	background-color: #dee6ef;
+}
+
+.chat > .left_chat > .chat_list > .chat_list_search {
+	width : 100%;
+	height : 33px;
+	font-size: 20px;
+	background-color: white;
+}
+
+ .chat_list_con {
+	width : 100%;
+	height: calc(100% - 66px);
+	background-color: white;
+}
+
+.chat_list_info {
+	width : 100%;
+	height : 20%;
+	background-color: #4682b4;
+	border-radius: 3px;
+	margin: 1px;
+}
+
+.list_pic {
+	display : inline-block;
+	vertical-align : middle;
+	text-align : center;
+	width : 15%;
+	height : 100%;
+	margin-bottom: 10px;
+}
+.list_pic4 {
+	display : inline-block;
+	position : relative;
+	vertical-align : top;
+	text-align : center;
+	width : 15%;
+	height : 100%;
+}
+
+.list_pic4 > div{
+	display : inline-block;
+	vertical-align: top;
+}
+
+.list_pic > div{
+	display : inline-block;
+	vertical-align: top;
+}
+
+.chat_alram {
+	position: absolute;
+	width : 15px;
+	height : 15px;
+	background-color: red; 
+	border-radius: 50px;
+	font-size: 10px;
+	font-weight: bold;
+	color : white;
+	 
+}
+
+.list_name {
+	display : inline-block;
+	width : 85%;
+	height : 100%;
+}
+
+.list_group {
+	display : inline-block;
+	width : 100%;
+	height : 50%;
+	font-size : 16px;
+	font-weight: bold;
+} 
+
+.list_recen {
+	display : inline-block;
+	width : 100%;
+	height : 50%;
+} 
+
+
+.list_text {
+	display : inline-block;
+	width : 50%;
+	height : 100%;
+	font-size : 14px;
+	margin-left : 10px;
+}
+.list_time {
+	display : inline-block;
+	vertical-align : bottom;
+	text-align : center;
+	width : calc(40% - 10px);
+	height : 90%;
+	font-size : 12px;
+	}
+
+
+/* 오른쪽 대화창 */
+.chat > .right_chat {
+	display: inline-block;
+	vertical-align : top;
+	width : 540px;
+	height : 689px;
+	background-color: #4682b4;
+}
+.chat > .right_chat .chat_title {
+	display: inline-block;
+	vertical-align : top;
+	width : 100%;
+	height : 33px;
+	background-color: #dee6ef;
+	font-size: 20px;
+	text-align: center;
+	min-height: 33px;
+}
+
+.chat_con {
+	display: inline-block;
+	width : 540px;
+	height : calc(80%);
+	background-color: #4682b4;
+}
+
+.chat > .right_chat .chat_con > .notice {
+	width : calc(100% - 10px);
+	height : 5%;
+	line-height : 30px;
+	background-color: orange;
+	border-radius: 3px;
+	font-size : 18px;
+	margin-left : 8px;
+	margin-top : 12px;
+	margin-bottom : 20px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.chat > .right_chat .chat_con > .send {
+	width : 100%;
+	height : 25%;
+}
+
+.chat > .right_chat .chat_con > .send > .down {
+	display : inline-block;
+	width : 45%;
+	height : 80%;
+	float: right;
+	margin-right : 5px;
+	font-size : 12px;
+	border: 1px solid white; 	
+	border-radius : 3px;
+	background-color: #b0daec;
+}
+
+.no_read {
+	width : 3%;
+	height : 81%;
+	font-size : 15px;
+	color : yellow;
+	display: table;
+	float : right;
+}
+
+
+.chat > .right_chat .chat_con > .send > .down > .text {
+	width : 100%;
+	height : 40%;
+	text-align: center;
+	font-size: 15px;
+	margin-top : 10px;
+}
+
+.chat > .right_chat .chat_con > .send > .down > .Btn {
+	text-align: center;
+	width : 100%;
+	height : 70%;
+}
+
+.Btn > input[type=button]{
+	width : 50%;
+	height : 50%;
+	background-color: #fafafa;
+	border-radius: 3px; font-size: 20px;
+}
+
+.time {
+	display : inline-block;
+	width : 97%;
+	height : 5%;
+	text-align: right;
+	font-size : 12px;
+}
+
+.you {
+	width : 100%;
+	height : 20%;
+}
+
+.Yspace {
+	display : inline-block;
+	vertical-align : top;
+	width : 40%;
+	height : 90%;
+}
+
+.Ypic {
+	display : inline-table;
+	vertical-align : middle;
+	background-color: #4682b4;
+}
+
+.Yname {
+	display : inline-block;
+	vertical-align : top;
+	width : 100%;
+	margin-left : 5px;
+	font-size : 15px;
+}
+.Ycon {
+	width : 100%;
+	height : 70%;
+	border: 1px solid white; 	
+	border-radius : 3px;
+	font-size : 15px;
+	background-color: #dee6ef;
+}
+
+.Ytime {
+	display : inline-block;
+	width : 97%;
+	height : 5%;
+	text-align: right;
+	font-size : 12px;
+}
+
+.Yno_read {
+	display: inline-table;
+	text-align : right;
+	width : 3%;
+	height : 80%;
+	font-size : 15px;
+	color : yellow;
+}
+
+.me {
+	width : 100%;
+	height : 20%;
+}
+
+
+.Mcon {
+	display : inline-block;
+	width : 45%;
+	height : 80%;
+	float: right;
+	font-size : 15px;
+	margin-right : 5px;
+	border: 1px solid white; 	
+	border-radius : 3px;
+	background-color: #b0daec;
+	
+}
+.you1 {
+	width : 100%;
+	height : 10%;
+}
+
+
+
+.Mcon {
+	display : inline-block;
+	width : 25%;
+	height : 80%;
+	float: right;
+	font-size : 15px;
+	margin-right : 5px;
+	border: 1px solid white; 	
+	border-radius : 3px;
+	background-color: lavender;
+}
+
+
+	
+.me2 {
+	width : 100%;
+	height : 5%;
+}
+
+.togglebox {
+	float : right;
+	height : 10%;
+	font-size: 25px;
+	margin-top: 20px;
+}
+
+.togglebox > input[type=text] {
+	width : 100px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.chat_pati_list {
+	display: inline-block;
+	vertical-align : top;
+	width : calc(20% - 5px);
+	height : 80%;
+	margin: 5px;
+}
+.chat_pati {
+	display: inline-block;
+	vertical-align : top;
+	width : 100px;
+	height : 90%;
+	background-color: #dee6ef;
+	margin: 5px;
+	border-radius: 3px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.chat > .right_chat .chat_pati_list > .chat_pati > .pati_con {
+	width : calc(100% - 10px);
+	height : calc(100% - 40px);
+	background-color: white;
+	border-radius: 3px;
+	margin: 5px;
+	
+	
+}
+.chat > .right_chat .chat_pati_list > .chat_etcBtn {
+	display : inline-block;
+	vertical-align : top;
+	width : calc(100% - 10px);
+	height : calc(10% - 10px);
+	background-color: #dee6ef;
+	border-radius: 3px;
+	margin-left : 5px;
+}
+
+.chat_etcBtn > img {
+	margin-left: 10px;
+}
+
+.chat > .right_chat .chat_write {
+	width : calc(100% - 20px);
+	height : calc(15% - 10px);
+	background-color: white;
+	margin-left: 10px;
+	border-radius: 3px;
+}
+.chat > .right_chat .chat_write > .chat_write_chat {
+	display : inline-block;
+	vertical-align : top;
+	width : 83%;
+	height : 100%;
+	background-color: white;
+	border-radius: 3px;
+	border: 1px; 
+}
+
+.chat > .right_chat .chat_write > .chat_write_space {
+	display : inline-block;
+	width : 17%;
+	height : 100%;
+	background-color: white;
+	vertical-align: middle;
+	border-radius: 3px;
+	
+}
+
+.chat > .right_chat .chat_write > .chat_write_space > .chat_write_Btn {
+	margin-top : 35px;
+	margin-right : 5px;
+	text-align: center;
+}
+
+#chat_Btn {
+	width:86px;
+	height:40px;
+	font-weight: bold;
+	background-color: yellow;
+	border-radius: 3px; font-size: 20px;
+	border : 2px solid buttonface;
+}
+
+#chat_Btn:active{
+	font-weight: bold;
+	background-color: #fff683;
+	border-radius: 3px; font-size: 20px;
+}
+
+/* YN 팝업 여기에서 */
+
+.rp_bg {
+   width: 100%; 
+   height: 100%;
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   z-index: 100;
+   background-color: #000;
+   opacity: 0.7;
+} 
+
+.rg_popup {
+   width: 300px; 
+   height: 200px;
+   position: absolute;
+   left: calc(50% - 150px);
+   top: calc(50% - 100px);
+   border: 1px solid #134074;
+   border-radius: 3px 3px 0px 0px;
+   background-color: #FFFFFF;
+   color: #134074;
+   z-index: 150;
+   font-size: 12pt;
+   font-weight: bold;
+}
+
+.ms_top  {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 16%;
+    background-color: #134074;
+    color: #FFF;
+    text-align: right;
+    padding: 3px 5px 0px 0px;
+}
+
+.ms_top .left{
+   display: inline-block;
+   width: calc(100% - 50px);
+   padding-top: 5px;
+   padding-left: 10px;
+   vertical-align: middle;
+   line-height: 2;
+} 
+
+.ms_top .right{
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   text-align: center;
+   vertical-align: middle;
+   line-height: 2;
+} 
+
+.ms_mid {
+   width: calc(100% - 10px);
+    height: calc(52% - 8px);
+    padding-top: 40px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.ms_bot {
+   width: 100%;
+   height: calc(28% - 10px);
+   text-align: center;
+   padding-top: 15px;
+}
+
+.ms_btn {
+   border: 0px;
+    border-radius: 3px;
+    width: 75px;
+    height: 35px;
+    padding: 5px;
+    background-color: #134074;
+    color: #FFF;
+    font-weight: bold;
+    margin-right: 15px;
+    margin-left: 15px;
+    box-shadow: 1px 1px 2px #000;
+}
+
+.ms_btn:hover, .ms_top .right {
+   cursor: pointer;
+}
+
+.ms_mid input[type="text"] {
+   width: 90%;
+}
+
+.ms_mid textarea {
+   resize: none;
+}
+#xBtn{
+   width:20px;
+   height:20px;
+   vertical-align: middle;
+}
+#xBtn:hover{
+   cursor: pointer;
+}
+
+/* YN 팝업 여기까지 */
+
+.popup {
+	position: absolute;
+	top: -7%;
+	left: 78%;
+	width: 410px;
+	background-color: #3571B5;
+	border-radius: 3px;
+	z-index: 100;
+	border : 5px solid #134074;
+}
+
+.detail {
+	position: absolute;
+	top: calc(50% - 300px);
+	left: calc(50% - 200px);
+	width: 300px;
+	height : 400px;
+	background-color: #4682b4;
+	border-radius: 3px;
+	z-index: 100;
+	border : 1px solid #dee6ef;
+}
+
+.de_title {
+	width : calc(100% - 20px);
+	height : 28px;
+	font-size : 18px;
+	padding : 5px;
+	padding-left : 15px;
+	text-align : center;
+	background-color: #dee6ef;
+}
+
+.de_pic {
+	width : calc(100% - 10px);
+	height : 100px;
+	margin : 5px;
+	background-color: white;
+}
+
+.der_pic {
+	display: inline-block;
+	vertical-align : top;
+    width : calc(25% - 10px);
+	height : calc(100% - 20px);
+	background-color: #f7e600;
+	padding-top : 20px;
+	padding-left : 5px;
+	
+}
+
+.der_name {
+	display: inline-block;
+	vertical-align : top;
+	text-align : center;
+    width : 75%;
+    height : calc(100% - 25px);
+    padding-top : 25px;
+	font-size: 30px;
+}
+
+#table1 {
+	width : calc(100% - 10px);
+	background-color: white;
+	font-size : 17px;
+	margin : 5px;
+	border-collapse: collapse;
+}
+
+.invitation {
+	position: absolute;
+	top: calc(50% - 300px);
+	left: calc(50% - 180px);
+	width: 300px;
+	height : 340px;
+	background-color: #3571B5;
+	border-radius: 3px;
+	z-index: 100;
+}
+
+.invitation > .org_search {
+	background-color: #3571B5
+}
+
+.invitation > .org_con {
+	width : calc(100% - 10px);
+	height : 200px;
+}
+
+.invitation > .profile_name {
+	width : calc(100% - 10px);
+	height : 28px;
+	text-indent : 0px;
+	margin : 5px;
+	font-size : 20px;
+}
+
+#invitable {
+	width : calc(100% - 10px);
+	margin-left : 5px;
+	font-size : 15px;
+	background-color: silver;
+}
+
+.conpro {
+	position: absolute;
+	top: calc(50% - 300px);
+	left: calc(50% - 300px);
+	width: 400px;
+	height : 200px;
+	background-color: #4682b4;
+	border-radius: 3px;
+	z-index: 100;
+	border: 1px solid #dee6ef;
+}
+
+.contitle {
+	width : 100%;
+	height : 28px;
+	vertical-align : middle;
+	font-size : 16px;
+	padding-top : 5px;
+	text-align : center;
+	border-radius: 3px 3px 0 0;
+	background-color: #dee6ef;
+}
+
+.condis {
+	width : calc(95% - -10px);
+	height : calc(80% - 5px);
+	margin : 5px;
+	background-color: white;
+}
+
+.conpic {
+	display : inline-block;
+	vertical-align : top;
+	width: 20%;
+	height : 100%;
+	text-align: center;
+}
+
+.conpic > div > img {
+	margin-top : 10px;
+}
+
+.contable {
+	display : inline-block;
+	vertical-align : top;
+	width : 79%;
+	height : 100%;
+	font-size: 15px;
+}
+
+.contable > table {
+	width : 100%;
+	height : 100%;
+	border-collapse : collapse;
+	border-bottom: 1px solid #dee6ef; 
+}
+
+#conta tr, #conta th {
+	border-collapse : collapse;
+}
+
+.filebox {
+	position: absolute;
+	top: calc(50% - 300px);
+	left: calc(50% - 400px);
+	width: 400px;
+	height : 200px;
+	background-color: #3571B5;
+	border-radius: 3px;
+	z-index: 100;	
+}

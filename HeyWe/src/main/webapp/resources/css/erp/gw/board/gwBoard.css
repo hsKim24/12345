@@ -1,0 +1,234 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	White : rgb(255,255,255), #FFFFFF
+ */
+
+/* 헤드라인 */
+.H1 {
+	display: inline-block;
+	width: 100%;
+	height: 10%;
+	font-size: 45px;
+	margin-left: 40px;
+}
+/* 상단 */
+/*상단구역*/
+.top_box {
+	width: 80%;
+	height: 20px;
+	margin-left: 40px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+/* 총 게시물 */
+.total_doc {
+	display: inline-block;
+	width: 50%;
+	height: 20px;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+/* 테이블 */
+#articleDtl {
+	border-collapse: collapse;
+	text-align: center;
+	margin-top: 9px;
+	margin-left: 38px;
+	font-size: 11pt;
+	min-width: 1005px;
+}
+
+#article_title {
+	text-align: left;
+	min-width: 580px;
+}
+
+.td_date {
+	min-width: 115px;
+}
+
+thead tr {
+	width: 100%;
+	background-color: #134074;
+	color: white;
+}
+
+td {
+	min-width: 100px;
+	height: 48px;
+}
+
+tbody tr {
+	border-bottom: 1px solid #8DA9C4;
+}
+
+.tr_even {
+	background-color: #DEE6EF;
+}
+
+table>tbody tr:hover {
+	background-color: #b0daec;
+	color: #134074;
+	cursor: pointer;
+}
+
+tr:nth-child(2n) {
+	font-size: 11pt;
+	color: black;
+	background-color: #dee6ef;
+}
+/*하단구역*/
+.bottom_function div {
+	display: inline-block;
+	margin-right: 30px;
+	width: 20px;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+.bottom_function div:hover {
+	background-color: #DEE6EF;
+	color: white;
+}
+
+/* 글 조회 페이지*/
+#main_area {
+	width: 1010px;
+	height: 668px;
+	font-size: 23px;
+	color: black;
+	margin-left: 40px;
+}
+
+.top_info {
+	overflow: hidden;
+	width: 1005px;
+	height: 101px;
+	border: 1px solid black;
+	border-bottom: none;
+	font-size: 14px;
+}
+
+.category {
+	float: left;
+	width: 17%;
+	height: 105%;
+	border-right: 1px solid black;
+	box-sizing: border-box;
+	background-color: #8DA9C4;
+	color: white;
+}
+
+.ct_contents {
+	float: left;
+	width: 83%;
+	height: 105%;
+	background-color: #DEE6EF;
+}
+
+.category div, .ct_contents div {
+	border-bottom: 1px solid black;
+	height: 25px;
+	padding: 0px 0px 0px 2px;
+}
+
+.ct_main {
+	width: 1005px;
+	min-height: 470px;
+	border: 1px solid black;
+}
+
+.ct_attachment {
+	width: 1005px;
+	height: 68px;
+	border: 1px solid black;
+	border-top: none;
+	font-size: 15px;
+}
+
+.ct_attachment div span {
+	cursor: pointer;
+	margin-left: 6px;
+}
+
+.b_Btn {
+	width: 1005px;
+	height: 25px;
+	text-align: right;
+}
+
+.b_Btn [type="button"] {
+	border-radius: 3px;
+	width: 100px;
+	height: 27px;
+	background-color: #DEE6EF;
+	cursor: pointer;
+}
+
+.s_Btn {
+	text-align: center;
+}
+.att2_Btn {
+	float: right;
+}
+.att2_Btn [type="button"] {
+	border-radius: 3px;
+	width: 100px;
+	height: 27px;
+	background-color: #DEE6EF;
+	cursor: pointer;
+}
+
+#fakeArea {
+	overflow: hidden;
+}
+#searchGbn {
+	height: 27px;
+	vertical-align: middle;
+}
+
+#searchTxt {
+	width: 26%;
+	height: 21px;
+	text-align: center;
+}
+
+#searchBtn {
+	border-radius: 3px;
+	width: 100px;
+	height: 27px;
+	background-color: #DEE6EF;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#pagingArea {
+	line-height: 5;
+	text-align: center;
+}
+
+#pagingArea input {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	border: 2px solid #8DA9C4;
+	border-radius: 2px;
+	background-color: #FFFFFF;
+	color: black;
+	font-size: 15px;
+	margin-left: 1px;
+}
+
+#pagingArea input:hover {
+	background-color: #8DA9C4;
+	color: #FFFFFF;
+	cursor: pointer;
+}
+
+#checked {
+	background-color: #8DA9C4 !important;
+}

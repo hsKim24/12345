@@ -1,0 +1,112 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	White : rgb(255,255,255), #FFFFFF
+ */
+
+/* 헤드라인 */
+
+#article_title{
+ 	text-align: left;
+ 	min-width: 580px;
+}
+
+tbody tr{
+	border-bottom: 1px solid #8DA9C4;
+}
+/* th */
+
+thead tr{
+	width: 100%
+}
+
+/* td */
+
+.content_area {
+	display : inline-block;
+}
+
+/* 글 조회 페이지*/
+
+#main_area {
+	width:1010px;
+	height:668px;
+	font-size : 23px;
+	color : black;
+	margin-left: 40px;
+	margin-top : 3px;
+}
+
+#top_info{
+	overflow : hidden;
+ 	width : 1005px;
+	height : 101px;
+ 	border : 1px solid black;
+	border-bottom : none;
+	font-size : 14px;
+}
+#category {
+	float : left;
+	width : 17%;
+ 	height : 105%; 
+ 	border-right : 1px solid black;
+	box-sizing : border-box; 
+	background-color: #8DA9C4;
+	color : white;
+}
+#ct_contents {
+	float : left;
+	width : 83%;
+ 	height : 105%; 
+	background-color : #DEE6EF;
+}
+#category div, #ct_contents div{
+	border-bottom : 1px solid black;
+ 	height : 25px; 
+ 	padding : 0px 0px 0px 2px; 
+}
+
+#ct_main {
+	width : 1005px;
+	min-height : 470px;
+	border : 1px solid black;
+	font-size: 12pt;
+}
+#ct_attachment {
+	width : 1005px;
+	height : 100px;
+	border : 1px solid black;
+	border-top: none;
+	font-size : 15px;
+
+}
+#ct_attachment div span {
+	cursor : pointer;
+	margin-left : 6px;
+}
+/* 사각버튼 */
+
+#dtl_Btn {
+	width : 100%;
+	height : 15%;
+	text-align : right;
+}
+
+#dtl_Btn [type="button"] {
+ 	border-radius : 3px;
+	width : 100px;
+	background-color: #DEE6EF;
+	cursor: pointer;
+	margin-top : -20px;
+	margin-left : 5px;
+}
+
+
+
+
+
+
+
+

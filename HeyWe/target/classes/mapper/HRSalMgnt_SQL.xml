@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HRSalMgnt">
+
+	<!-- 강호빈 급여관리 부분 -->
+	
+	<!-- 근태코드(급여) 가져오기 -->
+	<select id="HRGeuntaeList" parameterType="hashmap" resultType="hashmap">
+		SELECT GEUNTAE_NO, GEUNTAE_NAME, SAL_MGFN, RNUM
+		FROM (SELECT G.*, ROW_NUMBER() OVER(ORDER BY GEUNTAE_NO) AS RNUM 
+		        FROM GEUNTAE G
+		        WHERE CLOSE_WHETHER = 1)
+		WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<!-- 근태코드(급여) 크기 가져오기(페이징용) -->
+	<select id="HRgetGeuntaeCnt"  resultType="integer">
+		SELECT COUNT(*)
+		FROM (SELECT G.*, ROW_NUMBER() OVER(ORDER BY GEUNTAE_NO) AS RNUM 
+		        FROM GEUNTAE G
+		        WHERE CLOSE_WHETHER = 1)
+	</select>
+	<!-- Geuntae 추가 -->
+	<insert id="HRaddGeuntae" parameterType="hashmap" >
+		INSERT INTO GEUNTAE
+		VALUES(GEUNTAE_SEQ.NEXTVAL,#{geuntaeName},#{salMgfn},1)
+	</insert> 
+	<!-- Geuntae 삭제 -->
+	<update id="HRdelGeuntae" parameterType="hashmap" >
+		UPDATE GEUNTAE SET CLOSE_WHETHER = 0
+		WHERE GEUNTAE_NO = #{stdNo}
+	</update> 
+	<!-- Geuntae 수정 -->
+	<update id="HRupdateGeuntae" parameterType="hashmap" >
+		UPDATE GEUNTAE SET GEUNTAE_NAME = #{geuntaeName}, SAL_MGFN = #{salMgfn}
+		WHERE GEUNTAE_NO = #{stdNo}
+	</update> 
+	<!-- 급여계산된 것 가져오기 -->
+	<select id="HRGetSalCalcList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		FROM
+		(SELECT SAL_CALC_NO, EI.DEPT_NAME, EI.POSI_NAME, EI.EMP_NO, EI.NAME, TO_CHAR(NVL(SC.TAX_PREV_SAL,0),'L999,999,999') AS TAX_PREV_SAL,
+				    TO_CHAR(NVL(SC.TAX_PREV_SAL,0) - NVL(SC.TAX_NEXT_SAL,0),'L999,999,999') AS PREV_SAL, TO_CHAR(NVL(SC.TAX_NEXT_SAL,0),'L999,999,999') AS TAX_NEXT_SAL
+				    ,TO_CHAR(SC.STD_DATE,'YYYY-MM-DD') AS STD_DATE,ROW_NUMBER() OVER(ORDER BY EI.DEPT_NAME) AS RNUM
+		FROM (SELECT D.DEPT_NO,D.DEPT_NAME, P.POSI_NAME, E.EMP_NO, E.NAME
+		        FROM EMP E INNER JOIN HR_APNT HA
+		            ON HA.FNSH_DATE IS NULL AND E.EMP_NO = HA.EMP_NO
+		            INNER JOIN DEPT D ON HA.DEPT_NO = D.DEPT_NO
+		             INNER JOIN POSI P ON HA.POSI_NO = P.POSI_NO) EI INNER JOIN SAL_CALC SC
+		             ON EI.EMP_NO = SC.EMP_NO
+		       		WHERE APV_WHETHER = 0 AND EI.NAME LIKE '%' || #{searchTxt} || '%' 
+				<if test="deptGbn != 900">
+		        	AND EI.DEPT_NO = #{deptGbn}
+		        </if>      
+		             )
+		 ORDER BY DEPT_NAME, EMP_NO
+	</select>
+	<!-- 급여계산된 것 갯수 가져오기 -->
+	<!--ASDASD  -->
+	<select id="HRsalCalcCnt" parameterType="hashmap" resultType="integer">
+		SELECT COUNT(*)
+		FROM (SELECT D.DEPT_NO,D.DEPT_NAME, P.POSI_NAME, E.EMP_NO, E.NAME
+		        FROM EMP E INNER JOIN HR_APNT HA
+		            ON HA.FNSH_DATE IS NULL AND E.EMP_NO = HA.EMP_NO
+		            INNER JOIN DEPT D ON HA.DEPT_NO = D.DEPT_NO
+		             INNER JOIN POSI P ON HA.POSI_NO = P.POSI_NO) EI INNER JOIN SAL_CALC SC
+		             ON EI.EMP_NO = SC.EMP_NO
+		WHERE APV_WHETHER = 0 AND EI.NAME LIKE '%' || #{searchTxt} || '%'
+		<if test="deptGbn != 900">
+        	AND EI.DEPT_NO = #{deptGbn}
+        </if>
+	</select>
+	<!-- 급여계산된 것 갯수 가져오기 -->
+	<select id="HRGetApvSalCalcM" parameterType="hashmap" resultType="hashmap">
+		SELECT EMP_NO 
+		FROM DEPT D INNER JOIN (SELECT DEPT_NO,POSI_NO, EMP_NO
+		                        FROM HR_APNT 
+		                        WHERE FNSH_DATE IS NULL AND POSI_NO IN (6,7,8)) H
+		            ON D.DEPT_NO = H.DEPT_NO AND D.DEPT_NO IN (4,19)
+	</select>
+	<!-- update 신청상태 -->
+	<update id="setEmpApvChange" parameterType="hashmap" >
+		UPDATE SAL_CALC SET APV_WHETHER = 4
+		WHERE SAL_CALC_NO IN (${salCalcNo})
+	</update>
+	<!-- 사원들의 연봉 리스트 뽑아오기 -->
+	<select id="HRgetEmpSalList" parameterType="hashmap" resultType="hashmap">
+			SELECT RNUM, EMP_NO, NAME, AUTH_NO, EMP_SAL_NO,NVL(SAL,0) AS SAL, POSI_NO, DEPT_NO,
+			        DEPT_NAME, POSI_NAME, AUTH_NAME, CASE NVL(STD_YEAR,'0')
+			                                         WHEN '0'
+			                                         THEN #{stdYear}
+			                                         ELSE STD_YEAR
+			                                         END AS STD_YEAR
+			FROM (SELECT ROW_NUMBER() OVER(ORDER BY ES.STD_YEAR,D.DEPT_NO ASC ,P.RANGE_SEQ DESC) AS RNUM,
+			        E.EMP_NO, E.NAME, E.AUTH_NO, ES.EMP_SAL_NO, ES.SAL, P.POSI_NO, D.DEPT_NO,
+			        D.DEPT_NAME, P.POSI_NAME, A.AUTH_NAME,TO_CHAR(ES.STD_YEAR,'YYYY') AS STD_YEAR
+			        FROM EMP E LEFT OUTER JOIN EMP_SAL ES
+			                    ON E.EMP_NO = ES.EMP_NO AND TO_CHAR(ES.STD_YEAR,'YYYY') = #{stdYear}
+			                    INNER JOIN HR_APNT HA
+			                    ON HA.EMP_NO = E.EMP_NO AND HA.FNSH_DATE IS NULL
+			                    LEFT OUTER JOIN DEPT D 
+			                    ON HA.DEPT_NO = D.DEPT_NO AND D.CLOSE_WHETHER = 1
+			                    LEFT OUTER JOIN POSI P
+			                    ON HA.POSI_NO = P.POSI_NO
+			                    LEFT OUTER JOIN AUTH A
+			                    ON E.AUTH_NO = A.AUTH_NO
+			          WHERE E.EMP_NO != '20190000'
+			         AND E.NAME LIKE '%' || #{searchTxt} || '%'
+			        <if test="deptGbn != 900">
+					        	AND D.DEPT_NO = #{deptGbn}
+					</if>
+			        )
+	</select>
+	<!-- 기준 년도 뽑아오기 -->
+	<select id="getStdList" resultType="hashmap">
+		SELECT STD_YEAR
+		FROM(
+		    SELECT TO_CHAR(SYSDATE,'YYYY') + 1  || '' AS STD_YEAR
+		    FROM DUAL
+		    UNION  
+		    SELECT DISTINCT TO_CHAR(STD_YEAR,'YYYY') AS STD_YEAR
+		    FROM EMP_SAL
+		    )
+		ORDER BY STD_YEAR DESC
+	</select>
+	<!-- 한명 연봉 신규 등록 -->
+	<insert id="oneInsertSal" parameterType="hashmap" >
+		INSERT INTO EMP_SAL 
+		VALUES(EMP_SAL_SEQ.NEXTVAL, #{oneEmpNo},#{oneEmpSal},#{oneStdYear})
+	</insert>
+	<!-- 한명 연봉 수정 등록 -->
+	<update id="oneUpdateSal" parameterType="hashmap" >
+		UPDATE EMP_SAL SET SAL = #{oneEmpSal}
+		WHERE EMP_SAL_NO = #{oneEmpSalNo}
+	</update>
+	<!-- tetete -->
+
+</mapper>

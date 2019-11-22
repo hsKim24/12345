@@ -1,0 +1,226 @@
+@charset "UTF-8";
+
+.content_title > .content_title_text{
+   display : inline-block;
+   vertical-align : top;
+   font-size: 30px;
+   text-indent: 10px;
+   color: #134074;
+}
+
+
+.content_down {
+    margin-top: 40px;
+    padding-top: 30px;
+	margin-left: 40px;
+	background-color: white;
+	width: 1410px;
+	height: 1050px;
+	border: 1px solid #134074;
+	border-radius: 3px;
+	/* line-height: 100px; */
+}
+.main_name {
+	font-size: 22pt;
+	text-align: center;
+	font-weight: bold;
+}
+
+.tabel_name {
+	width: 100px;
+	height: 30px;
+	font-size: 14pt;
+}
+.content_down_table{
+	margin-top: 40px;
+	margin-left: 80px;
+}
+
+
+.gray_content {
+	
+	width: 300px;
+	height: 40px;
+	font-size: 14pt;
+	background-color: #8DA9C4;
+}
+.gray_content2 {
+	
+	width: 300px;
+	height: 110px;
+	font-size: 14pt;
+	background-color: #8DA9C4;
+}
+
+.white_content {
+	
+	width: 300px;
+	height: 40px;
+	font-size: 14pt;
+	background-color: white;
+}
+
+.day {
+	width: 850px;
+	height: 80px;
+	font-size: 14pt;
+}
+
+.상기인 {
+	margin-top: 40px;
+	margin-left: 80px;
+	font-size: 30pt;
+}
+
+.상기인2 {
+	font-size: 14pt;
+	text-align: center;
+	vertical-align: middle;
+	font-weight: bold;
+	width: 1225px; 
+}
+.용도 {
+	font-size: 14pt;
+	margin-top: 40px;
+	margin-left: 100px;
+	font-weight: bolder;
+}
+
+.용도text {
+	width: 1150px;
+	height: 40px;
+	font-size: 14pt;
+}
+.작성text {
+	width: 100px;
+	height: 40px;
+	font-size: 14pt;
+}
+.신청 {
+	width: 100px;
+	height: 40px;
+	font-size: 14pt;
+	margin-left: 1200px;
+	margin-top: 80px;
+    border : 1px solid ;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.여백 {
+	margin-top: 40px;
+	font-size: 14pt
+}
+
+
+
+ #close{
+    font-size : 20px;
+    width : 100px;
+   height : 40px;
+   position:absolute;
+   top : calc(100% - 50px);
+   left : calc(100% - 117px);
+   border : 1px solid #134074;
+   border-radius: 3px ;
+   background-color: #134074;
+   color : #FFFFFF;
+   font-weight: bold; 
+   cursor : pointer;
+}
+
+ #close:hover{
+   background-color: #FFFFFF;
+   color : #000000;
+}
+/*  #bg {
+   position: absolute;
+   width: 600px;
+   height: 800px;
+   background-color: rgba(0,0,0,0.7);
+   left: calc(50% - 300px);
+   top:  calc(50% - 400px);
+   z-index: 100;
+} */
+
+
+ #close{
+    font-size : 20px;
+    width : 100px;
+   height : 40px;
+   position:absolute;
+   top : calc(100% - 50px);
+   left : calc(100% - 117px);
+   border : 1px solid #134074;
+   border-radius: 3px ;
+   background-color: #134074;
+   color : #FFFFFF;
+   font-weight: bold; 
+   cursor : pointer;
+   visibility: hidden;
+}
+
+ #close:hover, #yesBtn:hover{
+   background-color: #FFFFFF;
+   color : #000000;
+   
+}
+/*  #bg {
+   position: absolute;
+   width: 600px;
+   height: 800px;
+   background-color: rgba(0,0,0,0.7);
+   left: calc(50% - 300px);
+   top:  calc(50% - 400px);
+   z-index: 100;
+} */
+
+#popup{
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   left : 0%;
+   top : 0%;
+   background-color: rgba(0,0,0,0.8);
+   z-index: 200;
+   visibility: hidden;
+}
+
+#popupBox{
+   border-radius : 5px;
+     position: absolute;
+     width : 300px;
+     height : 100px;
+     background-color: #FFFFFF;
+     left: calc(50% - 150px);
+     top: calc(50% - 50px);
+     z-index: 300;
+     visibility: hidden;
+}
+
+#popupBox > div{
+   visibility: hidden;
+   font-size: 15px;
+   height: 20px;
+   color : #000000;
+   margin-left: 20px;
+   margin-bottom: 20px;
+   margin-top: 20px;
+   font-weight: bold;
+   
+}
+ #yesBtn{
+   font-size : 20px;
+    width : 100px;
+   height : 40px;
+   position:absolute;
+   top : calc(100% - 50px);
+   left : 20px;
+   border : 1px solid #134074;
+   border-radius: 3px ;
+   background-color: #134074;
+   color : #FFFFFF;
+   font-weight: bold; 
+   cursor : pointer;
+   visibility: hidden;
+}

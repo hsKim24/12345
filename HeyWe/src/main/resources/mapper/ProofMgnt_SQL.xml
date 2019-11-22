@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Proof"> <!-- mapper = 쿼리를 관리하겠다. namespace = 클래스명과 동일 -->
+<!-- 경력증명서 -->
+	<select id="getEmpDtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.NAME , A.rrnum1,A.rrnum2, A.addr , A.posi_name, to_char(A.apnt_date , 'YYYY/MM/DD')AS ST , TO_CHAR(A.fnsh_date,'YYYY/MM/DD')AS FNSH, A.RNUM,A.DEPT_NAME
+		FROM (
+		SELECT E.NAME , e.rrnum1,e.rrnum2, e.addr , p.posi_name, D.DEPT_NAME,
+		h.apnt_date,h.fnsh_date, ROW_NUMBER() OVER (ORDER BY APNT_DATE ASC) AS
+		RNUM
+		FROM EMP E INNER JOIN hr_apnt H
+		ON e.emp_no = h.emp_no
+		INNER JOIN DEPT D
+		ON H.DEPT_NO = d.dept_no
+		INNER JOIN POSI P
+		ON h.posi_no = p.posi_no
+		WHERE E.EMP_NO = #{sEmpNo} ) A
+		WHERE RNUM=1
+	</select>
+
+	<select id="getCoDtl" parameterType="hashmap" resultType="hashmap">
+		SELECT CO_NAME , CO_RPSTNER,ADDR,CO_REG_NO,CO_TASK_KIND, CO_CONTACT, ESTA_DAY
+		FROM CO
+	
+	</select>
+	<select id="getPlaceDtl" parameterType="hashmap" resultType="hashmap">
+	 	SELECT D.DEPT_NAME,P.POSI_NAME,E.NAME
+        FROM EMP E INNER JOIN HR_APNT H
+        ON  E.EMP_NO = H.EMP_NO
+        INNER JOIN DEPT D
+        ON H.DEPT_NO = D.DEPT_NO
+        INNER JOIN POSI P
+        ON P.POSI_NO = H.POSI_NO
+        WHERE DEPT_NAME = '인사'
+        AND POSI_NAME = '부장'
+	</select>
+	
+	<!-- SYSDATE -->
+	<select id="date" parameterType="hashmap" resultType="hashmap">
+	 	  SELECT TO_CHAR( SYSDATE, 'YYYY/MM/DD' ) AS A
+         FROM DUAL
+	</select>
+	
+	<!-- 재직증명서 -->
+	
+	<insert id="insertInoffProofData" parameterType="hashmap"  >
+		INSERT INTO PROOF_ISSUE (PROOF_ISSUE_NO,PROOF_NO,EMP_NO,CON,REQ_DATE)
+		VALUES (PROOF_ISSUE_SEQ.nextval, 1, #{sEmpNo}, #{contents}, SYSDATE)
+	</insert>
+	
+	<insert id="insertCareerProofData" parameterType="hashmap"  >
+		INSERT INTO PROOF_ISSUE (PROOF_ISSUE_NO,PROOF_NO,EMP_NO,CON,REQ_DATE)
+		VALUES (PROOF_ISSUE_SEQ.nextval, 2, #{sEmpNo}, #{contents}, SYSDATE)
+	</insert>
+	
+	<select id="getDeptList" parameterType="hashmap" resultType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME
+		FROM DEPT
+		WHERE DEPT_NO != 0
+	</select>
+	
+	<select id="getPosiList" parameterType="hashmap" resultType="hashmap">
+		SELECT POSI_NO, POSI_NAME
+		FROM POSI
+		WHERE POSI_NO !=0
+	</select>
+	
+	<select id="RetireCnt" parameterType="hashmap" resultType="integer">
+	SELECT COUNT(*)
+	FROM emp e inner join hr_apnt h
+	            on e.emp_no = h.emp_no
+	where h.fnsh_date is not null AND APNT_REASON = '퇴사'
+	</select>
+	
+	<select id="RetireList" parameterType="hashmap" resultType="hashmap">
+	SELECT A.EMP_NO, A.dept_name, A.posi_name, TO_CHAR(APNT_DATE)AS APNT_DATE, TO_CHAR(FNSH_DATE)AS FNSH_DATE, A.NAME, A.RNUM
+	FROM 
+	(SELECT E.EMP_NO, d.dept_name, p.posi_name, TO_CHAR(APNT_DATE)AS APNT_DATE, TO_CHAR(FNSH_DATE)AS FNSH_DATE, NAME,ROW_NUMBER() OVER (ORDER BY E.EMP_NO DESC) AS RNUM
+	FROM emp e inner join hr_apnt h
+	            on e.emp_no = h.emp_no
+	            INNER JOIN DEPT D
+	            ON h.dept_no = d.dept_no
+	            <if test="deptNo != 1000">
+					AND D.DEPT_NO = #{deptNo}
+				</if>
+	            INNER JOIN POSI P
+	            ON p.posi_no = h.posi_no
+	            <if test="posiNo != 1000">
+					AND P.POSI_NO = #{posiNo}
+				</if>	
+	where h.fnsh_date is not null AND APNT_REASON = '퇴사'
+	 <if test="searchTxt!=null and searchTxt!='' ">
+		                    	AND E.NAME LIKE '%' ||  #{searchTxt} || '%' 
+		                    </if> ) A
+		      WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="RetireDtlData" parameterType="hashmap" resultType="hashmap" >
+	  SELECT E.EMP_NO,NAME, RRNUM1, RRNUM2, MOBILE_NO, EXTE,EMAIL, POST_NO, ADDR, DTL_ADDR, POSI_NAME, DEPT_NAME, PIC,
+                       TO_CHAR(A.APNT_DATE, 'YYYY-MM-DD') AS APNT_DATE, TO_CHAR(A.FNSH_DATE, 'YYYY-MM-DD') AS FNSH_DATE
+		FROM (
+		        SELECT ROW_NUMBER() OVER (PARTITION BY EMP_NO ORDER BY APNT_DATE DESC) AS 순위,APNT_DATE, EMP_NO, FNSH_DATE, APNT_REASON, POSI_NO, DEPT_NO
+		        FROM HR_APNT ) A INNER JOIN EMP E
+		                            ON A.EMP_NO = E.EMP_NO
+		                         AND E.EMP_NO = #{no}
+		                         INNER JOIN POSI P
+		                            ON A.POSI_NO = P.POSI_NO
+		                         INNER JOIN DEPT D
+		                            ON A.DEPT_NO = D.DEPT_NO
+		WHERE A.순위 = 1
+		AND A.FNSH_DATE IS NOT NULL
+	
+	</select>
+	
+	<insert id="insertRetireProofData" parameterType="hashmap"  >
+		INSERT INTO PROOF_ISSUE (PROOF_ISSUE_NO,PROOF_NO,EMP_NO,CON,REQ_DATE)
+		VALUES (PROOF_ISSUE_SEQ.nextval, 3, #{no}, #{contents}, SYSDATE)
+	</insert>
+	
+	<!-- 증명서 신청현황 -->
+	<select id="ReqCurrent" parameterType="hashmap" resultType="hashmap">
+	 SELECT T.EMP_NO, T.DEPT_NAME , T.NAME, T.POSI_NAME, T.REQ_DATE, T.PROOF_NAME, T.PI_NO, T.NO , T.PROOF_NO
+	FROM (SELECT EMP_NO, DEPT_NAME , NAME, POSI_NAME, TO_CHAR(PI.REQ_DATE,'YYYY-MM-DD')AS REQ_DATE, PR.PROOF_NO, 
+					PROOF_NAME,PI.PROOF_ISSUE_NO AS PI_NO, ROW_NUMBER() OVER(ORDER BY PI.PROOF_ISSUE_NO DESC) AS NO
+	 	  FROM EMP E INNER JOIN HR_APNT HR
+                ON E.EMP_NO = HR.EMP_NO
+            INNER JOIN DEPT D
+                ON HR.DEPT_NO = D.DEPT_NO
+            INNER JOIN POSI P
+                ON HR.POSI_NO = P.POSI_NO
+            INNER JOIN PROOF_ISSUE PI
+                ON E.EMP_NO = PI.EMP_NO
+                 AND PI.ISSUE_DATE IS NULL
+            INNER JOIN PROOF PR
+                ON PI.PROOF_NO = PR.PROOF_NO
+			WHERE PR.PROOF_NO IN (1, 2)
+			AND PI.ISSUE_DATE IS NULL
+			AND HR.FNSH_DATE IS NULL) T
+	WHERE T.NO BETWEEN #{startCnt} AND #{endCnt}
+     
+    </select>
+	
+	
+	<!-- 증명서신청카운트  -->
+	<select id="ReqCurrentCnt" parameterType="hashmap" resultType="Integer">
+	SELECT COUNT(*) AS CNT
+	FROM EMP E INNER JOIN HR_APNT HR
+                  ON E.EMP_NO = HR.EMP_NO
+               INNER JOIN DEPT D
+                  ON HR.DEPT_NO = D.DEPT_NO
+               INNER JOIN POSI P
+                  ON HR.POSI_NO = P.POSI_NO
+               INNER JOIN PROOF_ISSUE PI
+                  ON E.EMP_NO = PI.EMP_NO
+                  and PI.ISSUE_DATE is null
+               INNER JOIN PROOF PR
+                  ON PI.PROOF_NO = PR.PROOF_NO
+    WHERE PR.PROOF_NO IN (1, 2)
+			AND PI.ISSUE_DATE IS NULL
+	</select>
+    
+    
+    <!-- 증명서 신청결과 -->
+    <select id="ReqResult" parameterType="hashmap" resultType="hashmap">
+	SELECT T.NAME, T.PROOF_NAME, T.PROOF_NO, T.REQ_DATE, T.CD_REQ ,  
+	       	   T.PI_NO, T.NO, T.PRO_CON, T.APV_DIV
+	FROM(SELECT NAME, PROOF_NAME, PI.PROOF_NO, TO_CHAR(PI.REQ_DATE,'YYYY-MM-DD')AS REQ_DATE, CMN.CD_NAME AS CD_REQ ,  
+	       	   PI.PROOF_ISSUE_NO AS PI_NO, ROW_NUMBER() OVER(ORDER BY PI.PROOF_ISSUE_NO DESC) AS NO, PRO_CON, PI.APV_DIV
+		 FROM EMP E INNER JOIN PROOF_ISSUE PI
+            			ON E.EMP_NO = PI.EMP_NO
+           			INNER JOIN PROOF P
+           				ON PI.PROOF_NO = P.PROOF_NO
+            		INNER JOIN CMN_CD CMN
+            			ON CD_L = 2 AND CMN.CD_S  = PI.APV_DIV
+		 WHERE E.EMP_NO = #{empNo}) T  
+	WHERE T.NO BETWEEN #{startCnt} AND #{endCnt}
+    </select>
+    
+    <!-- 증명서 신청결과카운트  -->
+    <select id="ReqResultCnt" parameterType="hashmap" resultType="Integer">
+    SELECT COUNT(*) AS CNT
+	FROM EMP E INNER JOIN PROOF_ISSUE PI
+            ON E.EMP_NO = PI.EMP_NO
+           INNER JOIN PROOF P
+            ON PI.PROOF_NO = P.PROOF_NO
+           INNER JOIN CMN_CD CMN
+            ON CD_L = 2 AND CMN.CD_S  = PI.APV_DIV
+	WHERE E.EMP_NO = #{empNo}
+    </select>
+    
+    
+    <!-- 신청현황 결재 상세보기  -->
+    <select id="RetireProofDtl" parameterType="hashmap" resultType="hashmap">
+	    SELECT NAME, RRNUM1, RRNUM2, ADDR, DTL_ADDR, PROOF_NAME,DEPT_NAME, POSI_NAME, TO_CHAR(HR.APNT_DATE,'YYYY-MM-DD')AS APNT_DATE, FNSH_DATE, 
+	    	   PROOF_ISSUE_NO AS PI_NO ,TO_CHAR(PI.ISSUE_DATE,'YYYY-MM-DD')AS ISSUE_DATE,TO_CHAR(PI.REQ_DATE,'YYYY-MM-DD')AS REQ_DATE, NVL(PI.CON, ' ') AS CON, P.PROOF_NO,
+	    	   TO_CHAR( SYSDATE, 'YYYY/MM/DD' ) AS A 
+		FROM EMP E INNER JOIN HR_APNT HR
+	            ON E.EMP_NO = HR.EMP_NO
+	            INNER JOIN DEPT D
+	                ON HR.DEPT_NO = D.DEPT_NO
+	            INNER JOIN POSI P
+	                ON HR.POSI_NO = P.POSI_NO
+	            INNER JOIN PROOF_ISSUE PI
+	               ON E.EMP_NO = PI.EMP_NO
+	            INNER JOIN PROOF P
+	               ON PI.PROOF_NO = P.PROOF_NO
+		WHERE PI.PROOF_ISSUE_NO = #{proofNo}
+		AND P.PROOF_NO =#{proofType}
+		AND HR.FNSH_DATE IS NULL
+   </select>
+	
+    <select id="RetireProofCo" parameterType="hashmap" resultType="hashmap">
+    	SELECT CO_NAME, CO_RPSTNER , CO.ADDR, CO_REG_NO
+		FROM CO
+	</select>	
+	
+	<!-- 증명서 결재  승인-->
+	<update id="proofapv" parameterType="hashmap">
+	UPDATE PROOF_ISSUE 
+	SET APV_DIV = 3 , ISSUE_DATE = SYSDATE, PRO_CON = '승인'
+	WHERE PROOF_ISSUE_NO = #{proofNo}
+	</update>
+	
+	<!-- 증명서 결재  반려  -->
+	<update id="proofrej" parameterType="hashmap">
+	UPDATE PROOF_ISSUE
+	SET APV_DIV = 1, ISSUE_DATE = SYSDATE, PRO_CON = #{contents}
+	WHERE PROOF_ISSUE_NO = #{proofNo}	
+	</update>
+	
+	
+	
+	
+</mapper> 
+
+

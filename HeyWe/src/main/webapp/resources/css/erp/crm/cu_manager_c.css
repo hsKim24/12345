@@ -1,0 +1,275 @@
+@charset "UTF-8";
+
+.menuname {
+	display: inline_block;
+	width: 100%;
+	font-size: 30px;
+	margin-left: 40px;
+	font-weight: bold;
+}
+
+.title {
+	font-size: 20px;
+	font-weight: bold;
+	color: #505050;
+}
+
+.title>.title_txt {
+	width: 200px;
+	font-size: 20px;
+	display: inline-block;
+}
+
+#writeImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 830px;
+}
+
+#backImg {
+	width: 40px;
+	height: 40px;
+	margin-left: 10px;
+}
+
+.crmInfo {
+	margin-top: 10px;
+	margin-left: 40px;
+	min-width: 65%;
+	height: 700px;
+}
+
+tbody tr {
+	font-size: 16px;
+	height: 50px;
+}
+
+tbody #tr_1 {
+	font-size: 16px;
+	height: 150px;
+}
+
+#hr_2 {
+	height: 1px;
+	margin-top: 20px;
+	width: 870px;
+	background-color: black;
+}
+
+#tdleft {
+	text-align: center;
+	background-color: #8da9c4;
+}
+
+#tdright {
+	padding-left: 13px;
+}
+
+#tdright_2 {
+	padding-left: 13px;
+	height: 160px;
+}
+
+.block {
+	display: inline-block;
+	height: 90px;
+	width: 700px;
+	border: 1px solid black;
+	margin-top: 10px;
+}
+
+#upName {
+	font-size: 18px;
+	color: #505050;
+	font-weight: bold;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+#upName img {
+	width: 40px;
+	height: 40px;
+	margin-left: 760px;
+}
+
+#upName_1 {
+	font-size: 18px;
+	margin-top: 10px;
+	color: #505050;
+	font-weight: bold;
+}
+
+#empBtn {
+	width: 65px;
+	height: 30px;
+}
+
+#cstmBtn {
+	width: 65px;
+	height: 30px;
+}
+
+#upload {
+	margin-bottom: 10px;
+}
+
+#uploadFile {
+	margin-top: 10px;
+}
+
+#filebox {
+	margin-top: 10px;
+}
+
+#writeBtn_1 {
+	width: 70px;
+	height: 30px;
+	padding: 1px 6px;
+}
+
+#Cbox {
+	margin-top: 10px;
+	font-size: 10px;
+}
+
+#Cselect {
+	margin-right: 450px;
+}
+
+.content_area>#hr_1 {
+	max-width: 41%;
+	margin-left: 40px;
+}
+
+.txt {
+	font-size: 11pt;
+	width: 618px;
+	height: 33px;
+}
+
+.txt_1 {
+	display: inline-block;
+	font-size: 11pt;
+	width: 547px;
+	height: 33px;
+}
+
+#SBtn {
+	font-size: 11pt;
+	width: 620px;
+	height: 39px;
+}
+
+#uploadFile>table {
+	text-align: center;
+}
+
+tbody #tbtop {
+	background-color: #8da9c4;
+}
+
+.grey {
+	background-color: #D8D8D8;
+	font-size: 11pt;
+	width: 547px;
+	height: 33px;
+}
+
+#search {
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #DEE6EF;
+	text-align: center;
+	margin-top: 10px;
+}
+
+#search>#search_txt {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_cstm {
+	width: 580px;
+	height: 30px;
+	font-size: 12pt;
+	text-align: center;
+}
+
+#search>#search_btn {
+	width: 50px;
+	height: 30px;
+	font-size: 11pt;
+	margin-left: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: #134074;
+	border-radius: 3px;
+	color: #FFFFFF;
+	border: 0px;
+}
+
+#list {
+	margin-left: 20px;
+	margin-top: 15px;
+	/* height: 245px; */
+}
+
+#listTop {
+	font-size: 12pt;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+#listTop tr th {
+	border: 1px solid #DDD;
+	background-color: #134074;
+	height: 30px;
+	color: white;
+}
+
+#listTop tr {
+	height: 30px;
+}
+
+#listCon {
+	border-collapse: collapse;
+	display: inline-block;
+	height: calc(100% - 90px) !important;
+	width: calc(100% - 230px) !important;
+	min-width: 630px !important;
+}
+
+#listCon tr td {
+	text-align: center;
+	border: 1px solid #DDD;
+}
+
+#listDiv {
+	height: 180px;
+	width: 630px !important;
+}
+
+#listDiv tbody tr {
+	height: 24px;
+}
+
+#list .slimScrollDiv {
+	display: inline-block;
+	min-width: calc(100% - 15px) !important;
+	width: calc(100% - 15px);
+	margin: 0px !important;
+	height: 170px !important;
+}
+
+#uploard {
+	display: inline-block;
+	font-size: 18px;
+    color: #505050;
+    font-weight: bold;
+}
+
+#attFile {
+	margin-top: 5px;
+}

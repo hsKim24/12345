@@ -1,0 +1,1325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bm">
+	<!-- 김영찬 -->
+	<!-- 경여관리 메인 -->
+	<!-- 캘린더 데이터 가져오기 -->
+	<select id="getCal" parameterType="hashmap" resultType="hashmap">
+		SELECT A.LOAN_DIV_NO, A.LOAN_TYPE_NO, A.LOAN_TYPE_NAME || ' ' || A.LOAN_DIV_NAME || COUNT(*) || '건' AS TITLE, A.ST AS "START",
+		       CASE WHEN A.LOAN_DIV_NAME = '매입채무'
+		            THEN '#ed1c24'
+		            ELSE '#00a2e8'
+		       END AS COLOR
+		FROM (  SELECT LD.LOAN_DIV_NAME, LT.LOAN_TYPE_NAME, L.LOAN_DIV_NO, L.LOAN_TYPE_NO,
+		               CASE WHEN TO_CHAR(L.WRITE_DAY, 'YYYY-MM-DD') = TO_CHAR(L.DLINE_DAY, 'YYYY-MM-DD')
+		                    THEN TO_CHAR(L.DLINE_DAY, 'YYYY-MM-DD') || 'T' || TO_CHAR(L.DLINE_DAY, 'HH24:MI:SS')
+		                    ELSE TO_CHAR(L.DLINE_DAY, 'YYYY-MM-DD')
+		               END AS ST
+		        FROM LOAN L INNER JOIN EMP E
+		                            ON L.EMP_NO = E.EMP_NO
+		                    INNER JOIN LOAN_DIV LD
+		                            ON L.LOAN_DIV_NO = LD.LOAN_DIV_NO
+		                    INNER JOIN CSTM C
+		                            ON L.CSTM_NO = C.CSTM_NO
+		                           AND C.DEL_WHETHER = 1
+		                    INNER JOIN LOAN_TYPE LT
+		                            ON L.LOAN_TYPE_NO = LT.LOAN_TYPE_NO
+		                           AND LT.DEL_WHETHER = 1
+		                    INNER JOIN CSPTS CC
+		                            ON L.CSPTS_NO = CC.CSPTS_NO
+		                           AND CC.DEL_WHETHER = 1
+		        WHERE TO_CHAR(SYSDATE, 'YYYY') BETWEEN TO_CHAR(SYSDATE, 'YYYY') - 1 AND TO_CHAR(SYSDATE, 'YYYY') + 1) A
+		GROUP BY A.LOAN_DIV_NO, A.LOAN_DIV_NAME, A.LOAN_TYPE_NO, A.LOAN_TYPE_NAME, A.ST
+	</select>
+	<!-- 일정 목록 -->
+	<select id="getSchList" parameterType="hashmap" resultType="hashmap">
+		SELECT TO_CHAR(L.WRITE_DAY, 'YY.MM.DD') AS "START",
+		       TO_CHAR(L.DLINE_DAY, 'YY.MM.DD') AS "END",
+		       L.LOAN_DIV_NO,
+		       E.NAME, 
+		       C.CSTM_NAME || ' ' || LD.LOAN_DIV_NAME || '(' || LT.LOAN_TYPE_NAME || ')' AS TITLE
+		FROM LOAN L INNER JOIN EMP E
+		                    ON L.EMP_NO = E.EMP_NO
+		            INNER JOIN LOAN_DIV LD
+		                    ON L.LOAN_DIV_NO = LD.LOAN_DIV_NO
+		            INNER JOIN CSTM C
+		                    ON L.CSTM_NO = C.CSTM_NO
+		                   AND C.DEL_WHETHER = 1
+		            INNER JOIN LOAN_TYPE LT
+		                    ON L.LOAN_TYPE_NO = LT.LOAN_TYPE_NO
+		                   AND LT.DEL_WHETHER = 1
+		            INNER JOIN CSPTS CC
+		                    ON L.CSPTS_NO = CC.CSPTS_NO
+		                   AND CC.DEL_WHETHER = 1
+	    <choose>
+	    	<when test="sltedDate != null and sltedDate != ''">
+				WHERE #{sltedDate} = TO_CHAR(L.DLINE_DAY, 'YYYY-MM-DD')
+	    	</when>
+	    	<otherwise>
+				WHERE TO_CHAR(SYSDATE, 'YYYY-MM-DD') = TO_CHAR(L.DLINE_DAY, 'YYYY-MM-DD')
+	    	</otherwise>
+	    </choose>
+		ORDER BY "START" ASC
+	</select>
+	
+	<!-- 신용카드 관리 -->
+	<!-- 카드사 리스트 가져오기 -->
+	<select id="getCardCoList" parameterType="hashmap" resultType="hashmap">
+		SELECT CARD_CO_NO, CARD_CO_NAME
+		FROM CARD_CO
+		WHERE DEL_WHETHER = 1
+	</select>
+	<!-- 신용카드 등록 (신용카드 신규등록 팝업) -->
+	<insert id="insertCrdtCard" parameterType="hashmap">
+		INSERT INTO CRDT_CARD(CARD_MGNT_NO, CARD_DIV_NO, CRDT_CARD_CO_NO, CARD_NAME, CARD_NO, 
+							  OWNER, REAL_USER_EMP_NO, EPRTN_DATE)
+		VALUES(CARD_MGNT_SEQ.NEXTVAL, #{cardDivRadio}, #{cardCoSlt}, #{cardName}, #{cardNo}, 
+			   #{owner}, #{userEmpNo}, #{eprtnDate})
+	</insert>
+	<!-- 신용카드 관리 리스트 카운트 -->
+	<select id="getCrdtCardMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM(SELECT CC.CARD_MGNT_NO, CCD.CD_NAME, CCO.CARD_CO_NAME, CC.CARD_NAME, CC.CARD_NO,
+					TO_CHAR(CC.EPRTN_DATE, 'YYYY-MM-DD') AS EPRTN_DATE, CC.OWNER,
+					E2.NAME AS REAL_USER, ROW_NUMBER() OVER(ORDER BY CARD_MGNT_NO DESC) AS RNUM
+		     FROM CRDT_CARD CC INNER JOIN CMN_CD CCD
+		                               ON CC.CARD_DIV_NO = CCD.CD_S
+		                              AND CCD.CD_L = 6
+		                       INNER JOIN CARD_CO CCO
+		                               ON CC.CRDT_CARD_CO_NO = CCO.CARD_CO_NO
+		                       INNER JOIN EMP E2
+		                               ON CC.REAL_USER_EMP_NO = E2.EMP_NO
+		     WHERE 1=1
+		       AND CC.DEL_WHETHER = 1
+		       <if test="cardDiv != null and cardDiv != '전체'">
+		       		AND CCD.CD_NAME = #{cardDiv}
+		       </if>
+		       <if test="cardCo != null and cardCo != '전체'">
+		       		AND CCO.CARD_CO_NAME = #{cardCo}
+		       </if>
+		       <if test="cardName != null and cardName != ''">
+		       		AND CC.CARD_NAME LIKE '%' || #{cardName} || '%'
+		       </if>
+		       <if test="cardNo != null and cardNo != ''">
+		       		AND CC.CARD_NO LIKE '%' || #{cardNo} || '%'
+		       </if>
+		       <if test="owner != null and owner != ''">
+		       		AND CC.OWNER LIKE '%' || #{owner} || '%'
+		       </if>
+		       <if test="user != null and user != ''">
+		       		AND E2.NAME LIKE '%' || #{user} || '%'
+		       </if> ) A
+	</select>
+	<!-- 신용카드 관리 리스트 조회 -->
+	<select id="getCrdtCardMgntList" parameterType="hashmap" resultType="hashmap">
+		SELECT A.CARD_MGNT_NO, A.CD_NAME, A.CARD_CO_NAME, A.CARD_NAME, A.CARD_NO, A.EPRTN_DATE,
+			   A.OWNER, A.REAL_USER
+		FROM(SELECT CC.CARD_MGNT_NO, CCD.CD_NAME, CCO.CARD_CO_NAME, CC.CARD_NAME, CC.CARD_NO,
+					TO_CHAR(CC.EPRTN_DATE, 'YYYY-MM-DD') AS EPRTN_DATE, CC.OWNER, 
+					E2.NAME AS REAL_USER, ROW_NUMBER() OVER(ORDER BY CARD_MGNT_NO DESC) AS RNUM
+		     FROM CRDT_CARD CC INNER JOIN CMN_CD CCD
+		                               ON CC.CARD_DIV_NO = CCD.CD_S
+		                              AND CCD.CD_L = 6
+		                       INNER JOIN CARD_CO CCO
+		                               ON CC.CRDT_CARD_CO_NO = CCO.CARD_CO_NO
+		                       INNER JOIN EMP E2
+		                               ON CC.REAL_USER_EMP_NO = E2.EMP_NO
+		     WHERE 1=1
+		       AND CC.DEL_WHETHER = 1
+		       <if test="cardDiv != null and cardDiv != '전체'">
+		       		AND CCD.CD_NAME = #{cardDiv}
+		       </if>
+		       <if test="cardCo != null and cardCo != '전체'">
+		       		AND CCO.CARD_CO_NAME = #{cardCo}
+		       </if>
+		       <if test="cardName != null and cardName != ''">
+		       		AND CC.CARD_NAME LIKE '%' || #{cardName} || '%'
+		       </if>
+		       <if test="cardNo != null and cardNo != ''">
+		       		AND CC.CARD_NO LIKE '%' || #{cardNo} || '%'
+		       </if>
+		       <if test="owner != null and owner != ''">
+		       		AND CC.OWNER LIKE '%' || #{owner} || '%'
+		       </if>
+		       <if test="user != null and user != ''">
+		       		AND E2.NAME LIKE '%' || #{user} || '%'
+		       </if> ) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<!-- 사원 리스트 가져오기 (사원검색 팝업) -->
+	<select id="getEmpSearchPopup" parameterType="hashmap" resultType="hashmap">
+		SELECT E.EMP_NO, D.DEPT_NAME, E.NAME
+		FROM HR_APNT HR INNER JOIN EMP E
+		                        ON HR.EMP_NO = E.EMP_NO
+		                       AND HR.FNSH_DATE IS NULL
+		                       AND HR.HR_APNT_NO != 0
+		                       <if test="empSearchTxt != null and empSearchTxt != ''">
+		                       		AND E.NAME LIKE '%' || #{empSearchTxt} || '%'
+		                       </if>
+		               INNER JOIN DEPT D
+		                       ON HR.DEPT_NO = D.DEPT_NO
+		ORDER BY E.EMP_NO
+	</select>
+	<!-- 카드 정보 가져오기 (수정 시) -->
+	<select id="getCrdtCardInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT CARD_MGNT_NO, CARD_DIV_NO, CRDT_CARD_CO_NO, CARD_NAME, CARD_NO, OWNER,
+			   REAL_USER_EMP_NO, E.NAME AS REAL_USER, TO_CHAR(EPRTN_DATE, 'YYYY-MM-DD') AS EPRTN_DATE,
+			   DEL_WHETHER
+		FROM CRDT_CARD CC INNER JOIN EMP E
+								  ON CC.REAL_USER_EMP_NO = E.EMP_NO
+		WHERE CARD_MGNT_NO = #{sltedCardMgntNo}
+	</select>
+	<!-- 신용카드 수정 -->
+	<update id="updateCrdtCard" parameterType="hashmap">
+		UPDATE CRDT_CARD SET CARD_DIV_NO = #{cardDivRadio}, CRDT_CARD_CO_NO = #{cardCoSlt}, 
+							 CARD_NAME = #{cardName}, CARD_NO = #{cardNo}, OWNER = #{owner},
+							 REAL_USER_EMP_NO = #{userEmpNo}, EPRTN_DATE = #{eprtnDate}
+		WHERE CARD_MGNT_NO = #{sltedCardMgntNo}
+	</update>
+	<!-- 신용카드 삭제 -->
+	<update id="delCrdtCard" parameterType="hashmap">
+		UPDATE CRDT_CARD SET DEL_WHETHER = 0
+		WHERE CARD_MGNT_NO IN (${sltedCardMgntNo})
+	</update>
+	
+	<!-- 계좌 관리 -->
+	<!-- 은행 리스트 가져오기 -->
+	<select id="getBankList" parameterType="hashmap" resultType="hashmap">
+		SELECT BANK_NO, BANK_NAME
+		FROM BANK
+		WHERE DEL_WHETHER = 1
+	</select>
+	<!-- 계좌 등록(계좌 신규등록 팝업) -->
+	<insert id="insertAcnt" parameterType="hashmap">
+		INSERT INTO ACNT(ACNT_MGNT_NO, ACNT_DIV_NO, BANK_NO, ACNT_NAME, ACNT_NO, OWNER,
+						 REAL_USER_EMP_NO)
+		VALUES(ACNT_MGNT_SEQ.NEXTVAL, #{acntDivRadio}, #{bankSlt}, #{acntName}, #{acntNo}, #{owner},
+			   #{userEmpNo})
+	</insert>
+	<!-- 계좌 관리 리스트 카운트 -->
+	<select id="getAcntMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM(SELECT A.ACNT_MGNT_NO, CC.CD_NAME, B.BANK_NAME, A.ACNT_NAME, A.ACNT_NO, A.OWNER, 
+		            E.NAME AS REAL_USER, ROW_NUMBER() OVER(ORDER BY A.ACNT_MGNT_NO DESC) AS RNUM
+		     FROM ACNT A INNER JOIN CMN_CD CC
+		                         ON ACNT_DIV_NO = CC.CD_S
+		                        AND CC.CD_L = 6
+		                 INNER JOIN EMP E
+		                         ON A.REAL_USER_EMP_NO = E.EMP_NO
+		                 INNER JOIN BANK B
+		                         ON A.BANK_NO = B.BANK_NO
+		     WHERE 1 = 1
+		       AND A.DEL_WHETHER = 1
+		       <if test="acntDiv != null and acntDiv != '전체'">
+			       AND CC.CD_NAME = #{acntDiv}		       
+		       </if>
+		       <if test="bank != null and bank != '전체'">
+			       AND B.BANK_NAME = #{bank}		       
+		       </if>
+		       <if test="acntName != null and acntName != ''">
+			       AND A.ACNT_NAME LIKE '%' || #{acntName} || '%'
+		       </if>
+		       <if test="acntNo != null and acntNo != ''">
+			       AND A.ACNT_NO LIKE '%' || #{acntNo} || '%'
+		       </if>
+		       <if test="owner != null and owner != ''">
+			       AND A.OWNER LIKE '%' || #{owner} || '%'
+		       </if>
+		       <if test="user != null and user != ''">
+			       AND E.NAME LIKE '%' || #{user} || '%'
+		       </if> ) A
+	</select>
+	<!-- 계좌 관리 리스트 조회 -->
+	<select id="getAcntMgntList" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ACNT_MGNT_NO, A.CD_NAME, A.BANK_NAME, A.ACNT_NAME, A.ACNT_NO, A.OWNER,
+			   A.REAL_USER
+		FROM(SELECT A.ACNT_MGNT_NO, CC.CD_NAME, B.BANK_NAME, A.ACNT_NAME, A.ACNT_NO, A.OWNER, 
+		            E.NAME AS REAL_USER, ROW_NUMBER() OVER(ORDER BY A.ACNT_MGNT_NO DESC) AS RNUM
+		     FROM ACNT A INNER JOIN CMN_CD CC
+		                         ON ACNT_DIV_NO = CC.CD_S
+		                        AND CC.CD_L = 6
+		                 INNER JOIN EMP E
+		                         ON A.REAL_USER_EMP_NO = E.EMP_NO
+		                 INNER JOIN BANK B
+		                         ON A.BANK_NO = B.BANK_NO
+		     WHERE 1 = 1
+		       AND A.DEL_WHETHER = 1
+		       <if test="acntDiv != null and acntDiv != '전체'">
+			       AND CC.CD_NAME = #{acntDiv}		       
+		       </if>
+		       <if test="bank != null and bank != '전체'">
+			       AND B.BANK_NAME = #{bank}		       
+		       </if>
+		       <if test="acntName != null and acntName != ''">
+			       AND A.ACNT_NAME LIKE '%' || #{acntName} || '%'
+		       </if>
+		       <if test="acntNo != null and acntNo != ''">
+			       AND A.ACNT_NO LIKE '%' || #{acntNo} || '%'
+		       </if>
+		       <if test="owner != null and owner != ''">
+			       AND A.OWNER LIKE '%' || #{owner} || '%'
+		       </if>
+		       <if test="user != null and user != ''">
+			       AND E.NAME LIKE '%' || #{user} || '%'
+		       </if> ) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<!-- 계좌 정보 가져오기 (수정 시) -->
+	<select id="getAcntInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT ACNT_MGNT_NO, ACNT_DIV_NO, BANK_NO, ACNT_NAME, ACNT_NO, OWNER, REAL_USER_EMP_NO,
+       		   E.NAME AS REAL_USER, DEL_WHETHER
+		FROM ACNT A INNER JOIN EMP E
+                    		ON A.REAL_USER_EMP_NO = E.EMP_NO
+		WHERE ACNT_MGNT_NO = #{sltedAcntMgntNo}
+	</select>
+	<!-- 계좌 수정 -->
+	<update id="updateAcnt" parameterType="hashmap">
+		UPDATE ACNT SET ACNT_DIV_NO = #{acntDivRadio}, BANK_NO = #{bankSlt}, ACNT_NAME = #{acntName},
+						ACNT_NO = #{acntNo}, OWNER = #{owner}, REAL_USER_EMP_NO = #{userEmpNo}
+		WHERE ACNT_MGNT_NO = #{sltedAcntMgntNo}
+	</update>
+	<!-- 계좌 삭제 -->
+	<update id="delAcnt" parameterType="hashmap">
+		UPDATE ACNT SET DEL_WHETHER = 0
+		WHERE ACNT_MGNT_NO IN (${sltedAcntMgntNo})
+	</update>
+	
+	<!-- 급여 계산 -->
+	<!-- 직위 리스트 가져오기 -->
+	<select id="getPosiList" parameterType="hashmap" resultType="hashmap">
+		SELECT POSI_NO, POSI_NAME
+		FROM POSI
+	</select>
+	<!-- 급여 계산 리스트 카운트 -->
+	<select id="getSalCalcCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM(SELECT SAL_CALC_NO, SC.EMP_NO, E.NAME, D.DEPT_NAME, P.POSI_NAME, TO_CHAR(STD_DATE, 'YYYY-MM') AS STD_DATE, 
+         		    TAX_PREV_SAL, NVL(TAX_NEXT_SAL, 0) AS TAX_NEXT_SAL, ROW_NUMBER() OVER(ORDER BY SC.SAL_CALC_NO DESC) AS RNUM
+     		 FROM SAL_CALC SC INNER JOIN EMP E
+             		                  ON SC.EMP_NO = E.EMP_NO
+                     		  INNER JOIN HR_APNT HA INNER JOIN DEPT D
+                             		                        ON HA.DEPT_NO = D.DEPT_NO
+                                     		        INNER JOIN POSI P
+                                             		        ON HA.POSI_NO = P.POSI_NO
+                              		  ON SC.EMP_NO = HA.EMP_NO
+                             		 AND HA.FNSH_DATE IS NULL
+                 		 LEFT OUTER JOIN SAL_BKDWN SB
+                         		      ON SC.EMP_NO = SB.EMP_NO
+     		 WHERE 1=1
+		       <if test="stdDate != null and stdDate != ''">
+			       AND TO_CHAR(SC.STD_DATE, 'YYYY-MM') = #{stdDate}
+		       </if> ) A
+	</select>
+	<!-- 급여 계산 리스트 조회 -->
+	<select id="getSalCalcList" parameterType="hashmap" resultType="hashmap">
+		SELECT A.SAL_CALC_NO, A.EMP_NO, A.NAME, A.DEPT_NAME, A.POSI_NAME, A.STD_DATE, A.TAX_PREV_SAL, A.TAX_NEXT_SAL
+		FROM(SELECT SAL_CALC_NO, SC.EMP_NO, E.NAME, D.DEPT_NAME, P.POSI_NAME, TO_CHAR(STD_DATE, 'YYYY-MM') AS STD_DATE, 
+         		    TO_CHAR(TAX_PREV_SAL, '999,999,999') AS TAX_PREV_SAL, TO_CHAR(NVL(TAX_NEXT_SAL, 0), '999,999,999') AS TAX_NEXT_SAL,
+         		    ROW_NUMBER() OVER(ORDER BY SC.SAL_CALC_NO DESC) AS RNUM
+     		 FROM SAL_CALC SC INNER JOIN EMP E
+             		                  ON SC.EMP_NO = E.EMP_NO
+                     		  INNER JOIN HR_APNT HA INNER JOIN DEPT D
+                             		                        ON HA.DEPT_NO = D.DEPT_NO
+                                     		        INNER JOIN POSI P
+                                             		        ON HA.POSI_NO = P.POSI_NO
+                              		  ON SC.EMP_NO = HA.EMP_NO
+                             		 AND HA.FNSH_DATE IS NULL
+                 		 LEFT OUTER JOIN SAL_BKDWN SB
+                         		      ON SC.EMP_NO = SB.EMP_NO
+     		 WHERE 1=1
+		       <if test="stdDate != null and stdDate != ''">
+			       AND TO_CHAR(SC.STD_DATE, 'YYYY-MM') = #{stdDate}
+		       </if> ) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<!-- 급여 계산 리스트 삽입 -->
+	<insert id="insertSalCalcList">
+		INSERT INTO SAL_CALC(SAL_CALC_NO, EMP_NO, STD_DATE, TAX_PREV_SAL)
+		SELECT SAL_CALC_SEQ.NEXTVAL, A.EMP_NO, A.STD_DATE, A.TAX_PREV_SAL
+		FROM(SELECT ES.EMP_NO, TO_CHAR(SYSDATE, 'YYYY-MM-DD') AS STD_DATE, ROUND(SAL/12, 0) AS TAX_PREV_SAL, SC.SAL_CALC_NO
+		     FROM EMP_SAL ES INNER JOIN (SELECT TO_CHAR(SYSDATE, 'MM') AS MM
+		                                 FROM DUAL) M
+		                             ON 1 = 1
+		                     LEFT OUTER JOIN SAL_CALC SC
+		                                  ON ES.EMP_NO = SC.EMP_NO
+		                                 AND TO_CHAR(ES.STD_YEAR, 'YYYY') || M.MM = TO_CHAR(SC.STD_DATE, 'YYYYMM')
+		     WHERE TO_CHAR(STD_YEAR, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+		     ORDER BY ES.EMP_NO ASC) A
+		WHERE A.SAL_CALC_NO IS NULL
+	</insert>
+	<!-- 급여 자동 계산 -->
+	<insert id="insertSalAutoCalc" parameterType="hashmap">
+		INSERT INTO SAL_BKDWN
+		SELECT SAL_BKDWN_SEQ.NEXTVAL, A.EMP_NO, A.STD_DATE, ROUND(A.TAX_PREV_SAL, 0), 100000 AS TAX_DDUCT, 
+		       ROUND((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.045, 0) AS NTN_PNSN, ROUND((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323, 0) AS HTH_INSRNCE,
+		       ROUND(((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323) * 0.0851, 0) AS LTM_CARE, ROUND((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0065, 0) AS EMPMT_INSRNCE,
+		       ROUND(A.INCM_TAX, 0), ROUND(ROUND(A.INCM_TAX, 0) * 0.1, 0) AS AREA_INCM_TAX, ROUND(((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.045) + ((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323)
+		       + (((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323) * 0.0851) + ((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0065) + ROUND(A.INCM_TAX, 0) + ROUND(A.INCM_TAX, 0) * 0.1, 0) AS DDUCT_SUM,
+		       ROUND(ROUND(A.TAX_PREV_SAL, 0) - (100000 + ((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.045) + ((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323)
+		       + (((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0323) * 0.0851) + ((ROUND(A.TAX_PREV_SAL, 0) - 100000) * 0.0065) + ROUND(A.INCM_TAX, 0) + ROUND(A.INCM_TAX, 0) * 0.1), 0) AS REAL_SAL
+		FROM(SELECT SC.EMP_NO, STD_DATE, TAX_PREV_SAL, NVL(CASE WHEN FI.FAMCNT = 1
+		                                                        THEN NUMOF_FAM1 * 0.8
+		                                                        WHEN FI.FAMCNT = 2
+		                                                        THEN NUMOF_FAM2 * 0.8
+		                                                        WHEN FI.FAMCNT = 3
+		                                                        THEN NUMOF_FAM3 * 0.8
+		                                                        WHEN FI.FAMCNT = 4
+		                                                        THEN NUMOF_FAM4 * 0.8
+		                                                        WHEN FI.FAMCNT = 5
+		                                                        THEN NUMOF_FAM5 * 0.8
+		                                                        WHEN FI.FAMCNT = 6
+		                                                        THEN NUMOF_FAM6 * 0.8
+		                                                        WHEN FI.FAMCNT = 7
+		                                                        THEN NUMOF_FAM7 * 0.8
+		                                                        WHEN FI.FAMCNT = 8
+		                                                        THEN NUMOF_FAM8 * 0.8
+		                                                        WHEN FI.FAMCNT = 9 
+		                                                        THEN NUMOF_FAM9 * 0.8
+		                                                        WHEN FI.FAMCNT = 10
+		                                                        THEN NUMOF_FAM10 * 0.8
+		                                                        WHEN FI.FAMCNT = 11
+		                                                        THEN NUMOF_FAM11 * 0.8
+		                                                    END, 0)  AS INCM_TAX
+		     FROM SAL_CALC SC INNER JOIN SPLFD_AMT SA
+		                              ON <![CDATA[SC.TAX_PREV_SAL >= (SA.BASIC_SAL_ABV * 1000)]]>
+		                             AND <![CDATA[SC.TAX_PREV_SAL < (SA.BASIC_SAL_BLW * 1000)]]>
+		                 LEFT OUTER JOIN (SELECT EMP_NO, SUM(CASE WHEN FAM_DIV = 0 AND <![CDATA[TO_CHAR(SYSDATE, 'YYYY') - TO_CHAR(BIRTH, 'YYYY') <= 20]]>
+		                                                          THEN 2
+		                                                          ELSE 1
+		                                                     END) + 1 FAMCNT
+		                                  FROM FAM_INFO
+		                                  GROUP BY EMP_NO) FI
+		                              ON SC.EMP_NO = FI.EMP_NO
+		                 LEFT OUTER JOIN SAL_BKDWN SB
+                                      ON SC.EMP_NO = SB.EMP_NO
+                                     AND TO_CHAR(SC.STD_DATE, 'YYYY-MM') = TO_CHAR(SB.STD_YEAR_MON, 'YYYY-MM')
+		     WHERE TO_CHAR(STD_DATE, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')
+		       AND SB.SAL_BKDWN_NO IS NULL) A
+	</insert>
+	<!-- 계산한 실급여를 급여 계산 테이블에 업데이트 -->
+	<update id="updateSalAutoCalc" parameterType="hashmap">
+		UPDATE SAL_CALC SC
+		SET TAX_NEXT_SAL = (SELECT SB.REAL_SAL
+        			        FROM SAL_BKDWN SB
+                   			WHERE TO_CHAR(SB.STD_YEAR_MON, 'YYYY-MM') = TO_CHAR(SC.STD_DATE, 'YYYY-MM')
+                    		AND SB.EMP_NO = SC.EMP_NO)
+	</update>
+	<!-- 급여 명세 내역 (팝업) -->
+	<select id="getSalBkdwnHist" parameterType="hashmap" resultType="hashmap">
+		SELECT TO_CHAR(STD_YEAR_MON, 'YYYY-MM') AS STD_YEAR_MON, E.NAME, D.DEPT_NAME, P.POSI_NAME, TO_CHAR(A.ENTRY_DATE, 'YYYY-MM-DD') AS ENTRY_DATE,
+		       TO_CHAR(BASIC_SAL, '999,999,999') AS BASIC_SAL, TO_CHAR(TAX_DDUCT, '999,999,999') AS TAX_DDUCT, TO_CHAR(BASIC_SAL - TAX_DDUCT, '999,999,999') AS TAX_PREV_PROV_SUM,
+		       TO_CHAR(NTN_PNSN, '999,999,999') AS NTN_PNSN, TO_CHAR(HTH_INSRNCE, '999,999,999') AS HTH_INSRNCE, TO_CHAR(LTM_CARE, '999,999,999') AS LTM_CARE,
+		       TO_CHAR(EMPMT_INSRNCE, '999,999,999') AS EMPMT_INSRNCE, TO_CHAR(INCM_TAX, '999,999,999') AS INCM_TAX, TO_CHAR(AREA_INCM_TAX, '999,999,999') AS AREA_INCM_TAX,
+		       TO_CHAR(DDUCT_SUM, '999,999,999') AS DDUCT_SUM, TO_CHAR(REAL_SAL, '999,999,999') AS REAL_SAL
+		FROM SAL_BKDWN SB INNER JOIN SAL_CALC SC
+		                          ON SB.EMP_NO = SC.EMP_NO
+		                  INNER JOIN EMP E
+		                          ON SB.EMP_NO = E.EMP_NO
+		                  INNER JOIN HR_APNT HA INNER JOIN DEPT D
+		                                                ON HA.DEPT_NO = D.DEPT_NO
+		                                        INNER JOIN POSI P
+		                                                ON HA.POSI_NO = P.POSI_NO
+		                          ON SB.EMP_NO = HA.EMP_NO
+		                         AND HA.FNSH_DATE IS NULL
+		                  INNER JOIN (SELECT EMP_NO, MIN(APNT_DATE) AS ENTRY_DATE
+		                              FROM HR_APNT
+		                              GROUP BY EMP_NO) A
+		                          ON SB.EMP_NO = A.EMP_NO
+		WHERE SC.SAL_CALC_NO = #{sltedSalCalcNo}
+	</select>
+	<!-- 급여 계산 결재권자 가져오기 -->
+	<select id="getSalCalcApvAuther" parameterType="hashmap" resultType="hashmap">
+		SELECT EMP_NO 
+		FROM DEPT D INNER JOIN (SELECT DEPT_NO, EMP_NO
+		                        FROM HR_APNT 
+		                        WHERE FNSH_DATE IS NULL
+		                          AND DMNGR_DIV = 0
+		                           OR POSI_NO = 8
+		                          AND EMP_NO != '20190000') H
+		                    ON D.DEPT_NO = H.DEPT_NO AND D.DEPT_NO IN (4, 19)
+	</select>
+	<!-- 급여 계산 결재리스트 가져오기 -->
+	<select id="getSalCalcApvList" parameterType="hashmap" resultType="hashmap">
+		SELECT SAL_CALC_NO, SC.EMP_NO, E.NAME, D.DEPT_NAME, P.POSI_NAME, TO_CHAR(STD_DATE, 'YYYY-MM-DD')  AS STD_DATE, 
+               TO_CHAR(TAX_PREV_SAL, '999,999,999') AS TAX_PREV_SAL, TO_CHAR(NVL(TAX_NEXT_SAL, 0), '999,999,999') AS TAX_NEXT_SAL
+        FROM SAL_CALC SC INNER JOIN EMP E
+           		                 ON SC.EMP_NO = E.EMP_NO
+                         INNER JOIN HR_APNT HA INNER JOIN DEPT D
+                                                       ON HA.DEPT_NO = D.DEPT_NO
+                                 		       INNER JOIN POSI P
+                                           		       ON HA.POSI_NO = P.POSI_NO
+                            	 ON SC.EMP_NO = HA.EMP_NO
+                           		AND HA.FNSH_DATE IS NULL
+               		LEFT OUTER JOIN SAL_BKDWN SB
+                         	     ON SC.EMP_NO = SB.EMP_NO
+   		WHERE 1=1
+        <if test="stdDate != null and stdDate != ''">
+        	AND TO_CHAR(SC.STD_DATE, 'YYYY-MM') = #{apvStdDate}
+        </if>
+        ORDER BY SAL_CALC_NO DESC
+	</select>
+	<!-- 급여 계산 결재상태 가져오기 -->
+	<!-- 0: 상신, 1: 진행중, 2: 종결, 3: 전결, 4: 반려 -->
+	<select id="getSalCalcApvState" parameterType="hashmap" resultType="String">
+		SELECT CASE WHEN (SELECT COUNT(*)
+		                  FROM APV_LINE AL
+		                  WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                  FROM APV_LINE AL
+		                                                  WHERE A.APV_NO = AL.APV_NO
+		                                                  AND AL.APV_STATE_NO = 0)
+		            THEN '상신'
+		            WHEN (SELECT COUNT(*)
+		                  FROM APV_LINE AL
+		                  WHERE A.APV_NO = AL.APV_NO) = (SELECT COUNT(*)
+		                                                 FROM APV_LINE AL
+		                                                 WHERE A.APV_NO = AL.APV_NO
+		                                                   AND AL.APV_STATE_NO = 3)  
+		            THEN '종결'
+		            WHEN (SELECT COUNT(*)
+		                  FROM APV_LINE AL
+		                  WHERE A.APV_NO = AL.APV_NO
+		                    AND AL.APV_STATE_NO = 2) >= 1  
+		            THEN '전결'
+		            WHEN (SELECT COUNT(*)
+		                  FROM APV_LINE AL
+		                  WHERE A.APV_NO = AL.APV_NO
+		                    AND AL.APV_STATE_NO = 1) >= 1  
+		            THEN '반려'
+		            ELSE '진행중'
+		        END AS DOC_STATE
+		FROM APV A
+		WHERE A.APV_NO = (SELECT MAX(APV_NO) AS APV_NO
+						 FROM APV
+						 WHERE OUT_APV_TYPE_NO = 2
+						   AND TO_CHAR(IMP_DATE, 'YYYY-MM') = #{stdDate})
+	</select>
+	<!-- 급여조회  -->
+	<select id="getSalAsk" parameterType="hashmap" resultType="hashmap">
+		SELECT TO_CHAR(STD_YEAR_MON, 'YYYY-MM') AS STD_YEAR_MON, E.NAME, D.DEPT_NAME, P.POSI_NAME, TO_CHAR(A.ENTRY_DATE, 'YYYY-MM-DD') AS ENTRY_DATE,
+		       TO_CHAR(BASIC_SAL, '999,999,999') AS BASIC_SAL, TO_CHAR(TAX_DDUCT, '999,999,999') AS TAX_DDUCT, TO_CHAR(BASIC_SAL - TAX_DDUCT, '999,999,999') AS TAX_PREV_PROV_SUM,
+		       TO_CHAR(NTN_PNSN, '999,999,999') AS NTN_PNSN, TO_CHAR(HTH_INSRNCE, '999,999,999') AS HTH_INSRNCE, TO_CHAR(LTM_CARE, '999,999,999') AS LTM_CARE,
+		       TO_CHAR(EMPMT_INSRNCE, '999,999,999') AS EMPMT_INSRNCE, TO_CHAR(INCM_TAX, '999,999,999') AS INCM_TAX, TO_CHAR(AREA_INCM_TAX, '999,999,999') AS AREA_INCM_TAX,
+		       TO_CHAR(DDUCT_SUM, '999,999,999') AS DDUCT_SUM, TO_CHAR(REAL_SAL, '999,999,999') AS REAL_SAL
+		FROM SAL_BKDWN SB INNER JOIN SAL_CALC SC
+		                          ON SB.EMP_NO = SC.EMP_NO
+		                  INNER JOIN EMP E
+		                          ON SB.EMP_NO = E.EMP_NO
+		                  INNER JOIN HR_APNT HA INNER JOIN DEPT D
+		                                                ON HA.DEPT_NO = D.DEPT_NO
+		                                        INNER JOIN POSI P
+		                                                ON HA.POSI_NO = P.POSI_NO
+		                          ON SB.EMP_NO = HA.EMP_NO
+		                         AND HA.FNSH_DATE IS NULL
+		                  INNER JOIN (SELECT EMP_NO, MIN(APNT_DATE) AS ENTRY_DATE
+		                              FROM HR_APNT
+		                              GROUP BY EMP_NO) A
+		                          ON SB.EMP_NO = A.EMP_NO
+      WHERE SC.EMP_NO = #{sEmpNo}
+        AND TO_CHAR(STD_YEAR_MON, 'YYYY-MM') = #{stdDate}
+	</select>
+	
+	
+	<!-- 최익섭 -->
+	
+	<!-- 매입채무 관리 리스트 카운트ㅡ-->
+	<select id="getPurcDebtMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM LOAN L
+		WHERE LOAN_DIV_NO = 1
+		<!-- 기준일자 -->
+		<if test="date_start != null and date_start !='' and date_end != null and date_end != ''">
+			AND TO_CHAR(L.WRITE_DAY, 'YYYY-MM-DD') BETWEEN #{date_start} AND #{date_end}
+		</if>
+		<!-- 적요명 -->
+		<if test="CsptsNameDiv != null and CsptsNameDiv != '' and CsptsNameDiv != '전체'">
+			AND L.CSPTS_NO = #{CsptsNameDiv}
+		</if>
+		<!-- 거래처 -->
+		<if test="CstmDiv != null and CstmDiv != null and CstmDiv != '전체'">
+			AND L.CSTM_NO = #{CstmDiv}
+		</if>
+	</select>
+
+	<!-- 매입채무 관리 리스트 가져오기 -->
+	<select id="getPurcDebtMgntList" parameterType="hashmap" resultType="hashmap">
+	SELECT P.LOAN_NO, TO_CHAR(P.WRITE_DAY, 'YYYY/MM/DD') AS WRITE_DAY, P.CSTM_NAME, P.CSPTS_NAME, TO_CHAR(P.DLINE_DAY, 'YYYY/MM/DD') AS DLINE_DAY, P.LOAN_AMT, P.TOTAL_PSTV_PROV_AMT, P.TOTAL_NSTV_PROV_AMT
+	FROM(SELECT A.LOAN_NO, A.WRITE_DAY, C.CSTM_NAME, S.CSPTS_NAME, A.DLINE_DAY, A.LOAN_AMT, NVL(B.총기지급액,0) AS TOTAL_PSTV_PROV_AMT, A.LOAN_AMT - NVL(B.총기지급액, 0) AS TOTAL_NSTV_PROV_AMT, ROW_NUMBER() OVER(ORDER BY A.WRITE_DAY DESC) AS RNUM
+		 FROM (SELECT *
+		     FROM LOAN L INNER JOIN LOAN_DIV D
+		                           ON L.LOAN_DIV_NO = D.LOAN_DIV_NO
+		     WHERE D.LOAN_DIV_NAME = '매입채무') A LEFT JOIN (SELECT L.LOAN_NO, SUM(R.AMT) AS 총기지급액
+		                                                        FROM LOAN_RPAY R INNER JOIN LOAN L
+		                                                                         ON R.LOAN_NO = L.LOAN_NO
+		                                                                         INNER JOIN LOAN_DIV D
+		                                                                               ON L.LOAN_DIV_NO = D.LOAN_DIV_NO
+		                                                        WHERE D.LOAN_DIV_NAME = '매입채무' 
+		                                                        GROUP BY L.LOAN_NO) B
+		                                                    ON A.LOAN_NO = B.LOAN_NO
+		                                                    INNER JOIN CSTM C
+		                                                          ON A.CSTM_NO = C.CSTM_NO
+		                                                          INNER JOIN CSPTS S
+		                                                                ON A.CSPTS_NO = S.CSPTS_NO
+		 WHERE 1 =1
+		 	<!-- 기준일자 -->
+			<if test="date_start != null and date_start !='' and date_end != null and date_end != ''">
+				AND TO_CHAR(A.WRITE_DAY,'YYYY-MM-DD') BETWEEN #{date_start} AND #{date_end}
+			</if>
+			<!-- 적요명 -->
+			<if test="CsptsNameDiv != null and CsptsNameDiv != '' and CsptsNameDiv != '전체'">
+				AND A.CSPTS_NO = #{CsptsNameDiv}
+			</if>
+			<!-- 거래처 -->
+			<if test="CstmDiv != null and CstmDiv != '' and CstmDiv != '전체'">
+				AND A.CSTM_NO = #{CstmDiv}
+			</if>) P 
+	WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>	
+	
+	
+	<!-- 선택된 매입채무 정보 가져오기 (수정 시) -->
+	<select id="getPurcDebtInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT LOAN_NO, EMP_NO, CSTM_NO, LOAN_DIV_NO, LOAN_TYPE_NO, CSPTS_NO, LOAN_AMT, MEMO, TO_CHAR(WRITE_DAY,'YYYY/MM/DD') AS WRITE_DAY, TO_CHAR(DLINE_DAY, 'YYYY/MM/DD') AS DLINE_DAY
+		FROM LOAN
+		WHERE LOAN_NO = #{sltedPurcDebtNo}
+	</select>
+	
+		<!-- 선택된 매출채권 정보 가져오기 (수정 시) -->
+	<select id="getSalesBondInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT LOAN_NO, EMP_NO, CSTM_NO, LOAN_DIV_NO, LOAN_TYPE_NO, CSPTS_NO, LOAN_AMT, MEMO, TO_CHAR(WRITE_DAY,'YYYY/MM/DD') AS WRITE_DAY, TO_CHAR(DLINE_DAY, 'YYYY/MM/DD') AS DLINE_DAY
+		FROM LOAN
+		WHERE LOAN_NO = #{sltedSalesBondNo}
+	</select>
+	
+	
+	<!-- 매입채무 수정 -->
+	<update id="updatePurcDebt" parameterType="hashmap">
+        UPDATE LOAN SET DLINE_DAY = #{dlineDay} , CSTM_NO = #{cstmSlt} , CSPTS_NO = #{csptsNameSlt}, 
+                                    LOAN_TYPE_NO = #{loanTypeSlt}, LOAN_AMT = #{loanAmt}, MEMO = #{memo}
+        WHERE LOAN_NO = #{sltedPurcDebtNo}
+	</update>
+	
+	<!-- 매입채무 삭제  -->
+	<update id="delPurcDebt" parameterType="hashmap">
+		DELETE FROM LOAN
+		WHERE LOAN_NO = #{sltedDelPurcDebtNo}
+	</update>
+	
+	<!-- 매출채권 삭제  -->
+	<update id="delSalesBond" parameterType="hashmap">
+		DELETE FROM LOAN
+		WHERE LOAN_NO = #{sltedDelSalesBondNo}
+	</update>
+	
+	
+	<!-- 매출채권 수정 -->
+	<update id="updateSalesBond" parameterType="hashmap">
+        UPDATE LOAN SET DLINE_DAY = #{dlineDay} , CSTM_NO = #{cstmSlt} , CSPTS_NO = #{csptsNameSlt}, 
+                                    LOAN_TYPE_NO = #{loanTypeSlt}, LOAN_AMT = #{loanAmt}, MEMO = #{memo}
+        WHERE LOAN_NO = #{sltedSalesBondNo}
+	</update>
+	
+	<!-- 매출채권 관리 리스트 카운트ㅡ-->
+	<select id="getSalesBondMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM LOAN L 
+		WHERE LOAN_DIV_NO = 2
+			<!-- 기준일자 -->
+			<if test="date_start != null and date_start !='' and date_end != null and date_end != ''">
+				AND TO_CHAR(L.WRITE_DAY,'YYYY-MM-DD') BETWEEN #{date_start} AND #{date_end}
+			</if>
+			<!-- 적요명 -->
+			<if test="CsptsNameDiv != null and CsptsNameDiv != '' and CsptsNameDiv != '전체' ">
+				AND L.CSPTS_NO = #{CsptsNameDiv}
+			</if>
+			<!-- 거래처 -->
+			<if test="CstmDiv != null and CstmDiv != '' and CstmDiv != '전체'">
+				AND L.CSTM_NO = #{CstmDiv}
+			</if>
+	</select>
+	
+	<!-- 매출채권 관리 리스트 가져오기 -->
+	
+	<select id="getSalesBondMgntList" parameterType="hashmap" resultType="hashmap">
+	SELECT P.LOAN_NO, TO_CHAR(P.WRITE_DAY, 'YYYY/MM/DD') AS WRITE_DAY, P.CSTM_NAME, P.CSPTS_NAME, TO_CHAR(P.DLINE_DAY, 'YYYY/MM/DD') AS DLINE_DAY, P.LOAN_AMT, P.TOTAL_PSTV_COLLECT_AMT, P.TOTAL_NSTV_COLLECT_AMT
+	FROM(SELECT A.LOAN_NO, A.WRITE_DAY, C.CSTM_NAME, S.CSPTS_NAME, A.DLINE_DAY, A.LOAN_AMT, NVL(B.총기수금액,0) AS TOTAL_PSTV_COLLECT_AMT, A.LOAN_AMT - NVL(B.총기수금액, 0) AS TOTAL_NSTV_COLLECT_AMT, ROW_NUMBER() OVER(ORDER BY A.WRITE_DAY DESC) AS RNUM
+		FROM (SELECT *
+		     FROM LOAN L INNER JOIN LOAN_DIV D
+		                           ON L.LOAN_DIV_NO = D.LOAN_DIV_NO
+		     WHERE D.LOAN_DIV_NAME = '매출채권') A LEFT JOIN (SELECT L.LOAN_NO, SUM(R.AMT) AS 총기수금액
+		                                                        FROM LOAN_RPAY R INNER JOIN LOAN L
+		                                                                         ON R.LOAN_NO = L.LOAN_NO
+		                                                                         INNER JOIN LOAN_DIV D
+		                                                                               ON L.LOAN_DIV_NO = D.LOAN_DIV_NO
+		                                                        WHERE D.LOAN_DIV_NAME = '매출채권' 
+		                                                        GROUP BY L.LOAN_NO) B
+		                                                    ON A.LOAN_NO = B.LOAN_NO
+		                                                    INNER JOIN CSTM C
+		                                                          ON A.CSTM_NO = C.CSTM_NO
+		                                                          INNER JOIN CSPTS S
+		                                                                ON A.CSPTS_NO = S.CSPTS_NO
+		 WHERE 1=1
+		 	<!-- 기준일자 -->
+			<if test="date_start != null and date_start !='' and date_end != null and date_end != ''">
+				AND TO_CHAR(A.WRITE_DAY,'YYYY-MM-DD') BETWEEN #{date_start} AND #{date_end}
+			</if>
+			<!-- 적요명 -->
+			<if test="CsptsNameDiv != null and CsptsNameDiv != '' and CsptsNameDiv != '전체'">
+				AND A.CSPTS_NO = #{CsptsNameDiv}
+			</if>
+			<!-- 거래처 -->
+			<if test="CstmDiv != null and CstmDiv != '' and CstmDiv != '전체'">
+				AND A.CSTM_NO = #{CstmDiv}
+			</if>) P
+	WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	
+	
+	<!-- 적요명 구분 셀렉 리스트 가져오기 -->
+	<select id="getCsptsNameDivList" parameterType="hashmap" resultType="hashmap">
+		SELECT CSPTS_NO, CSPTS_NAME
+		FROM CSPTS
+		WHERE DEL_WHETHER = '1'
+	</select>
+	
+	<!-- 거래처 구분 셀렉 리스트 가져오기 -->
+	<select id="getCstmDivList" parameterType="hashmap" resultType="hashmap">
+		SELECT CSTM_NO, CSTM_NAME
+		FROM CSTM
+		WHERE DEL_WHETHER = '1'
+	</select>
+	
+	<!-- 대출유형 구분 셀렉 리스트 가져오기 -->
+	<select id="getLoanTypeDivList" parameterType="hashmap" resultType="hashmap">
+		SELECT LOAN_TYPE_NO, LOAN_TYPE_NAME
+		FROM LOAN_TYPE
+		WHERE DEL_WHETHER = '1'
+	</select>
+	
+	<!-- 대출 등록하기 -->
+	<!-- 매입채무 등록 -->
+	<insert id="insertPurcDebt" parameterType="hashmap">
+		INSERT INTO LOAN(LOAN_NO, EMP_NO, CSTM_NO, LOAN_DIV_NO, LOAN_TYPE_NO, CSPTS_NO, LOAN_AMT, MEMO, WRITE_DAY, DLINE_DAY)
+		VALUES (LN_SEQ.NEXTVAL, #{sEmpNo}, #{cstmSlt}, 1, #{loanTypeSlt}, #{csptsNameSlt}, #{loanAmt}, #{memo}, SYSDATE, #{dlineDay})
+	</insert>
+	
+	<!-- 매출채권 등록 -->
+	<insert id="insertSalesBond" parameterType="hashmap">
+		INSERT INTO LOAN(LOAN_NO, EMP_NO, CSTM_NO, LOAN_DIV_NO, LOAN_TYPE_NO, CSPTS_NO, LOAN_AMT, MEMO, WRITE_DAY, DLINE_DAY)
+		VALUES (LN_SEQ.NEXTVAL, #{sEmpNo}, #{cstmSlt}, 2, #{loanTypeSlt}, #{csptsNameSlt}, #{loanAmt}, #{memo}, SYSDATE, #{dlineDay})
+	</insert>
+	
+	
+	
+	
+	<!-- 매입채무, 매출채권 상환 -->
+	<insert id="rpayRtn" parameterType="hashmap">
+		INSERT INTO LOAN_RPAY(LOAN_RPAY_NO, EMP_NO, LOAN_NO, AMT, RPAY_DAY, WRITE_DAY)
+		VALUES (AN_SEQ.NEXTVAL, #{sEmpNo}, #{sltedRpayRtnNo}, #{rpayRtnAmt}, #{rpayRtnDay}, SYSDATE)
+	</insert>
+	
+	<!-- 상세내역(매입채무,매출채권) 가져오기-->
+	<select id="getDtlHist" parameterType="hashmap" resultType="hashmap">
+		SELECT A.LOAN_NO, TO_CHAR(A.WRITE_DAY, 'YYYY/MM/DD') AS WRITE_DAY, TO_CHAR(A.DLINE_DAY,'YYYY/MM/DD') AS DLINE_DAY, A.CSTM_NAME, A.CSPTS_NAME, A.LOAN_TYPE_NAME, A.LOAN_AMT, A.MEMO, NVL(B.TOTAL_PSTV_PROV_AMT,0) AS TOTAL_PSTV_PROV_AMT, A.LOAN_AMT - NVL(B.TOTAL_PSTV_PROV_AMT, 0) AS TOTAL_NSTV_PROV_AMT
+		FROM   (SELECT L.LOAN_NO, L.WRITE_DAY, L.DLINE_DAY, L.MEMO, C.CSTM_NAME, S.CSPTS_NAME, T.LOAN_TYPE_NAME, L.LOAN_AMT
+		        FROM LOAN L INNER JOIN CSTM C
+		                          ON L.CSTM_NO = C.CSTM_NO
+		                          INNER JOIN CSPTS S
+		                                ON L.CSPTS_NO = S.CSPTS_NO
+		                                INNER JOIN LOAN_TYPE T
+		                                      ON L.LOAN_TYPE_NO = T.LOAN_TYPE_NO) A LEFT JOIN (SELECT L.LOAN_NO, SUM(R.AMT) AS TOTAL_PSTV_PROV_AMT
+		                                                                                        FROM LOAN_RPAY R INNER JOIN LOAN L
+		                                                                                                         ON R.LOAN_NO = L.LOAN_NO
+		                                                                                                         INNER JOIN LOAN_DIV D
+		                                                                                                               ON L.LOAN_DIV_NO = D.LOAN_DIV_NO
+		                                                                                        GROUP BY L.LOAN_NO) B
+		                                                                                 ON A.LOAN_NO = B.LOAN_NO
+		WHERE A.LOAN_NO = #{sltedDtlHistNo}
+	</select>
+	
+	
+	<!-- 상환(반환)내역 가져오기  -->
+	<select id="getRpayRtnHistList" parameterType="hashmap" resultType="hashmap">
+		SELECT L.LOAN_RPAY_NO, L.LOAN_NO, E.NAME, L.AMT, TO_CHAR(L.RPAY_DAY,'YYYY/MM/DD') AS RPAY_DAY, TO_CHAR(L.WRITE_DAY,'YYYY/MM/DD') AS WRITE_DAY 
+		FROM LOAN_RPAY L INNER JOIN EMP E
+		                       ON L.EMP_NO = E.EMP_NO
+		WHERE L.LOAN_NO = #{sltedDtlHistNo}
+		ORDER BY RPAY_DAY DESC
+	</select>
+	
+	<!-- 계정과목 관리 리스트 카운트  -->
+	<select id="getUnitSbjctMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM UNIT_SBJ
+		WHERE 1=1
+		<if test="unitSbjct != null and unitSbjct != ''">
+			AND UNIT_SBJ_NAME LIKE '%' || #{unitSbjct} || '%'
+		</if>
+	</select>
+	
+	<!-- 선택된 계정과목 정보 가져오기 (수정 시) -->
+	<select id="getUnitSbjctInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT UNIT_SBJ_NO, UNIT_SBJ_NAME
+		FROM UNIT_SBJ
+		WHERE UNIT_SBJ_NO = #{sltedUnitSbjctNo}
+	</select>
+	
+	<!-- 계정과목 수정 -->
+	<update id="updateUnitSbjct" parameterType="hashmap">
+        UPDATE UNIT_SBJ SET UNIT_SBJ_NAME = #{unitSbjctName}
+        WHERE UNIT_SBJ_NO = #{sltedUnitSbjctNo}
+	</update>
+
+	
+	
+	<!-- 계정과목 삭제  -->
+	<update id="delUnitSbjct" parameterType="hashmap">
+		DELETE FROM UNIT_SBJ
+		WHERE UNIT_SBJ_NO = #{sltedDelUnitSbjctNo}
+	</update>
+	
+	
+	<!-- 계정과목 관리 리스트 가져오기 -->
+	<select id="getUnitSbjctMgntList" parameterType="hashmap" resultType="hashmap">
+		SELECT UNIT_SBJ_NO, UNIT_SBJ_NAME
+		FROM(SELECT UNIT_SBJ_NO, UNIT_SBJ_NAME, ROW_NUMBER() OVER(ORDER BY UNIT_SBJ_NO DESC) AS RNUM
+		     FROM UNIT_SBJ
+		     WHERE 1=1
+		    <if test="unitSbjct != null and unitSbjct != ''">
+			AND UNIT_SBJ_NAME LIKE '%' || #{unitSbjct} || '%' 
+			</if>)
+		WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+	</select>
+	
+	<!-- 계정과목 등록하기 -->
+	
+	<insert id="insertUnit" parameterType="hashmap">
+		INSERT INTO UNIT_SBJ(UNIT_SBJ_NO, UNIT_SBJ_NAME)
+		VALUES (UNIT_SBJ_SEQ.NEXTVAL, #{unitSbjctName})
+	</insert>
+	
+	
+	
+	<!-- 거래처 관리 리스트 카운트  -->
+	<select id="getCstmMgntCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CSTM
+		WHERE DEL_WHETHER = 1
+		<if test="cstm != null and cstm != ''">
+			AND CSTM_NAME LIKE '%' || #{cstm} || '%'
+		</if>
+		<if test="bsnsNo != null and bsnsNo != ''">
+			AND BSNS_NO LIKE '%' || #{bsnsNo} || '%'
+		</if>
+		
+	</select>
+	
+	<!-- 선택된 거래처 정보 가져오기 (수정 시) -->
+	<select id="getCstmInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT CSTM_NO, CSTM_NAME, BSNS_NO
+		FROM CSTM
+		WHERE CSTM_NO = #{sltedCstmNo}
+	</select>
+	
+	<!-- 거래처 수정 -->
+	<update id="updateCstm" parameterType="hashmap">
+        UPDATE CSTM SET CSTM_NAME = #{cstmName}, BSNS_NO = #{bsnsNo}
+        WHERE CSTM_NO = #{sltedCstmNo}
+	</update>
+
+	<!-- 거래처 삭제  -->
+	<update id="delCstm" parameterType="hashmap">
+		UPDATE CSTM SET DEL_WHETHER = 0
+		WHERE CSTM_NO = #{sltedDelCstmNo}
+		AND (SELECT COUNT(*)
+			 FROM LOAN
+			 WHERE CSTM_NO = #{sltedDelCstmNo}) = 0
+	</update>
+	
+	
+	<!-- 거래처 관리 리스트 가져오기 -->
+	<select id="getCstmMgntList" parameterType="hashmap" resultType="hashmap">
+		SELECT CSTM_NO, CSTM_NAME, BSNS_NO
+		FROM(SELECT CSTM_NO, CSTM_NAME, BSNS_NO,ROW_NUMBER() OVER(ORDER BY CSTM_NO DESC) AS RNUM
+		     FROM CSTM
+		     WHERE DEL_WHETHER = 1
+		    <if test="cstm != null and cstm != ''">
+			AND CSTM_NAME LIKE '%' || #{cstm} || '%'
+			</if>
+			<if test="bsnsNo != null and bsnsNo != ''">
+			AND BSNS_NO LIKE '%' || #{bsnsNo} || '%'
+			</if>
+			)
+		WHERE RNUM BETWEEN #{startCnt} AND #{endCnt}
+		
+	</select>
+	
+	<!-- 거래처 등록하기 -->
+	<insert id="insertCstm" parameterType="hashmap">
+		INSERT INTO CSTM(CSTM_NO, CSTM_NAME, BSNS_NO)
+		VALUES (CN_SEQ.NEXTVAL, #{cstmName}, #{bsnsNo})
+	</insert>
+	
+	<!-- 위지훈 --> 
+	<!-- 비용관리 -->
+	<!-- 비용관리 페이지 수 -->
+	<select id="getCostMgntCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM COST
+		WHERE DEL_WHETHER = 1
+		<if test="unitSbj != null and unitSbj != '전체'">
+			AND UNIT_SBJ_NO LIKE '%' || #{unitSbj} || '%'
+		</if>
+		<if test="expsType != null and expsType != '전체'">
+			AND EXPS_TYPE_NO LIKE '%' || #{expsType} || '%'
+		</if>
+		<if test="type != null and type != ''">
+			AND TYPE_NO LIKE '%' || #{type} || '%'
+		</if>
+		<if test="date_start != null and date_start != ''">
+			AND TO_CHAR(COST_DATE, 'YYYY-MM-DD') = #{date_start}
+		</if>
+	</select>
+	<!-- 비영관리 조회화면 리스트 -->
+	<select id="getCostMgntList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT G.COST_NO, G.NAME, G.EXPS_TYPE_NAME, G.UNIT_SBJ_NAME,
+		G.COST_DATE, G.AMT,
+		G.MEMO, G.DEL_NAME, G.TYPE_NAME, G.RNUM
+		FROM(
+		SELECT A.COST_NO, D.NAME, B.CD_NAME AS EXPS_TYPE_NAME, C.UNIT_SBJ_NAME,
+		TO_CHAR(A.COST_DATE, 'YYYY-MM-DD')AS COST_DATE, A.AMT, A.MEMO,
+		E.CD_NAME AS DEL_NAME, A.DEL_WHETHER, F.CD_NAME AS TYPE_NAME ,
+		ROW_NUMBER() OVER(ORDER BY COST_NO DESC)AS RNUM
+		FROM COST A INNER JOIN CMN_CD B
+		ON B.CD_L = 7
+		AND A.EXPS_TYPE_NO = B.CD_S
+		INNER JOIN UNIT_SBJ C
+		ON A.UNIT_SBJ_NO = C.UNIT_SBJ_NO
+		INNER JOIN EMP D
+		ON A.EMP_NO = D.EMP_NO
+		INNER JOIN CMN_CD E
+		ON E.CD_L = 1
+		AND A.DEL_WHETHER = E.CD_S
+		INNER JOIN CMN_CD F
+		ON F.CD_L = 10
+		AND A.TYPE_NO = F.CD_S
+		WHERE A.DEL_WHETHER = 1
+		<if test="unitSbj != null and unitSbj != '전체'">
+			AND A.UNIT_SBJ_NO LIKE '%' || #{unitSbj} || '%'
+		</if>
+		<if test="expsType != null and expsType != '전체'">
+			AND A.EXPS_TYPE_NO LIKE '%' || #{expsType} || '%'
+		</if>
+		<if test="type != null and type != '전체'">
+			AND A.TYPE_NO LIKE '%' || #{type} || '%'
+		</if>
+		<if test="date_start != null and date_start != ''">
+			AND TO_CHAR(A.COST_DATE, 'YYYY-MM-DD') = #{date_start}
+		</if>
+		)G
+		WHERE G.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<!-- 비영관리 계정과목 리스트 -->
+	<select id="getUnitSbjList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT UNIT_SBJ_NO , UNIT_SBJ_NAME
+		FROM UNIT_SBJ
+	</select>
+	<!-- 비영관리 지출유형 리스트 -->
+	<select id="getExpsTypeList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CD_NAME AS EXPS_NAME, CD_S AS EXPS_NO
+		FROM CMN_CD
+		WHERE CD_L = 7
+	</select>
+	<!-- 비영관리 분류 리스트 -->
+	<select id="getTypeList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CD_S AS TYPE_NO, CD_NAME AS TYPE_NAME
+		FROM CMN_CD
+		WHERE CD_L = 10
+	</select>
+	<!-- 비영관리 이름 리스트 -->
+	<select id="getEmpNameList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT EMP_NO, NAME AS EMP_NAME
+		FROM EMP
+	</select>
+	<!-- 비용관리 신규등록 -->
+	<insert id="insertCostMgnt" parameterType="hashmap">
+		<if test="memo == null or memo == ''">
+			INSERT INTO COST(COST_NO, EMP_NO, UNIT_SBJ_NO, EXPS_TYPE_NO, COST_DATE,
+			AMT, TYPE_NO)
+			VALUES(COST_SEQ.NEXTVAL, #{empName},#{unitSbj}, #{expsType}, #{popup_date_start}, #{amt},
+			#{type})
+		</if>
+		<if test="memo != null and memo != ''">
+			INSERT INTO COST(COST_NO, EMP_NO, UNIT_SBJ_NO, EXPS_TYPE_NO, COST_DATE,
+			AMT, MEMO, TYPE_NO)
+			VALUES(COST_SEQ.NEXTVAL, #{empName}, #{unitSbj}, #{expsType}, #{popup_date_start}, #{amt},
+			#{memo}, #{type})
+		</if>
+	</insert>
+	<!-- 비영관리 체크정보 가져오기 -->
+	<select id="getCostMgntInfo" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.COST_NO, D.NAME AS EMP_NAME, B.CD_NAME AS EXPS_TYPE_NAME,
+		C.UNIT_SBJ_NAME,
+		TO_CHAR(A.COST_DATE, 'YYYY-MM-DD')AS COST_DATE, A.AMT, A.MEMO, E.CD_NAME AS DEL_WHETHER,
+		F.CD_NAME AS TYPE_NAME
+		FROM COST A INNER JOIN CMN_CD B
+		ON B.CD_L = 7
+		AND A.EXPS_TYPE_NO = B.CD_S
+		INNER JOIN UNIT_SBJ C
+		ON A.UNIT_SBJ_NO = C.UNIT_SBJ_NO
+		INNER JOIN EMP D
+		ON A.EMP_NO = D.EMP_NO
+		INNER JOIN CMN_CD E
+		ON E.CD_L = 1
+		AND A.DEL_WHETHER = E.CD_S
+		INNER JOIN CMN_CD F
+		ON F.CD_L = 10
+		AND A.TYPE_NO = F.CD_S
+		WHERE A.COST_NO = #{sltedCostMgntNo}
+	</select>
+	<!-- 비용관리 수정 -->
+	<update id="updateCostMgnt" parameterType="hashmap">
+		UPDATE COST SET
+		COST_DATE = #{popup_date_start} , TYPE_NO = #{type} , UNIT_SBJ_NO =
+		#{unitSbj} , EXPS_TYPE_NO = #{expsType} ,
+		EMP_NO = #{empName} , AMT = #{amt} , MEMO = #{memo}
+		WHERE COST_NO = #{sltedCostMgntNo}
+	</update>
+	<!-- 비용관리 삭제 -->
+	<update id="delCostMgnt" parameterType="hashmap">
+		UPDATE COST SET
+		DEL_WHETHER = 0
+		WHERE COST_NO = #{sltedCostMgntNo}
+	</update>
+
+	<!-- 매출액관리 -->
+	<!-- 매출액관리 페이지 수 -->
+	<select id="getSalesAmtMgntCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM(
+		SELECT MA.MARK_NO, CO.CONT_DATE, CO.START_DATE, CO.FINISH_DATE, AMT,
+		PAY_PROV_COND, CC.NAME AS CSTM_NAME ,
+		CC.BSNS_NO, EM.NAME AS EMP_NAME, DE.DEPT_NAME, POSI_NAME, SD.NAME AS
+		SALES_DIV_NAME, CLOSE_WHETHER, ROW_NUMBER() OVER(ORDER BY MA.MARK_NO
+		DESC)AS RNUM
+		FROM MARK MA INNER JOIN CONT CO ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN MNGR MN ON MN.MNGR_NO = MA.MNGR_NO
+		INNER JOIN CRM_CSTM CC ON CC.CRM_CSTM_NO = MN.CRM_CSTM_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		INNER JOIN SALES_DIV SD ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+		WHERE
+		CLOSE_WHETHER = 1)A
+		WHERE 1 = 1
+		<!-- 고객사 -->
+		<if test="Cstm != null and Cstm != '전체'">
+			AND A.CSTM_NAME LIKE '%' || #{Cstm} || '%'
+		</if>
+		<!-- 적요명 -->
+		<if test="Cspts != null and Cspts != '전체'">
+			AND A.SALES_DIV_NAME LIKE '%' || #{Cspts} || '%'
+		</if>
+		<!-- 지급방법 -->
+		<if test="payProvCond != null and payProvCond != '전체'">
+			AND A.PAY_PROV_COND LIKE '%' || #{payProvCond} || '%'
+		</if>
+		<!-- 부서 -->
+		<if test="dept != null and dept != '전체'">
+			AND A.DEPT_NAME LIKE '%' || #{dept} || '%'
+		</if>
+		<!-- 날짜 -->
+	<if test="stdt != null and stdt != ''">
+			AND TO_CHAR(A.CONT_DATE, 'YYYY-MM-DD') BETWEEN #{stdt} AND
+			#{eddt}
+		</if> 
+	</select>
+	<select id="AcntList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT ACNT_NAME, ACNT_NO, ACNT_MGNT_NO
+        FROM ACNT
+        WHERE DEL_WHETHER = 1
+	</select>
+	<!-- 계좌연동 수정 -->
+	<update id="updateSalesAcnt" parameterType="hashmap">
+		UPDATE SALES_MGNT SET ACNT_MGNT_NO = #{acnt}
+        WHERE MARK_NO = #{sltedSalesAcntNo}
+	</update>
+	<!-- 매출액관리 조회화면 리스트 -->
+	<select id="getSalesAmtMgntList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.MARK_NO, TO_CHAR(A.CONT_DATE, 'YYYY-MM-DD') AS CONT_DATE,
+		TO_CHAR(A.START_DATE, 'YYYY-MM-DD') AS START_DATE,
+		TO_CHAR(A.FINISH_DATE, 'YYYY-MM-DD') AS FINISH_DATE, A.AMT,
+		A.PAY_PROV_COND, A.CSTM_NAME ,
+		A.BSNS_NO, A.EMP_NAME, A.DEPT_NAME, A.POSI_NAME,A.SALES_DIV_NAME, A.RNUM, A.ACNT_MGNT_NO, A.ACNT_NAME
+		FROM(
+		SELECT MA.MARK_NO, CO.CONT_DATE, CO.START_DATE, CO.FINISH_DATE, AMT,
+		PAY_PROV_COND, CC.NAME AS CSTM_NAME ,
+		CC.BSNS_NO, EM.NAME AS EMP_NAME, DE.DEPT_NAME, POSI_NAME, SD.NAME AS
+		SALES_DIV_NAME, CLOSE_WHETHER, ROW_NUMBER() OVER(ORDER BY MA.MARK_NO
+		DESC)AS RNUM, SM.ACNT_MGNT_NO, CASE WHEN AC.ACNT_NAME IS NULL
+                                           THEN '-'
+                                           ELSE AC.ACNT_NAME
+                                           END AS ACNT_NAME
+		FROM MARK MA INNER JOIN CONT CO ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN MNGR MN ON MN.MNGR_NO = MA.MNGR_NO
+		INNER JOIN CRM_CSTM CC ON CC.CRM_CSTM_NO = MN.CRM_CSTM_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		INNER JOIN SALES_DIV SD ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+        INNER JOIN SALES_MGNT SM ON MA.MARK_NO = SM.MARK_NO
+        LEFT OUTER JOIN ACNT AC ON SM.ACNT_MGNT_NO = AC.ACNT_MGNT_NO
+		WHERE CLOSE_WHETHER = 1) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		<!-- 고객사 -->
+		<if test="Cstm != null and Cstm != '전체'">
+			AND A.CSTM_NAME LIKE '%' || #{Cstm} || '%'
+		</if>
+		<!-- 매출구분 -->
+		<if test="Cspts != null and Cspts != '전체'">
+			AND A.SALES_DIV_NAME LIKE '%' || #{Cspts} || '%'
+		</if>
+		<!-- 지급방법 -->
+		<if test="payProvCond != null and payProvCond != '전체'">
+			AND A.PAY_PROV_COND LIKE '%' || #{payProvCond} || '%'
+		</if>
+		<!-- 부서 -->
+		<if test="dept != null and dept != '전체'">
+			AND A.DEPT_NAME LIKE '%' || #{dept} || '%'
+		</if> 
+		<!-- 날짜 -->
+		<if test="stdt != null and stdt != ''">
+			AND TO_CHAR(A.CONT_DATE, 'YYYY-MM-DD') BETWEEN #{stdt} AND
+			#{eddt}
+		</if>
+	</select>
+	
+	<!-- 매출액관리 고객사 리스트 -->
+	<select id="getCstmList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT NAME AS CSTM_NAME
+		FROM CRM_CSTM
+	</select>
+	<!-- 매출액관리 매출구분 리스트 -->
+	<select id="getCsptsList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT NAME AS SALES_NAME
+		FROM SALES_DIV
+	</select>
+	<!-- 매출액관리 지급방법 리스트 -->
+	<select id="getPayProvList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(PAY_PROV_COND)AS PAY_PROV_COND
+		FROM CONT
+	</select>
+	<!-- 매출액관리 부서 리스트 -->
+	<select id="getDeptList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DEPT_NAME
+		FROM DEPT
+	</select>
+	<!-- 매출관리 체크정보 가져오기 -->
+	<select id="getSalesInfo" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MA.MARK_NO, TO_CHAR(CO.CONT_DATE, 'YYYY-MM-DD') AS CONT_DATE,
+		TO_CHAR(CO.START_DATE, 'YYYY-MM-DD') AS START_DATE,
+		TO_CHAR(CO.FINISH_DATE, 'YYYY-MM-DD') AS FINISH_DATE,
+		AMT, PAY_PROV_COND, CC.NAME AS CSTM_NAME ,
+		CC.BSNS_NO, EM.NAME AS EMP_NAME, DE.DEPT_NAME, POSI_NAME, SD.NAME AS
+		SALES_DIV_NAME, CLOSE_WHETHER, ROW_NUMBER() OVER(ORDER BY MA.MARK_NO
+		DESC)AS RNUM,
+		CO.FLAW_ASSUR_DATE, MN.DUTY, MN.NAME, CASE WHEN AC.ACNT_NAME IS NULL
+                                                   THEN '-'
+                                                   ELSE AC.ACNT_NAME
+                                                   END AS ACNT_NAME, CASE WHEN AC.ACNT_NO IS NULL
+                                                                          THEN '-'
+                                                                          ELSE AC.ACNT_NO
+                                                                          END AS ACNT_NO
+		FROM MARK MA INNER JOIN CONT CO ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN MNGR MN ON MN.MNGR_NO = MA.MNGR_NO
+		INNER JOIN CRM_CSTM CC ON CC.CRM_CSTM_NO = MN.CRM_CSTM_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		INNER JOIN SALES_DIV SD ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+        INNER JOIN SALES_MGNT SM ON MA.MARK_NO = SM.MARK_NO
+        LEFT OUTER JOIN ACNT AC ON SM.ACNT_MGNT_NO = AC.ACNT_MGNT_NO
+		WHERE
+		CLOSE_WHETHER = 1
+		AND MA.MARK_NO = #{sltedSalesNo}
+	</select>
+	<!-- 통계 -->
+	<!-- 통계 비용 년도 가져오기 -->
+	<select id="getStsCostYearList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(TO_CHAR(COST_DATE, 'YYYY')) AS
+		COST_YEAR_DATE
+		FROM COST
+		WHERE DEL_WHETHER = 1
+		ORDER BY TO_CHAR(COST_DATE, 'YYYY') DESC
+	</select>
+	<!-- 통계 비용 월 가져오기 -->
+	<select id="getStsCostMonthList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(TO_CHAR(COST_DATE, 'MM')) AS
+		COST_MONTH_DATE
+		FROM COST
+		WHERE DEL_WHETHER = 1
+		ORDER BY TO_CHAR(COST_DATE, 'MM') DESC
+	</select>
+	<!-- 통계 비용 적요명 가져오기 -->
+	<select id="getStsUnitSbjList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(B.UNIT_SBJ_NAME) AS UNIT_SBJ_NAME
+		FROM COST A INNER
+		JOIN UNIT_SBJ B
+		ON A.UNIT_SBJ_NO = B.UNIT_SBJ_NO
+		WHERE A.DEL_WHETHER = 1
+		AND TO_CHAR(A.COST_DATE, 'YYYY') = #{year}
+		<if test="month != '전체'">
+			AND TO_CHAR(A.COST_DATE, 'MM') = #{month}
+		</if>
+		ORDER BY UNIT_SBJ_NAME ASC
+	</select>
+	<!-- 통계 비용 적요명 내용 가져오기 -->
+	<select id="getStsUnitSbjConList" parameterType="hashmap"
+		resultType="hashmap">
+		<if test="month == '전체'">
+			SELECT TO_CHAR(C.COST_DATE, 'YYYY')AS YEAR_DATE,
+			C.UNIT_SBJ_NO, US.UNIT_SBJ_NAME, SUM(C.AMT) AS COST_AMT, S.SUM AS
+			SUM_AMT
+			FROM COST C INNER JOIN UNIT_SBJ US
+			ON C.UNIT_SBJ_NO = US.UNIT_SBJ_NO
+			INNER JOIN (SELECT TO_CHAR(C.COST_DATE, 'YYYY') AS YY, SUM(C.AMT) AS SUM
+			FROM COST C INNER JOIN UNIT_SBJ US
+			ON C.UNIT_SBJ_NO = US.UNIT_SBJ_NO
+			WHERE C.DEL_WHETHER = 1
+			AND TO_CHAR(C.COST_DATE, 'YYYY') = #{year}
+			GROUP BY TO_CHAR(C.COST_DATE, 'YYYY')
+			) S
+			ON TO_CHAR(C.COST_DATE, 'YYYY') = S.YY
+			WHERE C.DEL_WHETHER = 1
+			GROUP BY
+			TO_CHAR(C.COST_DATE, 'YYYY'), C.UNIT_SBJ_NO, US.UNIT_SBJ_NAME, S.SUM
+			ORDER BY UNIT_SBJ_NAME ASC
+		</if>
+		<if test="month != '전체'">
+			SELECT TO_CHAR(C.COST_DATE, 'MM')AS YEAR_DATE,
+			C.UNIT_SBJ_NO, US.UNIT_SBJ_NAME, SUM(C.AMT) AS COST_AMT, S.SUM AS
+			SUM_AMT
+			FROM COST C INNER JOIN UNIT_SBJ US
+			ON C.UNIT_SBJ_NO = US.UNIT_SBJ_NO
+			INNER JOIN (SELECT TO_CHAR(C.COST_DATE, 'MM') AS YY, SUM(C.AMT) AS SUM
+			FROM COST C INNER JOIN UNIT_SBJ US
+			ON C.UNIT_SBJ_NO = US.UNIT_SBJ_NO
+			WHERE C.DEL_WHETHER = 1
+			AND TO_CHAR(C.COST_DATE, 'YYYY') = #{year}
+			AND TO_CHAR(C.COST_DATE, 'MM') = #{month}
+			GROUP BY TO_CHAR(C.COST_DATE, 'MM')
+			) S
+			ON TO_CHAR(C.COST_DATE, 'MM') = S.YY
+			WHERE C.DEL_WHETHER = 1
+			GROUP BY
+			TO_CHAR(C.COST_DATE, 'MM'), C.UNIT_SBJ_NO, US.UNIT_SBJ_NAME, S.SUM
+			ORDER BY UNIT_SBJ_NAME ASC
+		</if>
+	</select>
+	<!-- 통계 매출액 년 가져오기 -->
+	<select id="getStsSalesYearList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(TO_CHAR(CONT_DATE, 'YYYY'))AS YEAR_DATE
+		FROM MARK MA INNER JOIN CONT CO
+		ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN SALES_DIV SD
+		ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+		ORDER BY YEAR_DATE DESC
+	</select>
+	<!-- 통계 매출액 월 가져오기 -->
+	<select id="getStsSalesMonthList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(TO_CHAR(CONT_DATE, 'MM'))AS MONTH_DATE
+		FROM
+		MARK MA INNER JOIN CONT CO
+		ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN SALES_DIV SD
+		ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+	</select>
+	<!-- 통계 매출액 적요명 가져오기 -->
+	<select id="getStsSalesTypeList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT(SD.NAME) AS NAME
+		FROM MARK MA INNER JOIN CONT CO
+		ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN SALES_DIV SD
+		ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+		WHERE TO_CHAR(CO.CONT_DATE, 'YYYY')
+		= #{year}
+		<if test="month != '전체'">
+			AND TO_CHAR(CO.CONT_DATE, 'MM') = #{month}
+		</if>
+		ORDER BY NAME ASC
+	</select>
+	<!-- 통계 매출액 적요명 내용 가져오기 -->
+	<select id="getStsSalesTypeConList" parameterType="hashmap"
+		resultType="hashmap">
+		<if test="month == '전체'">
+			SELECT TO_CHAR(CO.CONT_DATE, 'YYYY')AS CONT_DATE,
+			SUM(CO.AMT)AS AMT, SD.NAME, S.SUM
+			FROM MARK MA INNER JOIN CONT CO
+			ON MA.MARK_NO = CO.MARK_NO
+			INNER JOIN SALES_DIV SD
+			ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+			INNER JOIN (SELECT TO_CHAR(CO.CONT_DATE, 'YYYY'), SUM(CO.AMT)AS SUM
+			FROM MARK MA INNER JOIN CONT CO
+			ON MA.MARK_NO = CO.MARK_NO
+			INNER JOIN SALES_DIV SD
+			ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+			WHERE TO_CHAR(CO.CONT_DATE, 'YYYY') = #{year}
+			GROUP BY TO_CHAR(CO.CONT_DATE, 'YYYY')
+			)S
+			ON 1 = 1
+			WHERE TO_CHAR(CO.CONT_DATE, 'YYYY') = #{year}
+			GROUP BY
+			TO_CHAR(CO.CONT_DATE, 'YYYY'), SD.NAME, S.SUM
+			ORDER BY NAME ASC
+		</if>
+		<if test="month != '전체'">
+			SELECT TO_CHAR(CO.CONT_DATE, 'MM')AS CONT_DATE,
+			SUM(CO.AMT)AS AMT, SD.NAME, S.SUM
+			FROM MARK MA INNER JOIN CONT CO
+			ON MA.MARK_NO = CO.MARK_NO
+			INNER JOIN SALES_DIV SD
+			ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+			INNER JOIN (SELECT TO_CHAR(CO.CONT_DATE, 'MM'), SUM(CO.AMT)AS SUM
+			FROM MARK MA INNER JOIN CONT CO
+			ON MA.MARK_NO = CO.MARK_NO
+			INNER JOIN SALES_DIV SD
+			ON MA.SALES_DIV_NO = SD.SALES_DIV_NO
+			WHERE TO_CHAR(CO.CONT_DATE, 'MM') = #{month}
+			AND TO_CHAR(CO.CONT_DATE, 'YYYY') = #{year}
+			GROUP BY TO_CHAR(CO.CONT_DATE, 'MM')
+			)S
+			ON 1 = 1
+			GROUP BY TO_CHAR(CO.CONT_DATE, 'MM'), SD.NAME, S.SUM
+			ORDER BY NAME ASC
+		</if>
+	</select>
+</mapper>

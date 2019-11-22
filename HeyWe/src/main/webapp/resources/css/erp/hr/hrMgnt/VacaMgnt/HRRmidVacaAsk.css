@@ -1,0 +1,148 @@
+@charset "UTF-8";
+input[type="button"]{
+	cursor: pointer;
+}
+.paging_group {
+	width: 1000px;
+    height: 30px;
+    margin-top: 20px;
+    text-align: center;
+    /* margin-left: 30px; */
+}
+
+.paging_group > div {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+}
+
+.paging_group > div:hover {
+   cursor: pointer;
+    background-color: #134074;
+   color: #FFFFFF;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+/* .content_area > .content_area_table_area{
+	margin-top : 80px;
+	border-radius: 3px;
+	background-color: #DEE6EF;  
+	margin-left: 100px;
+	margin-right: 100px;
+	width : 1170px;
+	text-align: center;
+	
+} */
+.content_area > .content_area_table_area{
+    margin: 20px;
+    border-radius: 3px;
+    width: 1100px;
+    height: 400px;
+    /* background-color: #DEE6EF; */
+    text-align: center;
+    padding: 20px;
+}
+#forBtnRight{
+	border-radius: 3px;
+    width: 1000px;
+    text-align: right;
+    /* margin-left: 50px; */
+    background-color: #DEE6EF;
+}
+
+
+#table_va{
+    background-color: white;
+    position: relative;
+    margin-top: 20px;
+    /* margin-left: 50px; */
+    
+    font-size: 12pt;
+    color: #FFFFFF;
+    width: 1000px;
+    border: 0px;
+}
+
+.A:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+.B:hover{
+	background-color: #B0DAEC;
+	color: #134074;
+	cursor: pointer;
+}
+
+
+#table_va #table_color{
+	background-color: #134074;
+}
+input[type="button"]{
+    margin-top: 6px;
+}
+#table_va td {
+	height: 25px;
+	font-size : 11pt;
+	color : black;
+    border: 0px;
+}
+#table_va th {
+	height : 30px;
+	border : 0px;
+}
+.A{
+	background-color : #DEE6EF;
+	color : black;
+}
+
+.B{
+	background-color : #FFFFFF;
+	color : black;
+}
+#SearchBtn{
+	margin-right: 5px;
+}
+#table_va input[type="text"]{
+	width : 60px;
+	text-align: center;
+	margin-bottom: 5px;
+}
+#modBtn, #delBtn{
+	visibility: collapse;
+	
+}
+#seldiv{
+    border-radius: 5px;
+    width: 160px;
+    height: 30px;
+    text-align: center;
+    /* vertical-align: top; */
+    font-size: 14px;
+    color: black;
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: bold;
+}
+#selector{
+	margin-top:7px;
+}
+#empSearch{
+	margin-top:7px;
+	width:70px;
+}
+

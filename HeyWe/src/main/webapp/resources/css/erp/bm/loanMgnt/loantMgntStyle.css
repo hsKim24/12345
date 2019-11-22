@@ -1,0 +1,498 @@
+@charset "UTF-8";
+/* 
+         DarkBlue : rgb(19, 64, 116), #134074
+         DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+         LightBlue : rgb(222,230,239), #DEE6EF
+         White : rgb(255,255,255), #FFFFFF
+          */
+         
+         /*등록, 수정창*/
+#popupDataForm > .regPage_contents_title{
+	display: inline-block;
+	vertical-align: top;
+	width: 120px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 11pt;
+	font-weight: bold;
+	text-indent: 20px;
+}
+
+#popupDataForm > .regPage_contents_input{
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	height: 50px;
+	line-height: 55px;
+	font-size: 11pt;
+}
+
+#popupDataForm > .regPage_contents_btn{
+	display: inline-block;
+	vertical-align: top;
+	width: 120px;
+	height: 50px;
+	line-height: 55px;
+	font-size: 11pt;
+}
+
+#popupDataForm > .regPage_contents_input > .slt{
+	width: 175px;
+	height: 30px;
+	font-size: 11pt;
+}
+
+#popupDataForm > .regPage_contents_input > .txt{
+	width: 170px;
+	height: 20px;
+	font-size: 11pt;
+}
+              
+         
+         /* 팝업창  */
+         
+.bg {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+   background-color: #000;
+   opacity: 0.7;
+   z-index: 100;
+}
+
+.regPage {
+   width: 500px;
+   height: 486px;
+   position: absolute;
+   top: calc(50% - 243px);
+   left: calc(50% - 250px);
+   background-color: #ffffff;
+   border: 1px solid #134074;
+   border-radius: 3px;
+   overflow: hidden;
+   z-index: 150;
+}
+
+.regPage>.regPage_title {
+   width: 500px;
+   height: 40px;
+   background-color: #134074;
+}
+
+.regPage>.regPage_contents {
+   width: 500px;
+   height: 440px;
+}
+
+.regPage>.regPage_contents>.regPage_contents_title {
+   display: inline-block;
+   vertical-align: top;
+   width: 120px;
+   height: 50px;
+   line-height: 50px;
+   font-size: 12pt;
+   font-weight: bold;
+   text-indent: 20px;
+}
+
+.regPage>.regPage_contents>.regPage_contents_input {
+   display: inline-block;
+   vertical-align: top;
+   width: 200px;
+   height: 50px;
+   line-height: 55px;
+   font-size: 11pt;
+}
+
+.regPage>.regPage_contents>.regPage_contents_input>.slt {
+   width: 175px;
+   height: 30px;
+}
+
+.regPage>.regPage_contents>.regPage_contents_input>.txt {
+   width: 170px;
+   height: 20px;
+}
+
+.regPage>.regPage_contents>.regPage_btn {
+   width: 500px;
+   height: 40px;
+   line-height: 50px;
+   text-align: center;
+}
+
+.regPage>.regPage_contents>.regPage_btn>.btn {
+   width: 70px;
+   height: 30px;
+   margin: 0px 10px;
+}
+
+.regPage>.regPage_contents>.regPage_btn>#yes {
+   width: 70px;
+   height: 30px;
+   margin: 0px 10px;
+   background-color: #134074 ;
+   color : #fff;
+}
+         
+.bg2 {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 200;
+}
+
+.regPageCheck {
+   width: 300px;
+   height: 150px;
+   position: absolute;
+   top: calc(50% - 75px);
+   left: calc(50% - 150px);
+   background-color: #dee6ef;
+   border: 1px solid #134074;
+   border-radius: 3px;
+   line-height: 50px;
+   z-index: 250;
+   overflow: hidden;
+   font-weight: bold;
+}
+
+.regPageCheck_txt {
+   width: 300px;
+   height: 70px;
+   text-align: center;
+   line-height: 70px;
+   font-size: 12pt;
+   font-weight: bold;
+}
+
+.regPageCheck_btn {
+   width: 300px;
+   height: 50px;
+   text-align: center;
+}
+
+.regPageCheck_btn>.btn {
+   width: 70px;
+   height: 30px;
+   margin: 0px 10px;
+}
+
+.regPageCheck_btn>.btn {
+   width: 70px;
+   height: 30px;
+   margin: 0px 10px;
+}
+
+
+
+.regPageCheck_title {
+	height: 30px;
+	background-color: #134074;
+	color : #fff;
+	text-align: right;
+}
+
+         
+    /* 위까지가 팝업창  */   
+    
+      
+         .data_search_area {
+            width: 800px;
+            height: 90px;
+            background-color: #8da9c4;
+            border-radius: 3px;
+            margin: 20px 40px;
+            border: 1px solid #cccccc;
+            color : #000;
+         }
+         
+         .data_search_area > .data_search_menu {
+            display: inline-block;
+            vertical-align: top;
+            width: 135px;
+            height: 43px;
+            line-height: 43px;
+            font-size: 11pt;
+            font-weight: bold;
+            text-align: left;
+            text-indent: 50px;
+         }
+         
+         .data_search_area > .data_search_input {
+            display: inline-block;
+            vertical-align: top;
+            width: 190px;
+            height: 43px;
+            line-height: 56px;
+            text-align: left;
+         }
+         
+         .data_search_area > .data_search_icon {
+            display: inline-block;
+            vertical-align: top;
+            width: 30px;
+            height: 43px;
+            line-height: 38px;
+            font-size:30px;
+         }
+         
+         .data_search_area > .data_search_btn {
+            display: inline-block;
+            vertical-align: top;
+            width: 150px;
+            height: 43px;
+            line-height: 56px;
+            text-indent: 40px;
+         }
+         
+         .data_search_area > .data_search_input > .slt {
+            width: 175px;
+            height: 30px;
+            font-size: 11pt;
+         }
+         
+         .data_search_area > .data_search_input > .txt {
+            width: 170px;
+            height: 20px;
+            font-size: 11pt;
+         }
+         
+         .data_search_area > .data_search_btn > .btn {
+            width: 100px;
+            height: 30px;
+            font-size: 11pt;
+         }
+         
+         .data_info_area {
+            width: 800px;
+            height: 540px;
+            margin: 10px 40px;
+         }
+         
+         .data_info_area > .data_info_table {
+            width: 800px;
+            background-color: #DEE6EF;
+            color: #000;
+            font-size: 11pt;
+            text-align: center;
+            border-collapse: collapse;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0px 0px 1px 1px #CCCCCC;
+         }
+         
+         .data_info_area > .data_info_table td{
+         	height: 40px;
+         }
+         
+          .data_info_area > .data_info_table tr {
+         	height: 45px;
+         }
+         
+         .data_info_area > .data_info_table .first_tr {
+            background-color: #134074;
+            border-bottom: 2px solid #888888;
+            color: #fff;
+         }
+         
+         .data_info_area > .data_info_table .top_tr {
+            background-color: #fafdff;
+            border-top: 1px solid #bbbbbb;
+            border-bottom: 1px solid #bbbbbb;
+         }
+         
+         .data_info_area > .data_info_table .top_tr:hover{
+         	background-color: #b0daec;
+         }
+         
+         .data_info_area > .data_info_table .bottom_tr:hover{
+         	background-color: #b0daec;
+         }
+         
+		/* 넘버바 영역 */
+		.data_info_area > .pagingArea {
+			margin: 10px 0px;
+			height: 40px;
+			text-align: left;
+			text-indent: 294px;
+		}
+		
+		.data_info_area > .pagingArea > [type="button"] {
+		   display: inline-block;
+		   width: 30px;
+		   height: 30px;
+		   border: 1px solid #134074;
+		   border-radius:2px;
+		   font-size: 14pt;
+		   font-weight: bold;
+		   background-color: #FFFFFF;
+		   margin-left: 10px;
+		   color: #134074;
+		}
+		
+		.data_info_area > .pagingArea > [type="button"]:hover {
+		   cursor: pointer;
+		   background-color: #134074;
+		    color: #FFFFFF;
+		} 
+		
+		.data_info_area > .pagingArea > .pagingArea_on {
+		   background-color: #134074;
+		   color: #FFFFFF;
+		}
+		
+		.data_info_area > .pagingArea > .pagingArea_off {
+		   background-color: #FFFFFF;
+		   color: #134074;
+		}
+         
+         .data_btn_area{
+            width: 800px;
+            height: 30px;
+            margin: 0px 40px;
+         }
+         
+         .data_btn_area > .left_btn_area{
+            width: 400px;
+            height: 30px;
+            display: inline-block;
+            vertical-align: top;
+         }
+
+         .data_btn_area > .right_btn_area{
+            width: 400px;
+            height: 30px;
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+            text-align: right;
+         }
+         
+         .data_btn_area > .left_btn_area > .btn_area{
+            width: 100px;
+            height: 30px;
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 10px;
+         }
+         
+         .data_btn_area > .right_btn_area > .btn_area{
+            width: 100px;
+            height: 30px;
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 10px;
+         }
+         
+         .data_btn_area > .left_btn_area > .btn_area > .btn{
+            display: inline-block;
+            vertical-align: top;
+            width: 100px;
+            height: 30px;
+            font-size: 11pt;
+         }
+         
+         
+         .searchBtn{
+    	 	display: inline-block;
+            width: 100px;
+            height: 30px;
+            font-size: 11pt;
+    	 }
+
+         .data_btn_area > .right_btn_area > .btn_area > .btn{
+            display: inline-block;
+            vertical-align: top;
+            width: 100px;
+            height: 30px;
+            font-size: 11pt;
+         }
+         
+#yes, #newReg, #btn_rpayRtn{
+	background-color: #134074;
+	color : #fff;
+}
+
+.regPageCheck_titlex{
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+}
+
+#xImg{
+	width : 20px;
+	height : 20px;
+	
+}
+
+
+.regPage>.regPage_title > .regPage_titlec {
+   width: 460px;
+   height: 40px;
+   font-weight: bold;
+   font-size: 12pt;
+   color: white;
+   display:inline-block;
+   vertical-align: top;
+   line-height: 40px;
+   text-indent: 20px;
+}
+.regPage>.regPage_title > .regPage_titlex {
+   width: 40px;
+   height: 40px;
+   vertical-align: top;
+   display:inline-block;
+   line-height: 60px;
+   text-indent: 10px;
+}
+
+#popupDataForm > .regPage_contents_input > #memo{
+	width: 300px;
+	height: 80px;
+	font-size: 11pt;
+	margin-top: 20px;
+	resize : none;
+}
+
+#popupDataForm > .regPage_contents_input > #rpayHist{
+	width: 490px;
+	height: 150px;
+	font-size: 11pt;
+	margin-top: 20px;
+}
+
+#popupDataForm > .regPage_contents_input > #dtlMemo{
+	width: 490px;
+	height: 105px;
+	font-size: 11pt;
+	margin-top: 20px;
+	resize: none;
+}
+
+#rpayHist{
+	margin: 20px 0px 0px;
+	width: 518px;
+	height: 149px;
+	resize: none;
+}
+
+[alt='reset']{
+	margin-top: 8px;
+}
+
+.data_info_area > .pagingArea > .paging_on{
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+
+
+
+
+

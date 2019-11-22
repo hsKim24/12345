@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+.article_table{
+ 	margin: 0px;
+ 	border-collapse: collapse;
+ 	text-align: center;
+ 	margin-top: 9px;
+ }
+.article_table thead{
+ 	background-color: #134074;
+ 	color: white;
+ }
+
+.td_date{
+ 	min-width: 88px;
+}
+.board>div>table>tbody tr:hover {
+	background-color: #b0daec;
+	color: #134074;
+	cursor: pointer;
+}
+
+.article_main{
+	font-weight: bold;
+ 	font-size : 12pt;
+ 	text-align: center;
+ 	min-width: 85px;
+	height: 37px;
+}
+.article1{
+ 	font-size: 11pt;
+ 	color: black;
+ 	
+}
+.article2{
+ 	font-size: 11pt;
+ 	color: black;
+	background-color: #dee6ef; 
+}
+.article_title{
+	min-width: 260px;
+	height: 37px;
+}

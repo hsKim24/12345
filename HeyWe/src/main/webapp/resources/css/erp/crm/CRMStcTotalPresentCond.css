@@ -1,0 +1,272 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	SteelBlue : rgb(70, 130, 180), #4682b4
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	LightSkyBlue : rgb(176,218,236), #B0DAEC
+	White : rgb(255,255,255), #FFFFFF
+ */
+.search_bar {
+	width: 1210px;
+	height: 50px;
+	background-color: #8DA9C4;
+	margin-left: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	font-size: 12pt;
+	font-family: Godic;
+	font-weight: bold;
+	color: #000;
+}
+
+.search_bar select {
+	display: inline-block;
+	width: 200px;
+	height: 50%;
+	line-height: 300%;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+#searchBtn {
+	width: 20px;
+	height: 20px;
+	margin-left: 20px;
+	vertical-align: middle;
+	text-align: right;
+}
+
+.inbody {
+	width: 1210px;
+	height: 680px;
+	min-height: 680px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background-color: #DEE6EF;
+	margin-left: 40px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.title {
+	margin-top: 20px;
+	margin-left: 20px;
+	font-size: 12pt;
+	font-weight: bold;
+	font-family: Godic;
+}
+
+.area1 {
+	display: inline-block;
+	vertical-align: top;
+	width: 400px;
+	height: 100%;
+	margin-left: 0px;
+	margin-bottom: 20px;
+	font-family: Godic;
+	border-radius: 3px;
+}
+
+.area2, .area3 {
+	display: inline-block;
+	vertical-align: top;
+	width: 400px;
+	height: 100%;
+	margin-left: 5px;
+	margin-bottom: 20px;
+	font-family: Godic;
+	border-radius: 3px;
+}
+
+.block1 {
+	display: inline-block;
+	margin-top: 20px;
+	margin-left: 20px;
+	width: 360px;
+	height: 200px;
+}
+
+.block1 div {
+	display: inline-block;
+	background-color: #FFF;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.coustomer_value {
+	width: 120px;
+	height: 200px;
+	color: #000;
+}
+
+.cTbl {
+	margin-top: 10px;
+	border-collapse: collapse;
+	text-align: center;
+	width: 120px;
+	height: 180px;
+}
+
+.users {
+	width: 90px;
+}
+
+.cTbl1 {
+	height: 120px;
+}
+
+.cTbl2 {
+	font-size: 12pt;
+	font-weight: bold;
+	height: 30px;
+}
+
+#container {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 6px;
+	width: 230px;
+	height: 200px;
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: center;
+	line-height: 200px;
+}
+
+.stepTable {
+	width: 175px;
+	height: 90px;
+	font-size: 12pt;
+	font-weight: bold;
+	border-collapse: collapse;
+	text-align: center;
+}
+
+#stateImg {
+	width: 50px;
+}
+
+#stateBox {
+	width: 70px;
+}
+
+.stateBox0 {
+	width: 175px;
+	height: 95.5px;
+}
+
+.stateBox1 {
+	margin-left: 6px;
+	width: 175px;
+	height: 95.5px;
+}
+
+.stateBox2 {
+	margin-top: 7px;
+	width: 175px;
+	height: 95.5px;
+}
+
+.stateBox3 {
+	margin-left: 6px;
+	margin-top: 7px;
+	width: 175px;
+	height: 95.5px;
+}
+
+.block2 {
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 20px;
+	width: 360px;
+	height: 50px;
+	background-color: #134074;
+	color: #FFF;
+	border-radius: 3px;
+}
+
+.grade {
+	width: 340px;
+	height: 50px;
+	margin: auto;
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.block3 {
+	display: inline-block;
+	margin-top: 20px;
+	margin-left: 20px;
+	width: 360px;
+	height: 300px;
+	background-color: #FFF;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}
+
+#tablehead {
+	display: inline-block;
+	width: 360px;
+	height: 30px;
+}
+
+#gradeTable, #stateTable {
+	display: inline-block;
+	width: 360px;
+	height: 270px;
+}
+
+.Table {
+	margin: auto;
+	font-size: 10pt;
+	border-collapse: collapse;
+	text-align: center;
+}
+
+.TW th {
+	height: 30px;
+	color: #fff;
+	width: 120px;
+	height: 25px;
+	background-color: #134074;
+}
+
+.TW1 td {
+	width: 120px;
+	height: 25px;
+	background-color: #FFF;
+}
+
+.TW2 td {
+	width: 120px;
+	height: 25px;
+	background-color: #DEE6EF;
+}
+
+.block_vertical1 {
+	display: inline-block;
+	margin-top: 20px;
+	margin-left: 20px;
+	width: 360px;
+	height: 285px;
+	background-color: #FFF;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}
+
+.block_vertical2 {
+	display: inline-block;
+	margin-top: 9px;
+	margin-left: 20px;
+	width: 360px;
+	height: 285px;
+	background-color: #FFF;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}

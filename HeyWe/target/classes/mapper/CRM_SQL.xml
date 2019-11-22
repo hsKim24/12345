@@ -1,0 +1,4535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CRM">
+
+
+	<select id="loginCheck" parameterType="hashMap"
+		resultType="hashMap">
+		select EMP_NO, NAME
+		from emp
+		where emp_no=#{Username} and
+		pw=#{Password}
+
+	</select>
+
+
+	<select id="getCRMMarkChanceCnt" parameterType="hashMap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CHANCE C INNER JOIN MARK M
+		ON
+		C.MARK_NO
+		=M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO = E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER
+		JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER JOIN BSNS_TYPE BT
+		ON M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		INNER JOIN RECOG_PATH RP
+		ON C.RECOG_PATH_NO =
+		RP.RECOG_PATH_NO
+		WHERE
+		1=1
+		<if test="stdt != null and stdt !=''">
+			AND C.MARK_START_DATE BETWEEN #{stdt} AND #{eddt}
+		</if>
+		<if test="select1 != 10 ">
+			AND PSE.PROGRESS_STATE_NO=#{select1}
+		</if>
+		<if test="searchTxt != null and searchTxt !=''">
+			AND M.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+	</select>
+	<select id="getCRMMarkMgntContCnt" parameterType="hashMap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CONT C INNER JOIN MARK M
+		ON
+		C.MARK_NO
+		=M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO = E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER
+		JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER JOIN BSNS_TYPE BT
+		ON M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		WHERE PSP.PROGRESS_STEP_NO=3
+
+		<if test="searchTxt != null and searchTxt !=''">
+			AND M.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+
+	</select>
+	<select id="getCRMCstmCnt" parameterType="hashMap"
+		resultType="Integer">
+		select count(CC.CRM_CSTM_NO) as cnt
+		from crm_cstm CC
+		INNER JOIN EMP E
+		ON
+		CC.EMP_NO = E.EMP_NO
+		INNER JOIN CSTM_GRADE CG
+		ON
+		CC.CSTM_GRADE_NO =
+		CG.CSTM_GRADE_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		WHERE
+		1=1
+		<if test="GRADE != 10 ">
+			AND CC.CSTM_GRADE_NO=#{GRADE}
+		</if>
+		<if test="searchTxt != null and searchTxt !=''">
+			AND CC.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+
+
+
+	</select>
+	<select id="getDEPTList" parameterType="hashMap"
+		resultType="hashMap">
+		select DEPT_NO, DEPT_NAME
+		from dept
+	</select>
+
+	<select id="getBsnsType" parameterType="hashMap"
+		resultType="hashMap">
+		select BSNS_TYPE_NO, NAME AS BTNAME
+		from bsns_type
+	</select>
+
+	<select id="getSalesDiv" parameterType="hashMap"
+		resultType="hashMap">
+		select SALES_DIV_NO, NAME AS SDNAME
+		from SALES_DIV
+	</select>
+
+	<select id="getRecogPath" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT RECOG_PATH_NO, NAME AS RPNAME
+		FROM RECOG_PATH
+	</select>
+
+	<select id="getCRMCstmDtl" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT CC.CRM_CSTM_NO, CG.NAME AS GRADENAME, CC.NAME AS
+		CSTMNAME, CC.BSNS_NO, CC.RPSTN_NO,CC.WEB, CC.CSTM_GRADE_NO,
+		CC.FAW_NO,
+		CC.POST, CC.ADDR, E.EMP_NO, CC.CSTM_DIV_NO,
+		CC.ADDR_DTL, CD.NAME AS
+		CDNAME, E.NAME AS ENAME
+		FROM CRM_CSTM CC
+		INNER
+		JOIN CSTM_GRADE CG
+		ON
+		CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+		INNER JOIN
+		CSTM_DIV CD
+		ON
+		CC.CSTM_DIV_NO = CD.CSTM_DIV_NO
+		INNER JOIN EMP E
+		ON
+		CC.EMP_NO = E.EMP_NO
+		WHERE CRM_CSTM_NO=#{cstmno}
+	</select>
+	<select id="getCRMMarkMgntContList" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT A.CONT_NO, A.MARK_NO, A.CON, A.AMT,
+		A.SURTAX_WHETHER,
+		TO_CHAR
+		(A.START_DATE, 'YYYY-MM-DD') AS START_DATE, A.FINISH_DATE,
+		A.CONT_DATE,
+		A.FLAW_ASSUR_DATE, A.MNGR_NO,
+		A.EMP_NO,
+		A.PROGRESS_STATE_NO,
+		A.BSNS_TYPE_NO, A.SALES_DIV_DTL,
+		A.ENAME,
+		A.PROGRESS_STEP_NO,
+		A.DEPT_NO, A.DNAME,
+		A.PNAME, A.MNNAME,
+		A.MNAME,
+		A.PSENAME, A.PSPNAME,
+		A.CCNAME, A.RNUM
+		FROM (
+		SELECT C.CONT_NO,
+		M.MARK_NO, C.CON, C.AMT,
+		C.SURTAX_WHETHER,
+		C.START_DATE,C.FINISH_DATE,C.CONT_DATE,
+		C.FLAW_ASSUR_DATE, MN.MNGR_NO,
+		E.EMP_NO, PSE.PROGRESS_STATE_NO,
+		BT.BSNS_TYPE_NO, M.SALES_DIV_DTL,
+		E.NAME AS ENAME,
+		PSP.PROGRESS_STEP_NO,
+		D.DEPT_NO, D.DEPT_NAME AS DNAME,
+		P.POSI_NAME AS
+		PNAME, MN.NAME AS MNNAME, M.NAME
+		AS MNAME, PSE.NAME AS
+		PSENAME,
+		PSP.NAME
+		AS PSPNAME, CC.NAME AS CCNAME,
+		ROW_NUMBER() OVER
+		(ORDER
+		BY
+		C.CONT_NO
+		DESC) AS RNUM
+		FROM CONT C INNER JOIN MARK M
+		ON
+		C.MARK_NO =
+		M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO = E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER
+		JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN
+		PROGRESS_STATE PSE
+		ON M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER
+		JOIN BSNS_TYPE BT
+		ON M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN
+		SALES_DIV SD
+		ON M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		WHERE
+		1=1
+		<if test="searchTxt != null and searchTxt !=''">
+			AND M.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+
+	</select>
+	<select id="getCRMMarkChanceList" parameterType="hashMap"
+		resultType="hashMap">
+
+		SELECT A.CHANCE_NO, A.MARK_NO, A.RECOG_PATH_NO,
+		TO_CHAR(A.MARK_START_DATE,'YYYY-MM-DD') AS
+		MARK_START_DATE , A.MNGR_NO,
+		A.EMP_NO, A.PROGRESS_STATE_NO,
+		A.BSNS_TYPE_NO, A.SALES_DIV_DTL,
+		A.MNAME, A.ENAME, A.DEPT_NO, A.DNAME,
+		A.PNAME, A.MNNAME, A.PSENAME,
+		A.PSPNAME, A.CCNAME , A.RNUM,
+		A.PROGRESS_STEP_NO
+		FROM (
+			SELECT
+			C.CHANCE_NO, M.MARK_NO, C.RECOG_PATH_NO,
+			C.MARK_START_DATE, MN.MNGR_NO,
+		E.EMP_NO, PSE.PROGRESS_STATE_NO,
+		BT.BSNS_TYPE_NO,
+		M.SALES_DIV_DTL,
+		E.NAME AS ENAME,
+		PSP.PROGRESS_STEP_NO,
+		D.DEPT_NO,
+		D.DEPT_NAME AS DNAME,
+		P.POSI_NAME AS
+		PNAME, MN.NAME AS MNNAME, M.NAME
+		AS MNAME, PSE.NAME AS
+		PSENAME,
+		PSP.NAME AS PSPNAME, CC.NAME AS CCNAME,
+		ROW_NUMBER() OVER
+		(ORDER BY
+		C.CHANCE_NO DESC) AS RNUM
+		FROM CHANCE C
+		INNER JOIN MARK M
+		ON
+		C.MARK_NO
+		=M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO =
+		E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE
+		FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER
+		JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		C.RECOG_PATH_NO =
+		RP.RECOG_PATH_NO
+		WHERE
+		1=1
+		<if test="OfferWrite ==1">
+			AND PSP.PROGRESS_STEP_NO=0
+		</if>
+		<if test="stdt != null and stdt !=''">
+			AND C.MARK_START_DATE BETWEEN #{stdt} AND #{eddt}
+		</if>
+		<if test="select1 != 10 ">
+			AND PSE.PROGRESS_STATE_NO=#{select1}
+		</if>
+		<if test="searchTxt != null and searchTxt !=''">
+			AND M.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+
+	</select>
+
+
+	<select id="getCRMMarkMgntContAsk" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT A.CONT_NO, A.MARK_NO, A.CON, A.AMT,
+		A.SURTAX_WHETHER,
+		TO_CHAR (A.START_DATE, 'YYYY-MM-DD') AS START_DATE,
+		A.FINISH_DATE, A.CONT_DATE,
+		A.FLAW_ASSUR_DATE, A.MNGR_NO,
+		A.EMP_NO,
+		A.PROGRESS_STATE_NO,
+		A.BSNS_TYPE_NO, A.SALES_DIV_DTL,
+		A.ENAME,
+		A.PROGRESS_STEP_NO,
+		A.DEPT_NO, A.DNAME,
+		A.PNAME, A.MNNAME,
+		A.MNAME,
+		A.PSENAME, A.PSPNAME,
+		A.CCNAME, A.RNUM
+		FROM (
+		SELECT C.CONT_NO,
+		M.MARK_NO, C.CON, C.AMT,
+		C.SURTAX_WHETHER,
+		C.START_DATE,C.FINISH_DATE,C.CONT_DATE,
+		C.FLAW_ASSUR_DATE, MN.MNGR_NO,
+		E.EMP_NO, PSE.PROGRESS_STATE_NO,
+		BT.BSNS_TYPE_NO, M.SALES_DIV_DTL,
+		E.NAME AS ENAME,
+		PSP.PROGRESS_STEP_NO,
+		D.DEPT_NO, D.DEPT_NAME AS DNAME,
+		P.POSI_NAME AS
+		PNAME, MN.NAME AS MNNAME, M.NAME
+		AS MNAME, PSE.NAME AS
+		PSENAME,
+		PSP.NAME
+		AS PSPNAME, CC.NAME AS CCNAME,
+		ROW_NUMBER() OVER
+		(ORDER
+		BY
+		C.CONT_NO
+		DESC) AS RNUM
+		FROM CONT C INNER JOIN MARK M
+		ON
+		C.MARK_NO =
+		M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO = E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER
+		JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN
+		PROGRESS_STATE PSE
+		ON M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER
+		JOIN BSNS_TYPE BT
+		ON M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN
+		SALES_DIV SD
+		ON M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		WHERE
+		C.CONT_NO = #{contno}
+
+
+	</select>
+
+
+	<select id="getCRMMarkChanceDtl" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT
+		C.CHANCE_NO, M.MARK_NO, C.RECOG_PATH_NO,
+		TO_CHAR(C.MARK_START_DATE,'YYYY-MM-DD') AS MARK_START_DATE, MN.MNGR_NO, E.EMP_NO,
+		PSE.PROGRESS_STATE_NO,
+		BT.BSNS_TYPE_NO, M.SALES_DIV_DTL, E.NAME AS
+		ENAME, SD.NAME AS SDNAME,
+		BT.NAME AS BTNAME,RP.NAME AS RPNAME,
+		PSP.PROGRESS_STEP_NO, M.NOTE,
+		D.DEPT_NO, D.DEPT_NAME AS DNAME,
+		P.POSI_NAME AS
+		PNAME, MN.NAME AS
+		MNNAME, M.NAME
+		AS MNAME, PSE.NAME AS
+		PSENAME,
+		PSP.NAME AS PSPNAME,
+		CC.NAME AS CCNAME,
+		ROW_NUMBER() OVER
+		(ORDER BY
+		C.CHANCE_NO DESC) AS RNUM
+		FROM CHANCE C INNER JOIN MARK M
+		ON
+		C.MARK_NO
+		=M.MARK_NO
+		INNER JOIN EMP E
+		ON
+		M.EMP_NO = E.EMP_NO
+		INNER JOIN
+		(SELECT
+		DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON
+		E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT
+		D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN
+		POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		INNER
+		JOIN MNGR MN
+		ON M.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		M.PROGRESS_STATE_NO =
+		PSE.PROGRESS_STATE_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		M.BSNS_TYPE_NO =
+		BT.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		M.SALES_DIV_NO =
+		SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		M.PROGRESS_STEP_NO=
+		PSP.PROGRESS_STEP_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		C.RECOG_PATH_NO =
+		RP.RECOG_PATH_NO
+		WHERE C.CHANCE_NO=#{chanceno}
+	</select>
+	<select id="getCrmCstmList" parameterType="hashMap"
+		resultType="hashMap">
+
+		SELECT A.CRM_CSTM_NO, A.CSTM_GRADE_NO, A.CSTM_DIV_NO,
+		A.NAME,
+		A.BSNS_NO, A.RPSTN_NO, A.EMP_NO,A.ENAME,
+		A.FAW_NO, A.WEB,
+		A.POST,
+		A.GRADENAME,
+		A.ADDR, A.ADDR_DTL, A.DEPT_NO, A.DEPT_NAME, A.RNUM
+		from
+		(select
+		CC.CRM_CSTM_NO, CC.CSTM_GRADE_NO, CC.CSTM_DIV_NO, CC.NAME,
+		CC.BSNS_NO,CG.NAME AS GRADENAME
+		,CC.RPSTN_NO, E.EMP_NO,E.NAME AS ENAME,
+		CC.FAW_NO, CC.WEB,
+		CC.POST,
+		CC.ADDR,
+		CC.ADDR_DTL, D.DEPT_NO, D.DEPT_NAME,
+		ROW_NUMBER()
+		OVER (ORDER
+		BY
+		CC.CRM_CSTM_NO desc)AS RNUM
+		FROM CRM_CSTM CC
+		INNER JOIN EMP E
+		ON
+		CC.EMP_NO = E.EMP_NO
+		INNER JOIN CSTM_GRADE CG
+		ON
+		CC.CSTM_GRADE_NO =
+		CG.CSTM_GRADE_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO,EMP_NO
+		FROM
+		HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON E.EMP_NO =
+		HA.EMP_NO
+		INNER JOIN
+		DEPT D
+		ON
+		HA.DEPT_NO = D.DEPT_NO
+		INNER JOIN POSI P
+		ON
+		HA.POSI_NO =
+		P.POSI_NO
+		WHERE
+		1=1
+		<if test="GRADE != 10 ">
+			AND CC.CSTM_GRADE_NO=#{GRADE}
+		</if>
+		<if test="searchTxt != null and searchTxt !=''">
+			AND CC.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+
+		) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+
+
+	</select>
+
+	<select id="getDept" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME FROM DEPT
+	</select>
+
+	<select id="getEmp" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		EM.NAME, EM.EMP_NO
+		FROM EMP EM INNER JOIN HR_APNT HA ON EM.EMP_NO =
+		HA.EMP_NO
+		AND HA.FNSH_DATE IS NULL
+		INNER JOIN DEPT DE ON DE.DEPT_NO =
+		HA.DEPT_NO
+		WHERE DE.DEPT_NO = #{check}
+	</select>
+
+	<insert id="opinionInsert" parameterType="hashmap">
+		INSERT INTO
+		CSTM_OPINION (CSTM_OPINION_NO, CRM_CSTM_NO, EMP_NO,
+		CON, REG_DATE,
+		DEL_WHETHER)
+		VALUES (CSTM_OPINION_SEQ.nextval, #{cstmno}, #{sNo},
+		#{opinion}, SYSDATE, 1)
+	</insert>
+
+	<insert id="MarkopinionInsert" parameterType="hashmap">
+
+		INSERT INTO
+		MARK_OPINION
+		(MARK_OPINION_NO, MARK_NO, EMP_NO, CON, REG_DATE,
+		DEL_WHETHER)
+		VALUES (MARK_OPINION_SEQ.nextval, #{markNo}, #{sNo},
+		#{opinion},SYSDATE,
+		'1')
+
+	</insert>
+
+	<insert id="MarkActivityWriteAjax" parameterType="hashmap">
+		INSERT INTO
+		CRM_SCH (SCH_NO, EMP_NO, MNGR_NO, ACTIVITY_TYPE_NO, MARK_NO,
+		START_TIME,
+		FINISH_TIME, PLAN_CON, ACTIVITY_CON, REG_DATE,
+		DEL_WHETHER,
+		COLOR)
+		VALUES (CRM_SCH_SEQ.NEXTVAL, #{selectemp},
+		#{selectmngr},
+		#{activityType}, #{selectchance},
+		TO_DATE(#{realStart},
+		'
+		YYYY-MM-DD-HH24:MI'),TO_DATE(#{realEnd}, ' YYYY-MM-DD-HH24:MI'),
+		#{planCon}, #{activityCon},
+		SYSDATE, '1',
+		#{color})
+	</insert>
+
+	<insert id="getCstmWrite" parameterType="hashmap">
+		INSERT INTO
+		CRM_CSTM
+		(CRM_CSTM_NO, CSTM_GRADE_NO, CSTM_DIV_NO, NAME,
+		BSNS_NO, RPSTN_NO,
+		FAW_NO, WEB, POST, ADDR, ADDR_DTL, EMP_NO) VALUES
+		(#{cstmNo},
+		#{Cstm_Grade}, #{Cstm_Div}, #{Cstm_Name},
+		#{Bsns_No}, #{Rpstn_No},
+		#{Faw_No}, #{Web}, #{post}, #{Addr2},
+		#{AddrDtl}, #{selectemp})
+	</insert>
+	
+	
+	<insert id="getCstmWriteAtt">
+		INSERT INTO CSTM_ATT_FILE(CSTM_ATT_FILE_NO, CSTM_NO, FILE_NAME)
+		VALUES(CSTM_ATT_FILE_SEQ.NEXTVAL, #{cstmNo}, #{att})
+	</insert>
+	<insert id="getMarkAtt">
+		INSERT INTO MARK_ATT_FILE(MARK_ATT_FILE_NO, MARK_NO, FILE_NAME)
+		VALUES(MARK_ATT_FILE_SEQ.NEXTVAL, #{markNo}, #{att})
+	</insert>
+	<insert id="getMarkChanceWrite" parameterType="hashmap">
+		INSERT INTO MARK
+		(MARK_NO, MNGR_NO, EMP_NO, PROGRESS_STATE_NO, BSNS_TYPE_NO,
+		SALES_DIV_NO, PROGRESS_STEP_NO, SALES_DIV_DTL, NAME) VALUES
+		(#{markNo}, #{selectmngr}, #{selectemp}, #{Progress_State},
+		#{Bsns_Type},
+		#{Sales_Div}, 0, #{Sales_Div_Dtl}, #{Mark_Name})
+
+	</insert>
+	<insert id="getMarkChanceWrite2" parameterType="hashmap">
+		INSERT INTO
+		CHANCE (CHANCE_NO, MARK_NO, RECOG_PATH_NO, MARK_START_DATE) VALUES
+		(CHANCE_SEQ.nextval, #{markNo}, #{Recog_Path}, #{stdt})
+	</insert>
+
+	<select id="getCstmDiv" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CSTM_DIV_NO, NAME AS DIVNAME, RANGE
+		FROM CSTM_DIV
+	</select>
+	<select id="reloadactivityType" parameterType="hashmap"
+		resultType="hashmap">
+		select ACTIVITY_TYPE_NO, NAME
+		FROM ACTIVITY_TYPE
+	</select>
+	<select id="getcalMainList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CS.SCH_NO, E.EMP_NO, E.NAME AS ENAME, CS.COLOR AS
+		COLOR,
+		CS.MARK_NO,
+		CASE WHEN TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') =
+		TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.START_TIME,
+		'YYYY-MM-DD') || 'T' || TO_CHAR(CS.START_TIME,
+		'HH24:MI:SS')
+		ELSE
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD')
+		END AS "START",
+		CASE WHEN
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') = TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.FINISH_TIME, 'YYYY-MM-DD') || 'T' ||
+		TO_CHAR(CS.FINISH_TIME, 'HH24:MI:SS')
+		ELSE TO_CHAR(CS.FINISH_TIME + 1,
+		'YYYY-MM-DD')
+		END AS "END",
+		CS.PLAN_CON AS TITLE, CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP E
+		ON CS.EMP_NO = E.EMP_NO
+
+	</select>
+	<select id="getcalMainList2" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.RNUM,A.START1 AS "START", A.END1 AS "END",
+		A.TITLE1 AS "TITLE", A.SCH_NO, A.EMP_NO, A.ENAME, A.COLOR
+		FROM (
+		SELECT
+		CS.SCH_NO, E.EMP_NO, E.NAME AS ENAME, CS.COLOR
+		AS
+		COLOR,
+		CS.MARK_NO,
+		ROW_NUMBER() OVER (ORDER BY CS.SCH_NO DESC) AS RNUM,
+		CASE WHEN
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') =
+		TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.START_TIME,
+		'HH24:MI:SS')
+		ELSE
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD')
+		END AS START1,
+		CASE WHEN
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') =
+		TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN
+		TO_CHAR(CS.FINISH_TIME, 'HH24:MI:SS')
+		ELSE
+		TO_CHAR(CS.FINISH_TIME + 1,
+		'YYYY-MM-DD')
+		END AS
+		END1,
+		CS.PLAN_CON AS
+		TITLE1,
+		CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP
+		E
+		ON CS.EMP_NO =
+		E.EMP_NO
+		WHERE #{selectDate}
+		BETWEEN TO_CHAR(START_TIME,
+		'YYYY-MM-DD')
+		AND TO_CHAR(FINISH_TIME,
+		'YYYY-MM-DD')
+		ORDER BY START_TIME
+		ASC) A
+		WHERE
+		A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	<select id="CalMainListCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT count(*) as cnt
+		FROM
+		CRM_SCH
+		WHERE #{selectDate}
+		BETWEEN TO_CHAR(START_TIME,
+		'YYYY-MM-DD')
+		AND TO_CHAR(FINISH_TIME,
+		'YYYY-MM-DD')
+	</select>
+	<select id="getcalList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT C.SCH_NO, C.EMP_NO, C.ENAME, C.COLOR, C.MARK_NO, C.ST AS
+		"START", C.ED AS "END",
+		CASE WHEN C.CNT > 1
+		THEN C.CNT || '건의 일정이 있습니다.'
+		ELSE C.TITLE
+		END AS TITLE,
+		C.ACTIVITY_CON, C.CNT
+		FROM ( SELECT CS.SCH_NO,
+		E.EMP_NO, E.NAME AS ENAME, CS.COLOR AS
+		COLOR,
+		CS.MARK_NO,
+		CASE WHEN
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') = TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') || 'T' ||
+		TO_CHAR(CS.START_TIME,
+		'HH24:MI:SS')
+		ELSE TO_CHAR(CS.START_TIME,
+		'YYYY-MM-DD')
+		END AS ST,
+		CASE WHEN TO_CHAR(CS.START_TIME, 'YYYY-MM-DD')
+		= TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD') || 'T' ||
+		TO_CHAR(CS.FINISH_TIME, 'HH24:MI:SS')
+		ELSE
+		TO_CHAR(CS.FINISH_TIME + 1, 'YYYY-MM-DD')
+		END AS ED,
+		CS.PLAN_CON AS
+		TITLE, CS.ACTIVITY_CON, CC.CNT,
+		ROW_NUMBER() OVER(PARTITION BY
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD'), CC.COLOR
+		ORDER BY CS.SCH_NO ASC)
+		AS RNUM
+		FROM CRM_SCH CS INNER JOIN EMP E
+		ON CS.EMP_NO = E.EMP_NO
+		INNER
+		JOIN (SELECT TO_CHAR(START_TIME, 'YYYY-MM-DD') AS DT, COLOR, COUNT(*)
+		AS CNT
+		FROM CRM_SCH
+		WHERE DEL_WHETHER = 1
+		GROUP BY TO_CHAR(START_TIME,
+		'YYYY-MM-DD'), COLOR) CC
+		ON TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') = DT
+		AND CS.COLOR = CC.COLOR
+		WHERE CS.DEL_WHETHER = 1
+		<if test="sch!=1">
+			AND CS.MARK_NO=#{markNo}
+		</if>
+		) C
+		WHERE C.RNUM = 1
+	</select>
+	<select id="getcalList2" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CS.SCH_NO, E.EMP_NO, E.NAME AS ENAME, CS.COLOR
+		AS
+		COLOR,
+		CS.MARK_NO,
+		CASE WHEN TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') =
+		TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.START_TIME,
+		'HH24:MI:SS')
+		ELSE
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD')
+		END AS "START",
+		CASE WHEN
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD') =
+		TO_CHAR(CS.FINISH_TIME,
+		'YYYY-MM-DD')
+		THEN TO_CHAR(CS.FINISH_TIME,
+		'HH24:MI:SS')
+		ELSE TO_CHAR(CS.FINISH_TIME + 1,
+		'YYYY-MM-DD')
+		END AS
+		"END",
+		CS.PLAN_CON AS
+		TITLE,
+		CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP
+		E
+		ON CS.EMP_NO =
+		E.EMP_NO
+		WHERE
+		CS.MARK_NO=#{markNo} AND #{selectDate}
+		BETWEEN TO_CHAR(START_TIME,
+		'YYYY-MM-DD')
+		AND TO_CHAR(FINISH_TIME,
+		'YYYY-MM-DD')
+		ORDER BY START_TIME
+		ASC
+	</select>
+	<select id="getCstmGrade" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CSTM_GRADE_NO, NAME, RANGE
+		FROM CSTM_GRADE
+	</select>
+	<select id="getProgressState" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT PROGRESS_STATE_NO, NAME, RANGE
+		FROM PROGRESS_STATE
+	</select>
+
+	<update id="getCstmUpdate" parameterType="hashmap">
+		UPDATE CRM_CSTM
+		SET
+		CSTM_DIV_NO = #{Cstm_Div}, NAME = #{Cstm_Name}, BSNS_NO = #{Bsns_No},
+		CSTM_GRADE_NO=#{Cstm_Grade},
+		RPSTN_NO = #{Rpstn_No},
+		FAW_NO = #{Faw_No},
+		WEB = #{Web}, POST =
+		#{Post},
+		ADDR = #{Addr}, ADDR_DTL =
+		#{Addr_Dtl},
+		EMP_NO = #{selectemp}
+		WHERE
+		CRM_CSTM_NO=#{cstmno}
+	</update>
+
+	<update id="getChanceUpdate" parameterType="hashmap">
+		UPDATE MARK
+		SET
+		MNGR_NO = #{selectmngr}, EMP_NO = #{selectemp},
+		PROGRESS_STATE_NO =
+		#{Progress_State},
+		BSNS_TYPE_NO = #{Bsns_Type},
+		SALES_DIV_NO =
+		#{Sales_Div}, SALES_DIV_DTL =
+		#{Sales_Div_Dtl}, NOTE =
+		#{Note}, NAME =
+		#{Mark_Name}
+		WHERE MARK_NO= #{markNo}
+
+	</update>
+
+
+	<select id="getEmpSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT E.EMP_NO, D.DEPT_NAME, E.NAME
+		FROM HR_APNT HR INNER
+		JOIN EMP E
+		ON HR.EMP_NO = E.EMP_NO
+		AND HR.FNSH_DATE IS NULL
+		AND
+		HR.HR_APNT_NO != 0
+		AND E.NAME LIKE '%' || #{empsearchtxt} || '%'
+		INNER
+		JOIN DEPT D
+		ON HR.DEPT_NO = D.DEPT_NO
+		ORDER BY E.EMP_NO
+	</select>
+	<select id="getCstmSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		select CRM_CSTM_NO, NAME
+		from crm_cstm
+		where name LIKE '%' ||
+		#{cstmsearchtxt} || '%'
+		ORDER BY CRM_CSTM_NO
+	</select>
+	<select id="getChanceSearchPopup2" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT C.CHANCE_NO, M.NAME AS MNAME, M.MARK_NO, PS.NAME AS
+		PSNAME
+		FROM MARK M INNER JOIN CHANCE C
+		ON M.MARK_NO = C.MARK_NO
+		INNER
+		JOIN PROGRESS_STEP PS
+		ON M.PROGRESS_STEP_NO = PS.PROGRESS_STEP_NO
+		where
+		M.NAME LIKE '%' ||
+		#{chancesearchtxt} || '%'
+		ORDER BY M.MARK_NO
+	</select>
+	<select id="getMngrSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MNGR_NO, M.NAME AS MNNAME, DEPT, CC.NAME AS CCNAME
+		FROM MNGR M INNER
+		JOIN CRM_cstm cc
+		on m.crm_cstm_no = cc.crm_cstm_no
+		where M.NAME LIKE '%' ||
+		#{mngrsearchtxt} || '%'
+		ORDER BY MNGR_NO
+	</select>
+
+	<select id="selectemp" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT EMP_NO, NAME AS EMP_NAME
+		FROM EMP
+		WHERE EMP_NO =
+		#{selectemp}
+	</select>
+	<select id="selectcstm" parameterType="hashmap"
+		resultType="hashmap">
+		select CRM_CSTM_NO, NAME
+		from crm_cstm
+		WHERE CRM_CSTM_NO
+		=#{selectcstm}
+	</select>
+	<select id="selectmngr" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MNGR_NO, M.NAME AS MNNAME, DEPT, CC.NAME AS CCNAME
+		FROM MNGR M INNER
+		JOIN CRM_cstm cc
+		on m.crm_cstm_no = cc.crm_cstm_no
+		WHERE MNGR_NO
+		=#{selectmngr}
+	</select>
+
+	<delete id="MarkOpnionDelete" parameterType="hashmap">
+		DELETE
+		FROM
+		MARK_OPINION
+		WHERE MARK_OPINION_NO=#{delop}
+	</delete>
+	<delete id="deleteAttFileAjax" parameterType="hashmap">
+		DELETE
+		FROM
+		MNGR_ATT_FILE
+		WHERE MNGR_NO=#{attdeleteNo}
+	</delete>
+	<delete id="deleteCstmAttFileAjax" parameterType="hashmap">
+		DELETE
+		FROM
+		CSTM_ATT_FILE
+		WHERE CSTM_ATT_FILE_NO=#{attdeleteNo}
+	</delete>
+	<delete id="deleteMarkAttFileAjax" parameterType="hashmap">
+		DELETE
+		FROM
+		MARK_ATT_FILE
+		WHERE MARK_ATT_FILE_NO=#{attdeleteNo}
+	</delete>
+	<delete id="CstmOpnionDelete" parameterType="hashmap">
+		DELETE
+		FROM
+		CSTM_OPINION
+		WHERE CSTM_OPINION_NO=#{delop}
+	</delete>
+
+	<!-- 성훈이꺼 -->
+
+	
+
+	<insert id="writeCont" parameterType="hashmap">
+		INSERT INTO CONT
+		VALUES(CONT_SEQ.NEXTVAL, #{markNo}, #{cont_con}, #{cont_date},
+		#{cont_date_start}, #{cont_date_end}, #{amt}, #{surtax}, #{pay},
+		#{date_end})
+	</insert>
+
+	<update id="writeContMark" parameterType="hashmap">
+		UPDATE MARK
+		SET
+		PROGRESS_STEP_NO = 3 , EMP_NO = #{sEmpNo}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	
+	<select id="getMMNList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_NAME AS MARK_NAME, T.CSTM_NAME AS CSTM_NAME,
+		T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME
+		,T.RNUM AS RNUM ,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO
+		,T.PROGRESS_STEP_NAME AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS
+		MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO DESC) AS RNUM
+		FROM MARK MA INNER
+		JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 2
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getMMNCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN CHANCE CH
+		ON MA.MARK_NO =
+		CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 2
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="ContWriteList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_NAME AS MARK_NAME, T.CSTM_NAME AS CSTM_NAME,
+		T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME
+		,T.RNUM AS RNUM ,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO
+		,T.PROGRESS_STEP_NAME AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS
+		MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO DESC) AS RNUM
+		FROM MARK MA INNER
+		JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 2 AND MA.PROGRESS_STATE_NO = 0
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="ContWriteCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN CHANCE CH
+		ON MA.MARK_NO =
+		CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 2 AND
+		MA.PROGRESS_STATE_NO = 0
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+
+	<select id="getMngrList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MNGR_NO, T.MNGR_NAME, T.MOBILE, T.EMAIL, T.CSTM_GRADE_NO,
+		T.CSTM_GRADE_NAME, T.CRM_CSTM_NAME, T.CRM_CSTM_NO ,T.EMP_NO,
+		T.EMP_NAME , T.DEPT_NO, T.DEPT_NAME, T.POSI_NAME
+		FROM(
+		SELECT
+		MN.MNGR_NO, MN.NAME AS MNGR_NAME, MN.MOBILE, MN.EMAIL,
+		CG.CSTM_GRADE_NO,
+		CG.NAME AS CSTM_GRADE_NAME, CC.NAME AS CRM_CSTM_NAME,
+		CC.CRM_CSTM_NO
+		,EM.EMP_NO,
+		EM.NAME AS EMP_NAME , DE.DEPT_NO,
+		DE.DEPT_NAME, PO.POSI_NAME , ROW_NUMBER()
+		OVER(ORDER BY MN.MNGR_NO
+		DESC) AS RNUM
+		FROM MNGR MN INNER JOIN CRM_CSTM
+		CC ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON CG.CSTM_GRADE_NO =
+		CC.CSTM_GRADE_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MN.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO WHERE 1=1
+		<if test="searchTxt!=null and searchTxt !=''">
+			AND MN.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND DE.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND EM.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getTestCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MNGR MN INNER JOIN CRM_CSTM CC ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON
+		CG.CSTM_GRADE_NO = CC.CSTM_GRADE_NO
+		INNER JOIN EMP EM ON EM.EMP_NO =
+		MN.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO WHERE 1=1
+		<if test="searchTxt!=null and searchTxt !=''">
+			AND MN.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND DE.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND EM.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+	</select>
+
+
+	<select id="getMngr" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MN.MNGR_NO AS MNGR_NO, MN.NAME AS MNGR_NAME, MN.DEPT
+		AS MNGR_DEPT, MN.DUTY AS MNGR_DUTY, MN.MOBILE AS MNGR_MOBILE,
+		MN.PHONE
+		AS MNGR_PHONE, MN.EMAIL AS MNGR_EMAIL, CC.CRM_CSTM_NO AS CSTM_NO,
+		CC.NAME AS CSTM_NAME,
+		CC.POST AS CSTM_POST, CC.ADDR AS CSTM_ADDR,
+		CC.ADDR_DTL AS CSTM_ADDR_DTL ,
+		EM.EMP_NO AS EMP_NO, EM.NAME AS
+		EMP_NAME, CG.CSTM_GRADE_NO AS
+		CSTM_GRADE_NO
+		, CG.NAME AS CSTM_GRADE_NAME
+		FROM MNGR MN INNER JOIN
+		CRM_CSTM CC ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+		INNER
+		JOIN EMP EM ON EM.EMP_NO = MN.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO ON HA.POSI_NO = PO.POSI_NO WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+	</select>
+
+	<select id="getMngropinion" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MNGR_OPINION_NO AS MNGR_OPINION_NO, T.CON AS CON ,
+		T.REG_DATE AS REG_DATE, T.EMP_NAME AS EMP_NAME,
+		T.EMP_NO AS EMP_NO,
+		T.RNUM AS RNUM
+		FROM(SELECT MO.MNGR_OPINION_NO AS MNGR_OPINION_NO,
+		MO.CON AS CON,
+		TO_CHAR(MO.REG_DATE, 'YYYY.MM.DD HH:MI') AS REG_DATE,
+		EM.NAME AS EMP_NAME, EM.EMP_NO AS EMP_NO,
+		ROW_NUMBER() OVER(ORDER BY
+		MO.MNGR_OPINION_NO DESC) AS RNUM
+		FROM MNGR_OPINION MO INNER JOIN MNGR
+		MN ON MO.MNGR_NO = MN.MNGR_NO
+		INNER JOIN EMP EM ON EM.EMP_NO =
+		MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+		ORDER BY MNGR_OPINION_NO
+		DESC
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getOpiCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MNGR_OPINION MO INNER JOIN MNGR
+		MN ON MO.MNGR_NO
+		= MN.MNGR_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE
+		FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+		ORDER BY MNGR_OPINION_NO DESC
+	</select>
+
+	<insert id="insertOpinion">
+		INSERT INTO MNGR_OPINION(MNGR_OPINION_NO, MNGR_NO,
+		EMP_NO, CON, REG_DATE, DEL_WHETHER)
+		VALUES(MNGR_OPINION_SEQ.NEXTVAL,
+		#{mngrNo} , #{sEmpNo}, #{txtWrite}, SYSDATE, 0)
+	</insert>
+
+	<insert id="insertMCCOpinion">
+		INSERT INTO MARK_OPINION(MARK_OPINION_NO, MARK_NO,
+		EMP_NO, CON, REG_DATE, DEL_WHETHER)
+		VALUES(MARK_OPINION_SEQ.NEXTVAL,
+		#{markNo} , #{sEmpNo}, #{txtWrite}, SYSDATE, 0)
+	</insert>
+
+	<delete id="deleteOpinion">
+		DELETE FROM MNGR_OPINION
+		WHERE MNGR_OPINION_NO =
+		#{delOp}
+	</delete>
+	<delete id="deleteMCCOpinion">
+		DELETE FROM MARK_OPINION
+		WHERE MARK_OPINION_NO =
+		#{delOp}
+	</delete>
+
+	<select id="getMngrAtt" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MNGR_ATT_FILE_NO AS FILE_NO , MNGR_NO, FILE_NAME
+		FROM MNGR_ATT_FILE
+		WHERE MNGR_NO = #{mngrNo}
+	</select>
+
+	<select id="getUpdate" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MN.MNGR_NO AS MNGR_NO, MN.NAME AS MNGR_NAME, MN.DEPT
+		AS MNGR_DEPT, MN.DUTY AS MNGR_DUTY, MN.MOBILE AS MNGR_MOBILE,
+		MN.PHONE
+		AS MNGR_PHONE, MN.EMAIL AS MNGR_EMAIL, CC.CRM_CSTM_NO AS CSTM_NO,
+		CC.NAME AS CSTM_NAME,
+		CC.POST AS CSTM_POST, CC.ADDR AS CSTM_ADDR,
+		CC.ADDR_DTL AS CSTM_ADDR_DTL ,
+		EM.EMP_NO AS EMP_NO, EM.NAME AS
+		EMP_NAME, CG.CSTM_GRADE_NO AS
+		CSTM_GRADE_NO
+		, CG.NAME AS CSTM_GRADE_NAME
+		FROM MNGR MN INNER JOIN
+		CRM_CSTM CC ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+		INNER
+		JOIN EMP EM ON EM.EMP_NO = MN.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO ON HA.POSI_NO = PO.POSI_NO WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+	</select>
+
+	<update id="updateMngr" parameterType="hashmap">
+		UPDATE MNGR
+		SET CRM_CSTM_NO
+		= #{cstm_no}, EMP_NO = #{emp_no}, NAME=#{mngr_name},
+		DEPT=#{mngr_dept}
+		, DUTY=#{mngr_duty} , MOBILE=#{mngr_mobile}, PHONE=#{mngr_phone} ,
+		EMAIL=#{mngr_email}
+		WHERE MNGR_NO = #{mngrNo}
+	</update>
+	<update id="MarkActivityUpdateAjax" parameterType="hashmap">
+		UPDATE CRM_SCH
+		SET EMP_NO = #{selectemp}, MARK_NO=#{selectchance}, MNGR_NO =
+		#{selectmngr}, ACTIVITY_TYPE_NO = #{activityType},
+		START_TIME =
+		TO_DATE(#{realStart},
+		' YYYY-MM-DD-HH24:MI'),
+		FINISH_TIME =
+		TO_DATE(#{realEnd}, ' YYYY-MM-DD-HH24:MI'),
+		PLAN_CON = #{planCon},
+		ACTIVITY_CON = #{activityCon}, COLOR = #{color}
+		WHERE SCH_NO=#{schno}
+	</update>
+	<delete id="MarkActivityDeleteAjax" parameterType="hashmap">
+		DELETE 
+		FROM CRM_SCH
+		WHERE MARK_NO=#{markNo}
+	</delete>
+
+
+
+	<select id="getcstmSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CRM_CSTM_NO AS CSTM_NO , NAME AS CSTM_NAME
+		FROM
+		CRM_CSTM
+		WHERE NAME LIKE '%' || #{cstmsearchtxt} || '%'
+		ORDER BY
+		CRM_CSTM_NO DESC
+	</select>
+
+	<select id="getmngrSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MNGR_NO , MN.NAME AS MNGR_NAME , CC.NAME AS
+		CSTM_NAME
+		FROM MNGR MN INNER JOIN CRM_CSTM CC ON CC.CRM_CSTM_NO =
+		MN.CRM_CSTM_NO
+		WHERE MN.NAME LIKE '%' || #{cstmsearchtxt} || '%'
+		ORDER
+		BY MNGR_NO DESC
+	</select>
+
+	<select id="getchanceSearchPopup" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CHANCE_NO, MARK_NO, NAME AS CHANCE_NAME
+		FROM CHANCE
+		WHERE NAME LIKE '%' || #{chancesearchtxt} || '%'
+		ORDER BY CHANCE_NO
+		DESC
+	</select>
+
+	<select id="selectchance" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT C.CHANCE_NO, M.NAME AS MNAME, M.MARK_NO, PS.NAME AS
+		PSNAME
+		FROM MARK M INNER JOIN CHANCE C
+		ON M.MARK_NO = C.MARK_NO
+		INNER
+		JOIN PROGRESS_STEP PS
+		ON M.PROGRESS_STEP_NO = PS.PROGRESS_STEP_NO
+		WHERE
+		M.MARK_NO =
+		#{chance_no}
+	</select>
+	
+	<!-- 관리번호 취득 -->
+	<select id="getMngrNo" parameterType="hashmap" resultType="integer">
+		SELECT MNGR_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
+	<select id="getCstmNo" parameterType="hashmap" resultType="integer">
+		SELECT CRM_CSTM_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
+	<select id="getMarkNo" parameterType="hashmap" resultType="integer">
+		SELECT MARK_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
+	
+	<select id="insertMngr" parameterType="hashmap">
+		INSERT INTO MNGR(MNGR_NO,
+		CRM_CSTM_NO, EMP_NO, NAME, DEPT, DUTY, MOBILE, PHONE, EMAIL)
+		VALUES(#{mngrNo}, #{selectcstm}, #{selectemp}, #{mngr},
+		#{dept}, #{duty}, #{mobile}, #{phone}, #{email})
+	</select>
+	
+	<insert id="insertMngrAtt">
+		INSERT INTO MNGR_ATT_FILE(MNGR_ATT_FILE_NO, MNGR_NO, FILE_NAME)
+		VALUES(MNGR_ATT_FILE_SEQ.NEXTVAL, #{mngrNo}, #{att})
+	</insert>
+
+	<select id="insertOffer" parameterType="hashmap">
+		INSERT INTO MARK(MARK_NO,
+		MNGR_NO, EMP_NO, PROGRESS_STATE_NO, BSNS_TYPE_NO, SALES_DIV_NO,
+		PROGRESS_STEP_NO, SALES_DIV_DTL, NOTE, NAME)
+		VALUES(#{markNo},
+		#{cstm_no}, #{emp_no}, #{selpsp}, #{selpsp2}, #{selpsp3}, 1, #{dtl},
+		#{note}, #{marktxt})
+	</select>
+	<select id="insertOffer1" parameterType="hashmap">
+		INSERT INTO
+		OFFER(OFFER_NO, MARK_NO, CON, OFFER_DATE, FINISH_DATE)
+		VALUES(OFFER_SEQ.NEXTVAL, MARK_SEQ.NEXTVAL-1, #{contxt},
+		#{date_start}, #{date_end})
+	</select>
+
+	<select id="getMCCCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN CHANCE CH
+		ON MA.MARK_NO =
+		CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO
+		ON HA.POSI_NO = PO.POSI_NO WHERE 1=1
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="stdt != null and stdt !=''">
+			<choose>
+				<when test="eddt == null or eddt ==''">
+					AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+					#{stdt}
+				</when>
+				<when test="eddt !=null and eddt !=''">
+					AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+					#{stdt} AND
+					#{eddt}
+				</when>
+			</choose>
+		</if>
+		<if test="eddt != null and eddt !=''">
+			<if test="stdt ==null or stdt ==''">
+				AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+				#{eddt}
+			</if>
+		</if>
+
+	</select>
+
+	<select id="getMccDept" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DEPT_NO, DEPT_NAME FROM DEPT
+	</select>
+
+	<select id="getMccEmp" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT EM.NAME, EM.EMP_NO
+		FROM EMP EM INNER JOIN HR_APNT HA
+		ON EM.EMP_NO = HA.EMP_NO
+		AND HA.FNSH_DATE IS NULL
+		INNER JOIN DEPT DE ON
+		DE.DEPT_NO = HA.DEPT_NO
+		WHERE DE.DEPT_NO = #{check3}
+	</select>
+
+	<select id="getMccPse" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT PROGRESS_STATE_NO, NAME FROM PROGRESS_STATE
+	</select>
+
+	<select id="getMCCList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_NAME AS MARK_NAME, T.CSTM_NAME AS CSTM_NAME,
+		T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME
+		,T.RNUM AS RNUM,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO ,T.PROGRESS_STEP_NAME
+		AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO DESC) AS RNUM
+		FROM MARK MA INNER
+		JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="stdt != null and stdt !=''">
+			<choose>
+				<when test="eddt == null or eddt ==''">
+					AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+					#{stdt}
+				</when>
+				<when test="eddt !=null and eddt !=''">
+					AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+					#{stdt} AND
+					#{eddt}
+				</when>
+			</choose>
+		</if>
+		<if test="eddt != null and eddt !=''">
+			<if test="stdt ==null or stdt ==''">
+				AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+				#{eddt}
+			</if>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getMCCDtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		RP.NAME AS
+		RECOG_PATH_NAME, CH.MARK_START_DATE AS START_DATE, MA.FINISH_DATE
+		AS
+		FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS
+		PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		FROM
+		MARK MA INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO =
+		MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+
+	
+
+	<select id="getMCODtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME, PSE.PROGRESS_STATE_NO,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		CH.MARK_START_DATE AS
+		START_DATE, MA.FINISH_DATE AS FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE
+		AS NOTE, PSP.NAME AS PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		,TO_CHAR(OFF.OFFER_DATE, 'YYYY-MM-DD') AS OFF_OFFER_DATE ,TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') AS OFF_FINISH_DATE, OFF.CON AS
+		OFFER_CON
+		,RP.NAME AS RECOG_NAME
+		FROM MARK MA
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN RECOG_PATH RP
+		ON RP.RECOG_PATH_NO
+		= CH.RECOG_PATH_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN
+		SALES_DIV SD
+		ON SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+
+	<select id="getMCCopinion" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_OPINION_NO AS MARK_OPINION_NO, T.CON AS CON,
+		T.REG_DATE AS REG_DATE,
+		T.EMP_NAME AS EMP_NAME, T.EMP_NO AS EMP_NO,
+		T.RNUM AS RNUM
+		FROM(SELECT MO.MARK_OPINION_NO AS MARK_OPINION_NO,
+		MO.CON AS CON,
+		TO_CHAR(MO.REG_DATE, 'YYYY.MM.DD HH:MI') AS REG_DATE,
+		EM.NAME AS EMP_NAME, EM.EMP_NO AS EMP_NO
+		, ROW_NUMBER() OVER(ORDER BY
+		MO.MARK_OPINION_NO DESC) AS RNUM
+		FROM
+		MARK_OPINION MO INNER JOIN MARK MA
+		ON MA.MARK_NO = MO.MARK_NO
+		INNER
+		JOIN EMP EM ON EM.EMP_NO = MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE
+		FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO =
+		#{markNo}
+		ORDER BY MARK_OPINION_NO DESC)T
+		WHERE T.RNUM
+		BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getMCCOpiCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK_OPINION MO INNER JOIN MARK
+		MA ON MA.MARK_NO
+		= MO.MARK_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE
+		FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO =
+		#{markNo}
+		ORDER BY MARK_OPINION_NO DESC
+	</select>
+
+	<select id="getMCOCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN OFFER OFF
+		ON MA.MARK_NO =
+		OFF.MARK_NO
+		INNER JOIN CHANCE CH
+		ON CH.MARK_NO = MA.MARK_NO
+		INNER JOIN
+		MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 1
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 3">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getMCOList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_START_DATE AS MARK_START_DATE,
+		T.MARK_NAME AS
+		MARK_NAME, T.CSTM_NAME AS CSTM_NAME, T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME,
+		T.FINISH_DATE AS FINISH_DATE
+		,T.RNUM AS RNUM ,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO
+		,T.PROGRESS_STEP_NAME AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS
+		MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME,
+		MA.FINISH_DATE AS FINISH_DATE
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO
+		DESC) AS RNUM ,
+		CH.MARK_START_DATE AS MARK_START_DATE
+		FROM MARK MA INNER
+		JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN CHANCE CH
+		ON
+		CH.MARK_NO = MA.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN
+		PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO =
+		MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE
+		MA.PROGRESS_STEP_NO = 1
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 3">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getMMOList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME, T.CSTM_NAME AS CSTM_NAME
+		, T.MNGR_NAME AS MNGR_NAME,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO ,
+		T.OFFER_DATE AS OFFER_dATE
+		,
+		T.FINISH_DATE AS FINISH_DATE, T.MARK_NAME AS MARK_NAME
+		FROM(SELECT
+		MA.MARK_NO AS MARK_NO, PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS
+		EMP_NAME,
+		MA.NAME AS MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS
+		MNGR_NAME
+		,PSP.PROGRESS_STEP_NO, TO_CHAR(OFF.OFFER_DATE, 'YYYY-MM-DD')
+		AS
+		OFFER_DATE ,
+		TO_CHAR(OFF.FINISH_DATE ,'YYYY-MM-DD') AS FINISH_DATE
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO DESC) AS RNUM
+		FROM MARK MA INNER
+		JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE PSE.PROGRESS_STATE_NO = 0 AND PSP.PROGRESS_STEP_NO = 1
+		AND MA.FINISH_DATE IS NULL
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getMMOCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN OFFER OFF
+		ON MA.MARK_NO =
+		OFF.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE PSE.PROGRESS_STATE_NO = 0 AND
+		PSP.PROGRESS_STEP_NO = 1
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getMCContCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN CONT CO
+		ON MA.MARK_NO =
+		CO.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN
+		CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE
+		PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN
+		PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER
+		JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 3
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') BETWEEN #{stdt}
+						AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') BETWEEN #{stdt}
+						AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getMCContList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_NAME AS MARK_NAME, T.CSTM_NAME AS CSTM_NAME,
+		T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME
+		,T.RNUM AS RNUM ,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO
+		,T.PROGRESS_STEP_NAME AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS
+		MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO DESC) AS RNUM
+		FROM MARK MA INNER
+		JOIN CONT CO
+		ON MA.MARK_NO = CO.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO
+		= MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 3
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') BETWEEN #{stdt}
+						AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.CONT_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') BETWEEN #{stdt}
+						AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.START_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CO.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<!-- 찐성훈 -->
+
+	<update id="updateCont" parameterType="hashmap">
+		UPDATE CONT
+		SET CON =
+		#{cont_con}, CONT_DATE=#{cont_date}, START_DATE=#{cont_date_start},
+		FINISH_DATE=#{cont_date_end}, AMT =#{amt},
+		SURTAX_WHETHER =#{surtax},
+		PAY_PROV_COND =#{pay}, FLAW_ASSUR_DATE =#{date_end}
+		WHERE
+		MARK_NO =
+		#{markNo}
+	</update>
+
+	<update id="updateContMark" parameterType="hashmap">
+		UPDATE MARK
+		SET EMP_NO
+		= #{sEmpNo}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	<select id="CRMgetMngrList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MNGR_NO, T.MNGR_NAME, T.MOBILE, T.EMAIL, T.CSTM_GRADE_NO,
+		T.CSTM_GRADE_NAME, T.CRM_CSTM_NAME, T.CRM_CSTM_NO ,T.EMP_NO,
+		T.EMP_NAME , T.DEPT_NO, T.DEPT_NAME, T.POSI_NAME
+		FROM(
+		SELECT
+		MN.MNGR_NO, MN.NAME AS MNGR_NAME, MN.MOBILE, MN.EMAIL,
+		CG.CSTM_GRADE_NO,
+		CG.NAME AS CSTM_GRADE_NAME, CC.NAME AS CRM_CSTM_NAME,
+		CC.CRM_CSTM_NO
+		,EM.EMP_NO,
+		EM.NAME AS EMP_NAME , DE.DEPT_NO,
+		DE.DEPT_NAME, PO.POSI_NAME , ROW_NUMBER()
+		OVER(ORDER BY MN.MNGR_NO
+		DESC) AS RNUM
+		FROM MNGR MN INNER JOIN CRM_CSTM
+		CC ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON CG.CSTM_GRADE_NO =
+		CC.CSTM_GRADE_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MN.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO WHERE 1=1
+		<if test="searchTxt!=null and searchTxt !=''">
+			AND MN.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND DE.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND EM.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="CRMgetTestCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MNGR MN INNER JOIN CRM_CSTM CC ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON
+		CG.CSTM_GRADE_NO = CC.CSTM_GRADE_NO
+		INNER JOIN EMP EM ON EM.EMP_NO =
+		MN.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO WHERE 1=1
+		<if test="searchTxt!=null and searchTxt !=''">
+			AND MN.NAME LIKE '%' || #{searchTxt} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND DE.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND EM.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+	</select>
+
+	<select id="CRMgetMngrAtt" parameterType="hashmap" resultType="hashmap">
+		SELECT MNGR_ATT_FILE_NO , MNGR_NO, FILE_NAME
+		FROM MNGR_ATT_FILE
+		WHERE MNGR_NO = #{mngrNo}
+	</select>
+	<select id="CRMgetCstmAtt" parameterType="hashmap" resultType="hashmap">
+		SELECT CSTM_ATT_FILE_NO , CSTM_NO, FILE_NAME
+		FROM CSTM_ATT_FILE
+		WHERE CSTM_NO = #{cstmno}
+	</select>
+	<select id="CRMgetMarkAtt" parameterType="hashmap" resultType="hashmap">
+		SELECT MARK_ATT_FILE_NO , MARK_NO, FILE_NAME
+		FROM MARK_ATT_FILE
+		WHERE MARK_NO = #{markNo}
+	</select>
+
+	<select id="CRMgetMngr" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MN.MNGR_NO AS MNGR_NO, MN.NAME AS MNGR_NAME, MN.DEPT
+		AS MNGR_DEPT, MN.DUTY AS MNGR_DUTY, MN.MOBILE AS MNGR_MOBILE,
+		MN.PHONE
+		AS MNGR_PHONE, MN.EMAIL AS MNGR_EMAIL, CC.CRM_CSTM_NO AS CSTM_NO,
+		CC.NAME AS CSTM_NAME,
+		CC.POST AS CSTM_POST, CC.ADDR AS CSTM_ADDR,
+		CC.ADDR_DTL AS CSTM_ADDR_DTL ,
+		EM.EMP_NO AS EMP_NO, EM.NAME AS
+		EMP_NAME, CG.CSTM_GRADE_NO AS
+		CSTM_GRADE_NO
+		, CG.NAME AS CSTM_GRADE_NAME
+		FROM MNGR MN INNER JOIN
+		CRM_CSTM CC ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN CSTM_GRADE CG ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+		INNER
+		JOIN EMP EM ON EM.EMP_NO = MN.EMP_NO
+		INNER JOIN (SELECT DEPT_NO,
+		POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO =
+		HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI
+		PO ON HA.POSI_NO = PO.POSI_NO WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+	</select>
+
+	<select id="CRMgetMngropinion" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MNGR_OPINION_NO AS MNGR_OPINION_NO, T.CON AS CON ,
+		T.REG_DATE AS REG_DATE, T.EMP_NAME AS EMP_NAME,
+		T.EMP_NO AS EMP_NO,
+		T.RNUM AS RNUM
+		FROM(SELECT MO.MNGR_OPINION_NO AS MNGR_OPINION_NO,
+		MO.CON AS CON,
+		TO_CHAR(MO.REG_DATE, 'YYYY.MM.DD HH:MI') AS REG_DATE,
+		EM.NAME AS EMP_NAME, EM.EMP_NO AS EMP_NO,
+		ROW_NUMBER() OVER(ORDER BY
+		MO.MNGR_OPINION_NO DESC) AS RNUM
+		FROM MNGR_OPINION MO INNER JOIN MNGR
+		MN ON MO.MNGR_NO = MN.MNGR_NO
+		INNER JOIN EMP EM ON EM.EMP_NO =
+		MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+		ORDER BY MNGR_OPINION_NO
+		DESC
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="CRMgetOpiCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MNGR_OPINION MO INNER JOIN MNGR
+		MN ON MO.MNGR_NO
+		= MN.MNGR_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE
+		FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		WHERE 1=1 AND MN.MNGR_NO
+		= #{mngrNo}
+		ORDER BY MNGR_OPINION_NO DESC
+	</select>
+
+	<insert id="CRMinsertOpinion">
+		INSERT INTO MNGR_OPINION(MNGR_OPINION_NO, MNGR_NO,
+		EMP_NO, CON, REG_DATE, DEL_WHETHER)
+		VALUES(MNGR_OPINION_SEQ.NEXTVAL,
+		#{mngrNo} , #{sEmpNo}, #{txtWrite}, SYSDATE, 0)
+	</insert>
+
+	<delete id="CRMdeleteOpinion">
+		DELETE FROM MNGR_OPINION
+		WHERE MNGR_OPINION_NO =
+		#{delOp}
+	</delete>
+
+	<!-- 신 -->
+	<!-- 고객사 등급 카운트 -->
+<select id="getCrmGradeCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CSTM_GRADE CG
+		INNER JOIN CRM_CSTM CC
+		ON CG.CSTM_GRADE_NO = CC.CSTM_GRADE_NO
+		INNER JOIN
+		EMP EM
+		ON CC.EMP_NO = EM.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO,
+		EMP_NO
+		FROM HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO
+		INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON
+		HA.POSI_NO = PO.POSI_NO
+		WHERE 1 = 1
+		<if test="gradeSelect != '' and gradeSelect != null">
+			AND CC.CSTM_GRADE_NO = #{gradeSelect}
+		</if>
+		<if test="check != '' and check != null">
+			AND DE.DEPT_NO = #{check}
+		</if>
+		<if test="empSelect != '' and empSelect != null">
+			AND EM.EMP_NO = #{empSelect}
+		</if>
+		<if test="searchTxt != '' and searchTxt != null">
+			AND (CC.NAME LIKE '%' || #{searchTxt} || '%'
+			OR CG.NAME
+			LIKE '%' || #{searchTxt} || '%'
+			OR EM.NAME LIKE '%' || #{searchTxt} ||
+			'%'
+			OR DE.DEPT_NAME LIKE '%' || #{searchTxt} || '%')
+		</if>
+	</select>
+
+
+	<!-- 고객사 등급 조회 & 페이징 -->
+	<select id="getCrmGrade" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT C.CNAME, C.GNAME, C.ENAME, C.DNAME, C.CNO
+		FROM (SELECT CC.NAME
+		CNAME, CC.CRM_CSTM_NO CNO, CG.NAME GNAME, EM.NAME
+		ENAME, EM.EMP_NO ENO,
+		DE.DEPT_NAME DNAME,
+		DE.DEPT_NO DNO, ROW_NUMBER() OVER(ORDER BY
+		CC.CRM_CSTM_NO DESC) AS RNUM,
+		CC.CSTM_GRADE_NO GRADE
+		FROM CSTM_GRADE CG
+		INNER JOIN CRM_CSTM CC
+		ON CG.CSTM_GRADE_NO = CC.CSTM_GRADE_NO
+		INNER JOIN
+		EMP EM
+		ON CC.EMP_NO = EM.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO,
+		EMP_NO
+		FROM HR_APNT
+		WHERE FNSH_DATE IS NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO
+		INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON
+		HA.POSI_NO = PO.POSI_NO
+		WHERE 1 = 1
+		<if test="gradeSelect != '' and gradeSelect != null">
+			AND CC.CSTM_GRADE_NO = #{gradeSelect}
+		</if>
+		<if test="check != '' and check != null">
+			AND DE.DEPT_NO = #{check}
+		</if>
+		<if test="empSelect != '' and empSelect != null">
+			AND EM.EMP_NO = #{empSelect}
+		</if>
+		<if test="searchTxt != '' and searchTxt != null">
+			AND (CC.NAME LIKE '%' || #{searchTxt} || '%'
+			OR CG.NAME
+			LIKE '%' || #{searchTxt} || '%'
+			OR EM.NAME LIKE '%' || #{searchTxt} ||
+			'%'
+			OR DE.DEPT_NAME LIKE '%' || #{searchTxt} || '%')
+		</if>
+		) C
+		WHERE C.RNUM BETWEEN ${startCnt} AND ${endCnt}
+		ORDER BY C.GRADE ASC
+	</select>
+
+	<!-- 등급 수정 -->
+	<update id="updateGrade" parameterType="hashmap">
+	UPDATE CRM_CSTM SET CSTM_GRADE_NO = #{changeBox}
+	WHERE CRM_CSTM_NO IN (${blockCheck})
+	</update> 
+	
+	<!-- 등급 수정 날짜, 내용 삽입 -->
+	<insert id="updateConDate" parameterType="hashmap">
+	INSERT INTO GRADE_HIST
+	VALUES (GRADE_HIST_SEQ.NEXTVAL, #{sEmpNo}, #{blockCheck}, #{changeBox},
+			#{updateText}, #{uddt})
+	</insert>
+
+	<update id="updateNego" parameterType="hashmap">
+		UPDATE NEGO
+		SET SPLY_AMT=
+		#{sply} ,SURTAX_WHETHER=#{surtax}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	<update id="updateNegoMark" parameterType="hashmap">
+		UPDATE MARK
+		SET EMP_NO
+		= #{sEmpNo}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	<select id="NegoWriteCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK MA INNER JOIN OFFER OFF
+		ON MA.MARK_NO =
+		OFF.MARK_NO
+		INNER JOIN CHANCE CH
+		ON CH.MARK_NO = MA.MARK_NO
+		INNER JOIN
+		MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON
+		EM.EMP_NO = MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM
+		HR_APNT WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN
+		DEPT DE ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO =
+		PO.POSI_NO
+		WHERE MA.PROGRESS_STEP_NO = 1 AND MA.PROGRESS_STATE_NO = 0
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 3">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="NegoWriteList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT T.MARK_NO AS MARK_NO, T.MNGR_NO AS MNGR_NO, T.CSTM_NO AS
+		CSTM_NO,
+		T.EMP_NO AS EMP_NO, T.PSE_NO AS PSE_NO, T.EMP_NAME AS
+		EMP_NAME,
+		T.MARK_START_DATE AS MARK_START_DATE,
+		T.MARK_NAME AS
+		MARK_NAME, T.CSTM_NAME AS CSTM_NAME, T.MNGR_NAME AS MNGR_NAME,
+		T.PSE_NAME AS PSE_NAME,
+		T.FINISH_DATE AS FINISH_DATE
+		,T.RNUM AS RNUM ,
+		T.PROGRESS_STEP_NO AS PROGRESS_STEP_NO
+		,T.PROGRESS_STEP_NAME AS
+		PROGRESS_STEP_NAME
+		FROM(SELECT MA.MARK_NO AS
+		MARK_NO, MA.MNGR_NO AS
+		MNGR_NO, CC.CRM_CSTM_NO AS CSTM_NO,
+		MA.EMP_NO AS EMP_NO,
+		PSE.PROGRESS_STATE_NO AS PSE_NO, EM.NAME AS EMP_NAME,
+		MA.NAME AS
+		MARK_NAME, CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME,
+		PSE.NAME AS
+		PSE_NAME
+		,PSP.PROGRESS_STEP_NO, PSP.NAME AS PROGRESS_STEP_NAME,
+		MA.FINISH_DATE AS FINISH_DATE
+		,ROW_NUMBER() OVER(ORDER BY MA.MARK_NO
+		DESC) AS RNUM ,
+		CH.MARK_START_DATE AS MARK_START_DATE
+		FROM MARK MA INNER
+		JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN CHANCE CH
+		ON
+		CH.MARK_NO = MA.MARK_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN
+		PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON PSP.PROGRESS_STEP_NO =
+		MA.PROGRESS_STEP_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE
+		MA.PROGRESS_STEP_NO = 1 AND MA.PROGRESS_STATE_NO = 0
+		<if test="select1 !=null and select1 !=''">
+			AND MA.NAME LIKE '%' || #{select1} || '%'
+		</if>
+		<if test="select2 !=null and select2 !=''">
+			AND (CC.NAME LIKE '%' || #{select2} || '%' OR MN.NAME LIKE
+			'%' ||
+			#{select2} || '%')
+		</if>
+		<if test="check3!=333">
+			AND DE.DEPT_NO LIKE '%' || #{check3} || '%'
+		</if>
+		<if test="check4!=444">
+			AND EM.EMP_NO LIKE '%' || #{check4} || '%'
+		</if>
+		<if test="check5!=555">
+			AND PSE.PROGRESS_STATE_NO LIKE '%' || #{check5} || '%'
+		</if>
+		<if test="searchGbn == 0">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.OFFER_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 1">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(OFF.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 2">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &gt;=
+						#{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND
+						#{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') &lt;=
+						#{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		<if test="searchGbn == 3">
+			<choose>
+				<when test="stdt != null and stdt !=''">
+					<if test="eddt == null or eddt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &gt;= #{stdt}
+					</if>
+					<if test="eddt !=null and eddt !=''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') BETWEEN
+						#{stdt} AND #{eddt}
+					</if>
+				</when>
+				<when test="eddt != null and eddt !=''">
+					<if test="stdt ==null or stdt ==''">
+						AND TO_CHAR(MA.FINISH_DATE,'YYYY-MM-DD') &lt;= #{eddt}
+					</if>
+				</when>
+			</choose>
+		</if>
+		)T
+		WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+
+	
+
+	<insert id="writeNego" parameterType="hashmap">
+		INSERT INTO NEGO
+		VALUES(NEGO_SEQ.NEXTVAL, #{markNo}, #{sply}, #{surtax})
+	</insert>
+
+	<update id="writeNegoMark" parameterType="hashmap">
+		UPDATE MARK
+		SET
+		PROGRESS_STEP_NO = 2 , EMP_NO = #{sEmpNo}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	
+	<!-- 제안현황 등록 -->
+	<update id="updateMngntOffer" parameterType="hashmap">
+		UPDATE MARK SET
+		PROGRESS_STEP_NO = 1, EMP_NO = #{sEmpNo}
+		WHERE MARK_NO = #{markNo}
+	</update>
+
+	<insert id="insertMngntOffer" parameterType="hashmap">
+		INSERT INTO OFFER
+		(OFFER_NO, MARK_NO, CON, OFFER_DATE, FINISH_DATE)
+		VALUES
+		(OFFER_SEQ.NEXTVAL, #{markNo}, #{offerCon}, #{stdt}, #{eddt})
+	</insert>
+
+	<!-- 제안상세 수정 -->
+	<update id="updateMngntOfferAsk" parameterType="hashmap">
+		UPDATE OFFER
+		SET
+		OFFER_DATE = #{stdt}, FINISH_DATE = #{eddt}, CON = #{offerCon}
+		WHERE
+		MARK_NO = #{markNo}
+	</update>
+
+
+	 <update id="CRMupdatePseAjax" parameterType="hashmap">
+      UPDATE MARK
+      SET 
+      <if test="pseNo==0">
+         FINISH_DATE = NULL,
+      </if>
+      <if test="pseNo==1">
+         FINISH_DATE = SYSDATE,
+      </if>
+      <if test="pseNo==2">
+         FINISH_DATE = SYSDATE,
+      </if>
+      <if test="pseNo==3">
+         FINISH_DATE = NULL,
+      </if>
+      PROGRESS_STATE_NO = #{pseNo}
+      WHERE MARK_NO = #{markNo}
+   </update>
+
+	<!-- 고객 수 카운트 -->
+	<select id="getStcCstmCnt" parameterType="hashmap" resultType="Integer">
+	SELECT COUNT(*) CCNT
+	FROM CSTM_GRADE CG INNER JOIN CRM_CSTM CC
+	                           ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+	                   INNER JOIN HR_APNT HA
+	                           ON HA.EMP_NO = CC.EMP_NO
+	                   INNER JOIN DEPT DE
+	                           ON HA.DEPT_NO = DE.DEPT_NO
+	WHERE 1 = 1 AND HA.APNT_REASON = '입사'
+	<if test="check !=null and check !=''">
+	    AND DE.DEPT_NO = #{check}
+	</if>
+	<if test="empSelect !=null and empSelect !=''">
+	    AND CC.EMP_NO = #{empSelect}
+	</if>
+	ORDER BY CG.CSTM_GRADE_NO
+	</select>
+	
+	<!-- 고객 등급 그래프 -->
+	<select id="getStcGradeGraph" parameterType="hashmap" resultType="hashmap">
+	SELECT CG.NAME, NVL(GG.GCNT, 0) CNT
+	FROM CSTM_GRADE CG LEFT OUTER JOIN (SELECT CG.NAME GNAME, COUNT(CRM_CSTM_NO) GCNT, CG.CSTM_GRADE_NO
+										FROM CSTM_GRADE CG INNER JOIN CRM_CSTM CC
+										                           ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+										                   INNER JOIN HR_APNT HA
+										                           ON HA.EMP_NO = CC.EMP_NO
+										                   INNER JOIN DEPT DE
+										                           ON HA.DEPT_NO = DE.DEPT_NO
+										WHERE 1 = 1 AND HA.APNT_REASON = '입사'
+										<if test="check !=null and check !=''">
+										     AND DE.DEPT_NO = #{check}
+										</if>
+										<if test="empSelect !=null and empSelect !=''">
+										    AND CC.EMP_NO = #{empSelect}
+										</if>
+										GROUP BY CG.NAME, CG.CSTM_GRADE_NO) GG
+									ON CG.NAME = GG.GNAME
+	GROUP BY CG.NAME, NVL(GG.GCNT, 0), CG.CSTM_GRADE_NO
+	ORDER BY CG.CSTM_GRADE_NO
+	</select>
+	
+	<!-- 고객 등급 데이터 조회 -->
+	<select id="getStcCstmGrade" parameterType="hashmap" resultType="hashmap">
+	SELECT CC.CRM_CSTM_NO CCNO, CC.NAME CCNAME, CG.CSTM_GRADE_NO CGNO, CG.NAME GRADE, NVL(COUNT(MA.MARK_NO), 0) MCNT
+	FROM CRM_CSTM CC INNER JOIN CSTM_GRADE CG
+	                 ON CC.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+	                 INNER JOIN EMP EM
+	                         ON CC.EMP_NO = EM.EMP_NO
+	                 INNER JOIN HR_APNT HA
+	                         ON EM.EMP_NO = HA.EMP_NO
+	                 INNER JOIN DEPT DE
+	                         ON HA.DEPT_NO = DE.DEPT_NO
+	                 LEFT OUTER JOIN MARK MA
+	                         ON EM.EMP_NO = MA.EMP_NO
+	WHERE 1 = 1 
+	    <if test="gradeSelect != null and gradeSelect !=''">
+	        AND CG.CSTM_GRADE_NO = #{gradeSelect}
+	    </if>
+	    <if test="check !=null and check !=''">
+	        AND DE.DEPT_NO = #{check}
+	    </if>
+	    <if test="empSelect !=null and empSelect !=''">
+	        AND EM.EMP_NO = #{empSelect}
+	    </if>
+	    
+	GROUP BY CC.CRM_CSTM_NO, CC.NAME, CG.CSTM_GRADE_NO, CG.NAME, EM.EMP_NO, EM.NAME
+	ORDER BY CG.CSTM_GRADE_NO
+	</select>
+	
+	<!-- 영업기회 카운트 -->
+	<select id="getStcChanceCnt" parameterType="hashmap" resultType="hashmap">
+	SELECT PS.NAME NAME, NVL(PP.PCNT, 0) CNT
+	FROM PROGRESS_STATE PS LEFT OUTER JOIN (SELECT PS.NAME PNAME, COUNT(*) PCNT
+	                                        FROM MARK MA INNER JOIN MNGR M
+	                                                             ON MA.MNGR_NO = M.MNGR_NO
+	                                                     INNER JOIN CRM_CSTM CC
+	                                                             ON M.CRM_CSTM_NO = CC.CRM_CSTM_NO
+	                                                     INNER JOIN PROGRESS_STATE PS
+	                                                             ON MA.PROGRESS_STATE_NO = PS.PROGRESS_STATE_NO
+	                                                     INNER JOIN EMP EM
+	                                                             ON CC.EMP_NO = EM.EMP_NO
+	                                                     INNER JOIN HR_APNT HA
+	                                                             ON EM.EMP_NO = HA.EMP_NO
+	                                                     INNER JOIN DEPT DE
+	                                                             ON HA.DEPT_NO = DE.DEPT_NO
+	                                                     INNER JOIN CHANCE CH
+	                                                             ON MA.MARK_NO = CH.MARK_NO
+	                                        WHERE (TO_CHAR(CH.MARK_START_DATE, 'YY') = TO_CHAR(SYSDATE, 'YY'))
+	                                        <if test="check !=null and check !=''">
+	                                            AND DE.DEPT_NO = #{check}
+	                                        </if>
+	                                        <if test="empSelect !=null and empSelect !=''">
+	                                            AND EM.EMP_NO = #{empSelect}
+	                                        </if>
+	                                        GROUP BY PS.NAME, PS.PROGRESS_STATE_NO
+	                                        ORDER BY PS.PROGRESS_STATE_NO) PP
+	                                    ON PS.NAME = PP.PNAME
+	</select>
+	
+	<!-- 영업기회 데이터 조회 -->
+	<select id="getStcMarkChance" parameterType="hashmap" resultType="hashmap">
+	SELECT MA.MARK_NO, MA.NAME MNAME, PS.NAME PNAME, CC.NAME CNAME
+	FROM MARK MA INNER JOIN MNGR M
+	                     ON MA.MNGR_NO = M.MNGR_NO
+	             INNER JOIN CRM_CSTM CC
+	                     ON M.CRM_CSTM_NO = CC.CRM_CSTM_NO
+	             INNER JOIN PROGRESS_STATE PS
+	                     ON MA.PROGRESS_STATE_NO = PS.PROGRESS_STATE_NO
+	             INNER JOIN EMP EM
+	                     ON CC.EMP_NO = EM.EMP_NO
+	             INNER JOIN HR_APNT HA
+	                     ON EM.EMP_NO = HA.EMP_NO
+	             INNER JOIN DEPT DE
+	                     ON HA.DEPT_NO = DE.DEPT_NO
+	             INNER JOIN CHANCE CH
+	                     ON MA.MARK_NO = CH.MARK_NO
+	WHERE (TO_CHAR(CH.MARK_START_DATE, 'YY') = TO_CHAR(SYSDATE, 'YY'))
+	<if test="stateSelect !=null and stateSelect !=''">
+		AND PS.PROGRESS_STATE_NO = #{stateSelect}
+	</if>
+	<if test="check !=null and check !=''">
+	    AND DE.DEPT_NO = #{check}
+	</if>
+	<if test="empSelect !=null and empSelect !=''">
+	    AND EM.EMP_NO = #{empSelect}
+	</if>
+	ORDER BY MA.MARK_NO
+	</select>
+	
+	<!-- 월별 활동 그래프 -->
+	<select id="getStcActGraph" parameterType="hashmap" resultType="hashmap">
+	SELECT DT.MON MON, AT.NAME ATNAME, NVL(AA.CNT, 0) CNT
+	FROM ( SELECT TO_CHAR (ADD_MONTHS (SYSDATE - (INTERVAL '1' MONTH) , LEVEL - 1),'YYYY-MM') MON
+		   FROM DUAL 
+		   CONNECT BY ADD_MONTHS (SYSDATE - (INTERVAL '1' MONTH), LEVEL-1) &lt;= SYSDATE + (INTERVAL '1' MONTH)
+	     ) DT LEFT OUTER JOIN ACTIVITY_TYPE AT
+	                       ON 1 = 1
+	          LEFT OUTER JOIN (SELECT TO_CHAR(CS.REG_DATE, 'YYYY-MM') MONTH, AT.NAME, COUNT(*) CNT
+	                           FROM ACTIVITY_TYPE AT INNER JOIN CRM_SCH CS
+	                                                         ON AT.ACTIVITY_TYPE_NO = CS.ACTIVITY_TYPE_NO
+	                           WHERE 1 =1 
+	                           AND TO_CHAR(CS.REG_DATE, 'YYYY-MM') BETWEEN TO_CHAR(SYSDATE-30, 'YYYY-MM') AND TO_CHAR(SYSDATE+30, 'YYYY-MM')
+	                           GROUP BY TO_CHAR(CS.REG_DATE, 'YYYY-MM'), AT.NAME) AA
+	                       ON AT.NAME = AA.NAME
+	                      AND DT.MON = AA.MONTH
+	GROUP BY DT.MON, AT.NAME, NVL(AA.CNT, 0)
+	ORDER BY DT.MON ASC
+	</select>
+	
+	<!-- 월별 영업 그래프 -->
+	<select id="getStcMarkGraph" parameterType="hashmap" resultType="hashmap">
+	SELECT DT.MON, NVL(AA.MCNT, 0) CNT
+	FROM ( SELECT TO_CHAR (ADD_MONTHS (SYSDATE - (INTERVAL '1' MONTH) , LEVEL - 1),'YYYY-MM') MON
+		   FROM DUAL 
+		   CONNECT BY ADD_MONTHS (SYSDATE - (INTERVAL '1' MONTH), LEVEL-1) &lt;= SYSDATE + (INTERVAL '1' MONTH)
+	     ) DT LEFT OUTER JOIN (SELECT TO_CHAR(CO.FINISH_DATE, 'YYYY-MM') MONTH, COUNT(TO_CHAR(CO.FINISH_DATE, 'YYYY-MM')) MCNT
+	                           FROM MARK MA INNER JOIN CONT CO
+	                                                ON MA.MARK_NO = CO.MARK_NO
+	                                        INNER JOIN EMP EM
+	                                                ON MA.EMP_NO = EM.EMP_NO
+	                            WHERE TO_CHAR(CO.FINISH_DATE, 'YYYY-MM') BETWEEN TO_CHAR(SYSDATE-30, 'YYYY-MM') AND TO_CHAR(SYSDATE+30, 'YYYY-MM')
+	                            GROUP BY TO_CHAR(CO.FINISH_DATE, 'YYYY-MM')
+	                            ORDER BY TO_CHAR(CO.FINISH_DATE, 'YYYY-MM')) AA
+	                       ON DT.MON = AA.MONTH
+	GROUP BY DT.MON, NVL(AA.MCNT, 0)
+	ORDER BY DT.MON ASC
+	</select>
+
+
+
+	<!-- 성훈이 히스토리 -->
+
+	<select id="getMngntOfferHit" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT ROW_NUMBER() OVER (ORDER BY CH.CHANCE_NO DESC) AS
+		RNUM, MA.MARK_NO
+		MANO, CH.CHANCE_NO CHNO, MA.NAME MANAME, PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO,
+		CC.NAME
+		CCNAME, MN.NAME MNNAME, PSE.NAME PSENAME, PSP.NAME PSPNAME, BT.NAME
+		BTNAME, SD.NAME SDNAME,
+		MA.SALES_DIV_DTL MASALES, EM.NAME EMNAME,
+		MA.NOTE MANOTE,  RP.NAME
+		RPNAME,
+		TO_CHAR(CH.MARK_START_DATE,'YYYY-MM-DD') AS CHDATE
+		FROM CHANCE CH INNER
+		JOIN MARK MA
+		ON CH.MARK_NO = MA.MARK_NO
+		INNER JOIN PROGRESS_STATE PSE ON PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN EMP EM
+		ON MA.EMP_NO =
+		EM.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO
+		FROM HR_APNT
+		WHERE
+		FNSH_DATE IS NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO
+		INNER JOIN DEPT DE
+		ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		INNER JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON
+		MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		MA.PROGRESS_STATE_NO = PSE.PROGRESS_STATE_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		MA.BSNS_TYPE_NO = BT.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		MA.SALES_DIV_NO = SD.SALES_DIV_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		MA.PROGRESS_STEP_NO = PSP.PROGRESS_STEP_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		WHERE 1 = 1 AND CH.CHANCE_NO =
+		#{chanceno}
+	</select>
+	
+	<select id="getMMODtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS
+		PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS SALES_DIV_NAME, PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO,
+		MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		CH.MARK_START_DATE AS START_DATE,
+		MA.FINISH_DATE AS FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE,
+		PSP.NAME AS PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME,
+		RP.NAME AS RECOG_NAME
+		FROM MARK MA INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN RECOG_PATH RP
+		ON RP.RECOG_PATH_NO =
+		CH.RECOG_PATH_NO
+		INNER JOIN BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO =
+		MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON SD.SALES_DIV_NO =
+		MA.SALES_DIV_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO
+		= #{markNo}
+	</select>
+	
+	<select id="getInsertNegoList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS,PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO ,
+		SALES_DIV_DTL,
+		RP.NAME AS
+		RECOG_PATH_NAME, TO_CHAR(CH.MARK_START_DATE,'YY-MM-DD') AS START_DATE, TO_CHAR(MA.FINISH_DATE,'YY-MM-DD')
+		AS
+		FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS
+		PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		,
+		OFF.CON AS OFFER_CON , TO_CHAR(OFF.FINISH_DATE,'YY-MM-DD') AS
+		OFF_FINISH_DATE,
+		TO_cHAR(OFF.OFFER_DATE,'YY-MM-DD') AS OFF_OFFER_DATE
+		FROM MARK MA INNER
+		JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN
+		SALES_DIV SD
+		ON SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH
+		RP
+		ON CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO
+		= MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+	
+	<select id="CRMgetUpdateNegoList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME, PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		RP.NAME AS
+		RECOG_PATH_NAME, TO_CHAR(CH.MARK_START_DATE, 'YY-MM-DD') AS START_DATE, TO_CHAR(MA.FINISH_DATE, 'YY-MM-DD')
+		AS
+		FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS
+		PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		,
+		OFF.CON AS OFFER_CON , TO_CHAR(OFF.FINISH_DATE, 'YY-MM-DD') AS
+		OFF_FINISH_DATE,
+		TO_CHAR(OFF.OFFER_DATE, 'YY-MM-DD') AS OFF_OFFER_DATE
+		, NE.SPLY_AMT AS SPLY,
+		NE.SURTAX_WHETHER AS SURTAX_WHETHER
+		FROM MARK MA
+		INNER JOIN MNGR MN
+		ON
+		MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN NEGO NE
+		ON MA.MARK_NO = NE.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO =
+		MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+	
+	<select id="getUpdateContList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS
+		PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS SALES_DIV_NAME, PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO,
+		MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		RP.NAME AS RECOG_PATH_NAME,
+		TO_CHAR(CH.MARK_START_DATE, 'YY-MM-DD') AS START_DATE, TO_CHAR(MA.FINISH_DATE, 'YY-MM-DD')
+		AS FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS PROGRESS_STEP_NAME,
+		MA.NAME
+		AS MARK_NAME
+		, OFF.CON AS OFFER_CON ,
+		TO_CHAR(OFF.FINISH_DATE, 'YY-MM-DD') AS
+		OFF_FINISH_DATE, TO_CHAR(OFF.OFFER_DATE, 'YY-MM-DD') AS OFF_OFFER_DATE
+		,NE.SPLY_AMT AS SPLY_AMT, NE.SURTAX_WHETHER AS NE_SURTAX_WHETHER
+		,CO.CON AS CON, TO_CHAR(CO.CONT_DATE,'YY-MM-DD') AS CONT_DATE,
+		TO_CHAR(CO.START_DATE, 'YY-MM-DD') AS CON_START_DATE ,
+		TO_CHAR(CO.FINISH_DATE,'YY-MM-DD') AS CON_FINISH_DATE,
+		CO.AMT AS
+		CON_AMT, CO.SURTAX_WHETHER AS CON_SURTAX_WHETHER,CO.PAY_PROV_COND
+		AS
+		CON_PAY_PROV_COND,
+		TO_CHAR(CO.FLAW_ASSUR_DATE,'YY-MM-DD') AS
+		FLAW_ASSUR_DATE
+		FROM MARK MA INNER JOIN MNGR MN
+		ON MA.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN NEGO NE
+		ON MA.MARK_NO = NE.MARK_NO
+		INNER JOIN CONT CO
+		ON
+		MA.MARK_NO = CO.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO =
+		MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON SD.SALES_DIV_NO =
+		MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON CH.RECOG_PATH_NO =
+		RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO
+		= #{markNo}
+	</select>
+	
+	<select id="gethistList" resultType="hashmap" parameterType="hashmap">
+		SELECT TO_CHAR(MH.UPDATE_DATE,'YY-MM-DD') AS UPDATE_DATE, MH.CON AS CON, PSP.NAME AS PSP_NAME , PSE.NAME AS PSE_NAME 
+        , EM.NAME AS EMP_NAME
+		FROM MARK_HIST MH INNER JOIN PROGRESS_STEP PSP
+		                    ON PSP.PROGRESS_STEP_NO = MH.PROGRESS_STEP_NO
+		                  INNER JOIN PROGRESS_STATE PSE
+		                    ON PSE.PROGRESS_STATE_NO = MH.PROGRESS_STATE_NO
+		                  INNER JOIN MARK MA
+		                    ON MA.MARK_NO = MH.MARK_NO
+		                  INNER JOIN EMP EM
+		                    ON EM.EMP_NO = MH.EMP_NO
+		WHERE MH.MARK_NO = #{markNo}
+		ORDER BY MH.MARK_HIST_NO DESC
+	</select>
+	
+	<insert id="getMarkChanceWrite3" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{Progress_State}, 0 , SYSDATE, #{sEmpNo}, '작성')
+	</insert>
+	
+	<insert id="getChanceUpdate2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo} , #{Progress_State}, 0 , SYSDATE, #{sEmpNo} , '수정')
+	</insert>
+	
+	<insert id="insertMngntOffer2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 1 , SYSDATE, #{sEmpNo}, '작성')
+	</insert>
+	
+	<insert id="updateMngntOfferAsk2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 1 , SYSDATE, #{sEmpNo}, '수정')
+	</insert>
+	
+	<insert id="writeNego2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 2 , SYSDATE, #{sEmpNo}, '작성')
+	</insert>
+	
+	<insert id="updateNego2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 2 , SYSDATE, #{sEmpNo}, '수정')
+	</insert>
+	
+	<insert id="writeCont2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 3 , SYSDATE, #{sEmpNo}, '작성')
+	</insert>
+	
+	<insert id="updateCont2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 3 , SYSDATE, #{sEmpNo}, '수정')
+	</insert>
+	
+	<insert id="CRMupdatePseAjax2" parameterType="hashmap">
+		INSERT INTO MARK_HIST(MARK_HIST_NO, MARK_NO, PROGRESS_STATE_NO, PROGRESS_STEP_NO, UPDATE_DATE, EMP_NO , CON)
+		<if test="pspCheck==0">
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 0 , SYSDATE, #{sEmpNo}, '수정')
+		</if>
+		<if test="pspCheck==1">
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 1 , SYSDATE, #{sEmpNo}, '수정')
+		</if>
+		<if test="pspCheck==2">
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 2 , SYSDATE, #{sEmpNo}, '수정')
+		</if>
+		<if test="pspCheck==3">
+		VALUES(MARK_HIST_SEQ.NEXTVAL, #{markNo}, #{pseNo}, 3 , SYSDATE, #{sEmpNo}, '수정')
+		</if>
+	</insert>
+	
+	
+	<select id="getMMNDtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL, PSE.PROGRESS_STATE_NO,
+		RP.NAME AS
+		RECOG_PATH_NAME, TO_CHAR(CH.MARK_START_DATE, 'YY-MM-DD') AS START_DATE, MA.FINISH_DATE
+		AS
+		FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS
+		PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		,
+		OFF.CON AS OFFER_CON , TO_CHAR(OFF.FINISH_DATE, 'YY-MM-DD') AS
+		OFF_FINISH_DATE,
+		TO_CHAR(OFF.OFFER_DATE, 'YY-MM-DD') AS OFF_OFFER_DATE
+		,NE.SPLY_AMT AS SPLY_AMT,
+		NE.SURTAX_WHETHER AS NE_SURTAX_WHETHER
+		FROM MARK MA INNER
+		JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO =
+		CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN NEGO NE
+		ON MA.MARK_NO = NE.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON
+		BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON
+		SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO =
+		MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+	
+	
+	<select id="getInsertContList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS
+		PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS SALES_DIV_NAME, PSE.PROGRESS_STATE_NO AS PROGRESS_STATE_NO,
+		MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL,
+		RP.NAME AS RECOG_PATH_NAME,
+		TO_CHAR(CH.MARK_START_DATE, 'YY-MM-DD') AS START_DATE, MA.FINISH_DATE
+		AS FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS PROGRESS_STEP_NAME,
+		MA.NAME
+		AS MARK_NAME
+		, OFF.CON AS OFFER_CON ,
+		TO_CHAR(OFF.FINISH_DATE, 'YY-MM-DD') AS
+		OFF_FINISH_DATE, TO_CHAR(OFF.OFFER_DATE, 'YY-MM-DD') AS OFF_OFFER_DATE
+		,NE.SPLY_AMT AS SPLY_AMT, NE.SURTAX_WHETHER AS NE_SURTAX_WHETHER
+		FROM
+		MARK MA INNER
+		JOIN MNGR MN
+		ON MA.MNGR_NO = MN.MNGR_NO
+		INNER JOIN CRM_CSTM
+		CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON
+		PSE.PROGRESS_STATE_NO = MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP
+		PSP
+		ON PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO =
+		OFF.MARK_NO
+		INNER JOIN NEGO NE
+		ON MA.MARK_NO = NE.MARK_NO
+		INNER JOIN
+		BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO = MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV
+		SD
+		ON SD.SALES_DIV_NO = MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON
+		CH.RECOG_PATH_NO = RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO =
+		MA.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE
+		ON HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO = #{markNo}
+	</select>
+	
+	<select id="getMCContDtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT CC.NAME AS CSTM_NAME, MN.NAME AS MNGR_NAME, PSE.NAME
+		AS PROGRESS_STATE_NAME,
+		BT.NAME AS BSNS_NAME, SD.NAME AS
+		SALES_DIV_NAME, MA.SALES_DIV_DTL AS
+		SALES_DIV_DTL, PSE.PROGRESS_STATE_NO,
+		RP.NAME AS
+		RECOG_PATH_NAME, TO_CHAR(CH.MARK_START_DATE,'YY-MM-DD') AS START_DATE, TO_CHAR(MA.FINISH_DATE,'YY-MM-DD')
+		AS
+		FINISH_DATE,
+		EM.NAME AS EMP_NAME ,MA.NOTE AS NOTE, PSP.NAME AS
+		PROGRESS_STEP_NAME, MA.NAME
+		AS MARK_NAME
+		,CON.CON AS CON, TO_CHAR(CON.CONT_DATE,'YY-MM-DD')
+		AS CONT_DATE , TO_CHAR(CON.START_DATE,'YY-MM-DD') AS
+		CON_START_DATE, TO_CHAR(CON.FINISH_DATE,'YY-MM-DD') AS
+		CON_FINISH_DATE,
+		CON.AMT AS AMT, CON.SURTAX_WHETHER AS
+		CON_SURTAX_WHETHER ,CON.PAY_PROV_COND
+		AS PAY_PROV_COND,
+		TO_CHAR(CON.FLAW_ASSUR_DATE,'YY-MM-DD') AS FLAW_ASSUR_DATE
+		, OFF.CON
+		AS OFFER_CON , TO_CHAR(OFF.FINISH_DATE,'YY-MM-DD') AS
+		OFF_FINISH_DATE, TO_CHAR(OFF.OFFER_DATE,'YY-MM-DD') AS
+		OFF_OFFER_DATE
+		,NE.SPLY_AMT AS SPLY_AMT, NE.SURTAX_WHETHER AS
+		NE_SURTAX_WHETHER
+		FROM MARK MA INNER
+		JOIN MNGR MN
+		ON MA.MNGR_NO =
+		MN.MNGR_NO
+		INNER JOIN CRM_CSTM CC
+		ON MN.CRM_CSTM_NO = CC.CRM_CSTM_NO
+		INNER JOIN PROGRESS_STATE PSE
+		ON PSE.PROGRESS_STATE_NO =
+		MA.PROGRESS_STATE_NO
+		INNER JOIN PROGRESS_STEP PSP
+		ON
+		PSP.PROGRESS_STEP_NO = MA.PROGRESS_STEP_NO
+		INNER JOIN CHANCE CH
+		ON
+		MA.MARK_NO = CH.MARK_NO
+		INNER JOIN OFFER OFF
+		ON MA.MARK_NO = OFF.MARK_NO
+		INNER JOIN NEGO NE
+		ON MA.MARK_NO = NE.MARK_NO
+		INNER JOIN CONT CON
+		ON
+		MA.MARK_NO = CON.MARK_NO
+		INNER JOIN BSNS_TYPE BT
+		ON BT.BSNS_TYPE_NO =
+		MA.BSNS_TYPE_NO
+		INNER JOIN SALES_DIV SD
+		ON SD.SALES_DIV_NO =
+		MA.SALES_DIV_NO
+		INNER JOIN RECOG_PATH RP
+		ON CH.RECOG_PATH_NO =
+		RP.RECOG_PATH_NO
+		INNER JOIN EMP EM
+		ON EM.EMP_NO = MA.EMP_NO
+		INNER JOIN
+		(SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE FNSH_DATE IS
+		NULL)
+		HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON HA.DEPT_NO =
+		DE.DEPT_NO
+		INNER JOIN POSI PO
+		ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO
+		= #{markNo}
+	</select>
+
+	<select id="getGradeHist" parameterType="hashmap" resultType="hashmap">
+	SELECT CC.CRM_CSTM_NO CNO, CC.NAME CNAME, E.NAME ENAME, GH.GRADE_HIST_NO GHNO, CC.CSTM_GRADE_NO CGNO,
+	       CG.NAME CGNAME, GH.UPDATE_CON GUPCON, TO_CHAR(GH.UPDATE_DATE, 'YY-MM-DD') GHDATE
+	FROM CRM_CSTM CC INNER JOIN GRADE_HIST GH
+	                         ON GH.CRM_CSTM_NO = CC.CRM_CSTM_NO
+	                 INNER JOIN CSTM_GRADE CG
+	                         ON GH.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+	                 INNER JOIN EMP E
+	                           ON CC.EMP_NO = E.EMP_NO             
+	WHERE 1 = 1 AND CC.CRM_CSTM_NO = #{cNo}
+	GROUP BY CC.CRM_CSTM_NO, CC.NAME, E.NAME, GH.GRADE_HIST_NO, CC.CSTM_GRADE_NO,
+	         CG.NAME, GH.UPDATE_CON, GH.UPDATE_DATE
+	ORDER BY GH.UPDATE_DATE
+	</select>
+	
+	<select id="getCstmHist" parameterType="hashmap" resultType="hashmap">
+	   SELECT CC.CRM_CSTM_NO CNO, CC.NAME CNAME, E.NAME ENAME, GH.GRADE_HIST_NO GHNO, CC.CSTM_GRADE_NO CGNO,
+	          CG.NAME CGNAME, GH.UPDATE_CON GUPCON, TO_CHAR(GH.UPDATE_DATE, 'YY-MM-DD') GHDATE
+	   FROM CRM_CSTM CC INNER JOIN GRADE_HIST GH
+	                            ON GH.CRM_CSTM_NO = CC.CRM_CSTM_NO
+	                    INNER JOIN CSTM_GRADE CG
+	                            ON GH.CSTM_GRADE_NO = CG.CSTM_GRADE_NO
+	                    INNER JOIN EMP E	
+	                              ON CC.EMP_NO = E.EMP_NO             
+	   WHERE 1 = 1 AND CC.CRM_CSTM_NO = #{cstmno}
+	   GROUP BY CC.CRM_CSTM_NO, CC.NAME, E.NAME, GH.GRADE_HIST_NO, CC.CSTM_GRADE_NO,
+	            CG.NAME, GH.UPDATE_CON, GH.UPDATE_DATE
+	   ORDER BY GH.UPDATE_DATE
+   </select>
+   
+   <!-- 0726수정 -->
+   <select id="CRMgetMarkChanceOpinionCnt" parameterType="hashmap"	resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MARK_OPINION MO INNER JOIN MARK
+		MA ON MA.MARK_NO
+		= MO.MARK_NO
+		INNER JOIN EMP EM ON EM.EMP_NO = MO.EMP_NO
+		INNER JOIN (SELECT DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT WHERE
+		FNSH_DATE IS
+		NULL) HA
+		ON EM.EMP_NO = HA.EMP_NO INNER JOIN DEPT DE ON
+		HA.DEPT_NO = DE.DEPT_NO
+		INNER JOIN POSI PO ON HA.POSI_NO = PO.POSI_NO
+		WHERE MA.MARK_NO =
+		#{markNo}
+		ORDER BY MARK_OPINION_NO DESC
+	</select>
+	
+	<select id="getMarkChanceOpnionList" parameterType="hashmap" resultType="hashmap">
+		SELECT T.MARK_OPINION_NO AS MARK_OPINION_NO, T.ENAME AS ENAME, T.REG_DATE AS REG_DATE, 
+        T.CHANCE_NO AS CHANCE_NO, T.CON AS CON, T.EMP_NO AS EMP_NO, T.MARK_NO AS MARK_NO
+        FROM(SELECT MO.MARK_OPINION_NO AS MARK_OPINION_NO, MO.MARK_NO, MO.EMP_NO,
+		MO.CON,C.CHANCE_NO,
+		TO_CHAR(MO.REG_DATE,'YYYY.MM.DD HH:MI') AS
+		REG_DATE,E.name as ENAME, ROW_NUMBER() OVER (ORDER BY MO.MARK_OPINION_NO DESC) AS RNUM
+		FROM mark_opinion MO
+		INNER JOIN EMP E
+		ON
+		MO.EMP_NO = E.EMP_NO
+		INNER JOIN CHANCE C
+		ON MO.MARK_NO = C.MARK_NO
+		WHERE
+		C.CHANCE_NO= #{chanceno}
+		ORDER BY MO.MARK_OPINION_NO DESC)T
+        WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getCstmOpnionList" parameterType="hashmap" resultType="hashmap">
+		SELECT T.CSTM_OPINION_NO AS CSTM_OPINION_NO , T.CRM_CSTM_NO AS CRM_CSTM_NO, T.EMP_NO AS EMP_NO,
+        T.CON AS CON, T.REG_DATE AS REG_DATE, T.ENAME AS ENAME
+        FROM(SELECT CO.CSTM_OPINION_NO, CO.CRM_CSTM_NO, E.EMP_NO,
+		CO.CON, TO_CHAR(co.REG_DATE,'YYYY.MM.DD HH:MI') AS REG_DATE, E.NAME AS
+		ENAME, ROW_NUMBER() OVER (ORDER BY CO.CSTM_OPINION_NO DESC) AS RNUM
+		FROM CSTM_OPINION CO
+		INNER JOIN EMP E
+		ON CO.EMP_NO = E.EMP_NO
+		WHERE
+		CO.CRM_CSTM_NO=#{cstmno}
+		ORDER BY CO.CSTM_OPINION_NO DESC)T
+        WHERE T.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+   	<select id="CRMgetCstmOpinionCnt" parameterType="hashmap"	resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CSTM_OPINION CO
+		INNER JOIN EMP E
+		ON CO.EMP_NO = E.EMP_NO
+		WHERE
+		CO.CRM_CSTM_NO=#{cstmno}
+		ORDER BY CO.CSTM_OPINION_NO DESC
+	</select>
+	
+	<select id="CRMMarkActivityCalListCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM 
+ 		(
+		SELECT CS.START_TIME, CS.FINISH_TIME,CS.SCH_NO, E.EMP_NO, E.NAME
+		AS ENAME,
+		CS.COLOR AS
+		COLOR,PS.NAME AS PSNAME, M.NAME AS MNAME,
+		CS.MARK_NO,
+		MN.NAME AS MNNAME, ROW_NUMBER() OVER (ORDER BY CS.SCH_NO
+		desc) RNUM,
+		TO_CHAR(CS.FINISH_TIME, 'YYYY-MM-DD') || '  ' ||	TO_CHAR(CS.FINISH_TIME, 'HH24"시"MI"분"') AS "END",
+		CS.PLAN_CON AS TITLE, CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP E
+		ON CS.EMP_NO = E.EMP_NO
+		INNER JOIN (SELECT
+		DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON
+		E.EMP_NO = HA.EMP_NO INNER JOIN DEPT D
+		ON HA.DEPT_NO = D.DEPT_NO
+		INNER
+		JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO
+		INNER JOIN MARK M
+		ON CS.MARK_NO=
+		M.MARK_NO
+		INNER JOIN PROGRESS_STEP PS
+		ON M.PROGRESS_STEP_NO =
+		PS.PROGRESS_STEP_NO
+		INNER JOIN MNGR MN
+		ON CS.MNGR_NO = MN.MNGR_NO
+		WHERE
+		1=1
+		<if test="stdt != null and stdt !=''">
+			AND CS.START_TIME BETWEEN #{stdt} AND #{eddt}
+		</if>
+		<if test="select1 != 10 ">
+			AND PS.PROGRESS_STEP_NO=#{select1}
+		</if>
+		<if test="schName != null and schName !=''">
+			AND CS.PLAN_CON LIKE '%' || #{schName} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		) A
+	</select>
+	
+	<select id="CRMMarkActivityCalList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.SCH_NO, A.EMP_NO, A.ENAME, A.COLOR, A.PSNAME,
+		A.MNAME,A.MARK_NO, A.MNNAME, A.RNUM, A.TITLE, A.ACTIVITY_CON,
+        TO_CHAR(A.FINISH_TIME, 'YYYY-MM-DD') || '  ' ||	TO_CHAR(A.FINISH_TIME, 'HH24"시"MI"분"') AS "END",
+		TO_CHAR(A.START_TIME, 'YYYY-MM-DD') || '  ' || TO_CHAR(A.START_TIME, 'HH24"시"MI"분"') AS "START"
+		FROM (
+		SELECT CS.START_TIME, CS.FINISH_TIME,CS.SCH_NO, E.EMP_NO, E.NAME
+		AS ENAME,
+		CS.COLOR AS
+		COLOR,PS.NAME AS PSNAME, M.NAME AS MNAME,
+		CS.MARK_NO,
+		MN.NAME AS MNNAME, ROW_NUMBER() OVER (ORDER BY CS.SCH_NO
+		desc) RNUM,
+		TO_CHAR(CS.FINISH_TIME, 'YYYY-MM-DD') || '  ' ||	TO_CHAR(CS.FINISH_TIME, 'HH24"시"MI"분"') AS "END",
+		CS.PLAN_CON AS TITLE, CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP E
+		ON CS.EMP_NO = E.EMP_NO
+		INNER JOIN (SELECT
+		DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE FNSH_DATE IS
+		NULL) HA
+		ON
+		E.EMP_NO = HA.EMP_NO INNER JOIN DEPT D
+		ON HA.DEPT_NO = D.DEPT_NO
+		INNER
+		JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO
+		INNER JOIN MARK M
+		ON CS.MARK_NO=
+		M.MARK_NO
+		INNER JOIN PROGRESS_STEP PS
+		ON M.PROGRESS_STEP_NO =
+		PS.PROGRESS_STEP_NO
+		INNER JOIN MNGR MN
+		ON CS.MNGR_NO = MN.MNGR_NO
+		WHERE
+		1=1
+		<if test="stdt != null and stdt !=''">
+			AND CS.START_TIME BETWEEN #{stdt} AND #{eddt}
+		</if>
+		<if test="select1 != 10 ">
+			AND PS.PROGRESS_STEP_NO=#{select1}
+		</if>
+		<if test="schName != null and schName !=''">
+			AND CS.PLAN_CON LIKE '%' || #{schName} || '%'
+		</if>
+		<if test="check2!=null and check2!='' and check!=999">
+
+			AND D.DEPT_NO LIKE '%' || #{check} || '%'
+		</if>
+		<if test="check2!=888">
+			AND E.EMP_NO LIKE '%' || #{check2} || '%'
+		</if>
+		) A
+		WHERE A.RNUM BETWEEN #{startCnt} AND #{endCnt}
+		ORDER BY A.RNUM ASC
+	</select>
+	
+	<select id="getMACDtl" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT TO_CHAR(CS.START_TIME,'HH24') AS STTIME1,
+		TO_CHAR(CS.START_TIME,'MI') AS STTIME2,
+		TO_CHAR(CS.FINISH_TIME,'HH24')
+		AS EDTIME1, TO_CHAR(CS.FINISH_TIME,'MI') AS EDTIME2,
+		CS.FINISH_TIME,CS.SCH_NO, E.EMP_NO, E.NAME AS ENAME,CS.MNGR_NO,
+		CS.COLOR AS
+		COLOR,PS.NAME AS PSNAME, M.NAME AS MNAME,AT.NAME AS ATNAME,
+		CS.MARK_NO, MN.NAME AS MNNAME, ROW_NUMBER() OVER (ORDER BY CS.SCH_NO
+		desc) RNUM,
+		TO_CHAR(CS.START_TIME, 'YYYY-MM-DD HH24:MI') AS "START",
+		TO_CHAR(CS.START_TIME,
+		'YYYY-MM-DD')AS STARTDAY,
+		TO_CHAR(CS.FINISH_TIME, 'HH24:MI') AS "END",
+		CS.PLAN_CON
+		AS TITLE,
+		CS.ACTIVITY_CON
+		FROM
+		CRM_SCH CS INNER JOIN EMP E
+		ON CS.EMP_NO =
+		E.EMP_NO
+		INNER JOIN (SELECT
+		DEPT_NO, POSI_NO, EMP_NO FROM HR_APNT
+		WHERE
+		FNSH_DATE
+		IS
+		NULL) HA
+		ON
+		E.EMP_NO = HA.EMP_NO INNER JOIN DEPT D
+		ON
+		HA.DEPT_NO =
+		D.DEPT_NO
+		INNER
+		JOIN POSI PO ON HA.POSI_NO =
+		PO.POSI_NO
+		INNER
+		JOIN MARK M
+		ON CS.MARK_NO=
+		M.MARK_NO
+		INNER JOIN PROGRESS_STEP PS
+		ON
+		M.PROGRESS_STEP_NO =
+		PS.PROGRESS_STEP_NO
+		INNER JOIN MNGR MN
+		ON CS.MNGR_NO
+		= MN.MNGR_NO
+		INNER
+		JOIN ACTIVITY_TYPE AT
+		ON CS.ACTIVITY_TYPE_NO =
+		AT.ACTIVITY_TYPE_NO
+		WHERE SCH_NO=#{schno}
+	</select>
+</mapper>
+

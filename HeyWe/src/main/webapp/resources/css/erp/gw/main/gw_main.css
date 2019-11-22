@@ -1,0 +1,408 @@
+@charset "UTF-8";
+
+.container-box{
+	width:795px;
+	height: 750px;
+	background-color: white;
+	color: white;
+	font-size: 30pt;
+	text-align: center;
+	margin-left: 5px;
+	display: inline-block;
+	vertical-align: top;
+}
+.tab_box{
+	width:795px;
+	height: 790px;
+	display: inline-block;
+	vertical-align: top;
+}
+.board{
+	background-color: red;
+	width: 390px;
+	height: 750px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+ 	font-family: "맑은고딕";
+}
+
+#layer1{
+	margin-left: 40px;
+	width: 700px;
+	height: 700px;
+	background-color:#DEE6EF;
+	margin-top: 13px;
+	border-radius: 6px;
+	color: black;
+	font-size: 13pt;
+	padding-top: 1px;
+}
+#layer2{
+	margin-left: 70px;
+	width: 610px;
+	height: 700px;
+	background-color:#DEE6EF;
+	border-radius: 16px;
+	color: black;
+	font-size: 13pt;
+	padding-top: 40px;
+}
+.article_board{
+ 	width: 600px;
+ 	height: 350px;
+ 	background-color: white;
+ 	color: black;
+ 	font-size: 19pt;
+}
+.document_board{
+ 	width: 600px;
+ 	height: 450px;
+ 	background-color: white;
+ 	font-size: 19pt;
+}
+.scrollDiv{
+	margin-left: 20px;
+	margin-top: 30px;
+	width: 660px;
+	height: 600px;
+	background-color: white;
+	position: relative;
+	border-radius: 5px;
+	padding-top: 15px;
+}
+.confirmation_list{
+	background-color: #F2F2F2;
+	width: 290px;
+	height: 220px;
+	border-radius: 5px;
+	margin-right: 21px;
+	display: inline-block;
+	vertical-align: top;
+	margin-bottom: 20px;
+}
+
+/* 
+.confirmation_table{
+	margin-left: 20px;
+	margin-top: 30px;
+	width: 660px;
+	height: 600px;
+	background-color: white;
+	position: relative;
+	border-radius: 5px;
+	overflow-y : scroll;
+}
+.confirmation_list{
+	background-color: #F2F2F2;
+	width: 290px;
+	height: 220px;
+	border-radius: 5px;
+	margin-left: 13px;
+	margin-right: 13px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	display: inline-block;
+	vertical-align: top;
+}
+ */
+
+.exmark{
+ 	width: 22px;
+ 	height: 22px;
+ 	margin-top: 10px;
+ 	margin-left: 4px;
+ 	
+ }
+.confirmation_state{
+	position: relative;
+	background-color: #8DA9C4;
+	color: white;
+	font-size: 8pt;
+	margin-right: 202px;
+	margin-top: 12px;
+	border-radius: 3px;
+	width: 37px;
+	height: 17px;
+	display: inline-block;
+	vertical-align: top;
+}
+.sun{
+	width: 60px;
+	height: 60px;
+}
+.clouds{
+	width: 50px;
+	height: 50px;
+}
+.cloud_rain_sun{
+	width: 50px;
+	height: 50px;
+}
+.confirmation_value{
+	text-align: left;
+	margin-left: 12px;
+}
+
+.banban{
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}
+.confirmation_writer{
+ 	position: relative;
+ 	color: gray;
+ 	font-size: 12pt;
+ 	text-align: left;
+ 	display: inline-block;
+ 	vertical-align: top;
+ 	width: 50%;
+ 	margin-right: 20px;
+ }
+
+.confirmation_writer_data{
+ 	display: inline-block;
+ 	vertical-align: top;
+ 	margin-right: 20px;
+ }
+
+.confirmation_template{
+ 	color: gray;
+ 	font-size: 13pt;
+ 	text-align: left;
+ }
+.confirm{
+ 	border-radius: 6px;
+ 	background-color: #134074;
+ 	border: 0px;
+ 	width: 70px;
+ 	height: 34px;
+ 	margin-top: 25px;
+ 	color: white;
+ }
+.scrollDiv{
+	
+}
+.change{
+ 	margin-right: 15px;
+ }
+.bg{
+	display: inline-block;
+	width:100%;
+	height:100%;
+	background-color: black;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	opacity: 0.5;
+	z-index: 100;
+
+ }
+ .popup{
+	display: inline-block;
+	width: 1200px;
+	height: 600px;
+	background-color: white;
+	top: calc(50% - 300px);
+	left: calc(50% - 600px);
+	position: absolute;
+	z-index: 800;
+	color: black;
+	font-size: 30pt;
+	display: inline-block;
+	vertical-align: top;
+	margin: 0px;
+	font-size: 0px;
+	border-radius: 8px;
+ }
+.popupcal1{
+	font-size : 12pt;
+	background-color: white;
+	width: 700px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: top;
+}
+.popupcal2, .popupcal2Sch{
+	width:500px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: top;
+	border-radius: 0px 8px 8px 0px;
+}
+.popupicon{
+	width:490px;
+	height:60px;
+	padding: 5px;
+	text-align: right;
+	border-radius: 0px 8px 0px 0px;
+	font-size: 11pt;
+	display: inline-block;
+	vertical-align: top;
+}
+.personTxt{
+	width: 490px;
+	height: 30px;
+	padding: 5px;
+	text-align: left;
+	font-size: 12pt;
+	color: blue;
+}
+.departmentTxt{
+	width: 490px;
+	height: 30px;
+	padding: 5px;
+	text-align: left;
+	font-size: 12pt;
+	color: red;
+}
+.companyTxt{
+	width: 490px;
+	height: 30px;
+	padding: 5px;
+	text-align: left;
+	font-size: 12pt;
+	color: green;
+}
+.projectTxt{
+	width: 490px;
+	height: 30px;
+	padding: 5px;
+	text-align: left;
+	font-size: 12pt;
+	color: fuchsia;
+}
+.insertTxt{
+	width: 490px;
+	height: 180px;
+	padding: 5px;
+	text-align: left;
+	font-size: 12pt;
+	color: black;
+}
+.cal_contents{
+	width: 330px;
+	height: 30px;
+}
+.insertaa{
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 28px;
+	font-size: 13px;
+}
+#insertSchBtn, #deleteSchBtn{
+	font-size: 11pt;
+	border-radius: 2px 2px 1px 1px;	
+}
+
+
+
+.calBtn{
+	font-size: 12pt;
+	margin: 5px;
+	width: 60px;
+	height: 25px;
+	border: 0px;
+	border-radius: 3px;	
+	background-color: #DEE6EF;
+	text-align: center;
+	color: #134074;
+}
+
+#popupcalender{
+	border-radius: 8px 0px 0px 8px;
+	width: 100%;
+	height: 100%;
+}
+#popupex{
+	width: 25px;
+	height: 25px;
+	
+}
+
+
+.All{
+	font-weight: bold;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+}
+.person{
+	color: blue;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+}
+.department{
+	color: red;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+}
+.company{
+	color: green;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+}
+.project{
+	color: fuchsia;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 16px;
+}
+#xe{
+	display: inline-block;
+	vertical-align: top;
+}
+#insertBtn{
+	margin-left:280px;
+}
+#backBtn{
+	margin-left:10px;
+}
+
+/* 바꿀부분임*/
+.calListArea{
+	width: 591px;
+	height: 131px;
+	overflow-y: scroll;
+}
+.calListArea2{
+	width: 495px;
+	height: 301px;
+	overflow-y: scroll;
+}
+.cal1{
+	color:blue;
+	font-size: 13pt;
+}
+.cal2{
+	color: red;
+	font-size: 13pt;
+} 
+.cal3{
+	color: green;
+	font-size: 13pt;
+}
+.cal4{
+	color: fuchsia;
+	font-size: 13pt;
+}
+/*이까징 ㅎㅎ*/
+.tabs_img{
+	width: 60px;
+	margin-left: 360px;
+}
+li{
+	font-size: 11pt;
+	color: black;
+	margin-bottom:13px;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+/*일정등록 부분 css 조정*/

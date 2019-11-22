@@ -1,0 +1,317 @@
+@charset "UTF-8";
+/* 
+	DarkBlue : rgb(19, 64, 116), #134074
+	SteelBlue : rgb(70, 130, 180), #4682b4
+	DeepLightBlue : rgb(141, 169, 196), #8DA9C4
+	LightBlue : rgb(222,230,239), #DEE6EF
+	LightSkyBlue : rgb(176,218,236), #B0DAEC
+	White : rgb(255,255,255), #FFFFFF
+ */
+table {
+	border-collapse: collapse;
+}
+
+thead tr {
+	border-top: 1px solid #8C8C8C;
+	border-bottom: 1px solid #8C8C8C;
+	background-color: #134074;
+	color: #FFFFFF;
+	font-size: 12pt;
+}
+
+tbody tr {
+	height : 51px;
+	border-bottom: 1px solid #8C8C8C;
+	background-color: #FFF; /**/
+	color: #000;
+	cursor: pointer;
+	font-size: 11pt;
+}
+
+tbody tr:hover {
+	background-color: #B0DAEC;
+	color: #134074;
+}
+
+table td, table th {
+	padding: 10px 5px;
+	text-align: center;
+}
+
+.name, .people, .cost, .m_cost, .manual, .brochure {
+	text-align: center;
+}
+
+.sec_tr {
+	background-color: #DEE6EF;
+}
+
+#attFile1, #attFile2, #finish {
+	display: none;
+}
+
+#fake_file_area {
+    width: 100%;
+    height: 100px;
+    float: left;
+}
+
+/* .content_title>.content_title_text {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 30px;
+	text-indent: 10px;
+	color: #134074;
+}
+ */
+.table_area {
+	margin-top: 20px;
+	margin-left: 40px;
+}
+
+.opt_line {
+	display: inline-block;
+	margin-top: 20px;
+	margin-left: 40px;
+	position: relative;
+	width: 888px;
+	height: 35px;
+	padding: 10px 30px;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	background-color: #8DA9C4;
+}
+
+.opt_line>.left_side {
+	display: inline-block;
+	position: absolute;
+}
+
+.opt_line>.left_side>.search {
+	display: inline-block;
+	vertical-align: top;
+	cursor: pointer;
+	height: 30px;
+	background-color: #134074;
+	color: #FFFFFF;
+	margin: 3px 10px;
+}
+
+.opt_line>.right_side {
+	display: inline-block;
+	position: absolute;
+	right: 30px;
+}
+
+.opt_line>.right_side>.Btn_1 {
+	display: inline-block;
+	vertical-align: top;
+	margin: 3px 10px;
+	cursor: pointer;
+	height: 30px;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.sel {
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	height: 25px;
+	margin: 6px 10px;
+}
+
+.txt_line {
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	height: 20px;
+	margin: 6px 10px;
+}
+
+.Btn_4 {
+	cursor: pointer;
+	height: 30px;
+	background-color: #134074;
+	color: #FFFFFF;
+}
+
+.Btn_5 {
+	height: 30px;
+	background-color: #134074;
+	color: #FFFFFF;
+	opacity: 0.7;
+}
+
+.paging_group {
+   width: 750pt;
+   height: 30px;
+   margin-top: 20px;
+   text-align: center;
+}
+
+.paging_group > div {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+}
+
+.paging_group > div:hover {
+   cursor: pointer;
+} 
+
+.paging_group > .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+.paging_group > .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+
+
+/* 팝업 */
+
+.popup_mid  .input_area {
+	display: inline-block;
+	position: relative;
+	width: 560px;
+	height: 310px;
+	padding: 10px;
+}
+
+.popup_mid  .input_area .input_area_line {
+	margin-top: 10px;
+	width: 100%;
+	height: 40px;
+	float: left;
+}
+
+.popup_mid  .input_area .input_area_line > .input_area_line_button {
+	display: inline-block;
+	width: 150px;
+	height: 50px;
+	vertical-align: top;
+}
+
+.popup_mid  .input_area .input_area_txt1 {
+	display: inline-block;
+	font-size: 12pt;
+	font-weight: bold;
+	color: #000000;
+	text-align: center;
+	vertical-align: top;
+	margin-left: -10px;
+	margin-right: 20px;
+	width: 164px;
+}
+
+.popup_mid  .input_area .input_area_txt2 {
+	display: inline-block;
+	width: 350px;
+	height: 50px;
+	vertical-align: top;
+}
+
+.popup_mid  .input_area .input_area_txt2 > input {
+	width: calc(100% - 50px);
+	height: calc(100% - 40px);
+	padding: 10px;
+	background-color: #DEE6EF;
+	vertical-align: center;
+	font-size: 12pt;
+	outline: 0px;
+}
+
+.popup_mid  .input_area .input_area_txt3 {
+	display: inline-block;
+	width: 230px;
+	height: 50px;
+	vertical-align: top;
+}
+
+.popup_mid  .input_area .input_area_txt3 > input {
+	width: calc(100% - 40px);
+	height: calc(100% - 40px);
+	padding: 10px;
+	background-color: #DEE6EF;
+	font-size: 12pt;
+	outline: 0px;
+	text-align: center;
+}
+
+.btn {
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	padding: 5px 0px;
+	margin-bottom: 10px;	
+}
+
+.btn > input {
+	width: 75px;
+	height: 35px;
+	font-size: 10pt;
+	font-weight: bold;
+	margin-left: 15px;
+	margin-right: 15px;
+	border-radius: 3px;
+	background-color: #134074;
+	color: #FFFFFF;
+	cursor: pointer;	
+}
+
+.popup_mid > .input_area > .input_area_bottom {
+	margin-top: 30px;
+	width: 100%;
+	height: 40px;
+	float: right;
+	text-align: right;
+}
+
+/* 페이징 부분 */
+
+#pagingArea {
+	width : 1000px;
+	margin: 10px 0px;
+	height: 40px;
+	text-align: center;
+}
+
+#pagingArea > [type="button"] {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   border: 1px solid #134074;
+   border-radius:2px;
+   font-size: 14pt;
+   font-weight: bold;
+   background-color: #FFFFFF;
+   margin-left: 10px;
+   color: #134074;
+}
+
+#pagingArea > [type="button"]:hover {
+   cursor: pointer;
+   background-color: #134074;
+    color: #FFFFFF;
+} 
+
+#pagingArea .paging_on {
+   background-color: #134074;
+   color: #FFFFFF;
+}
+
+#pagingArea .paging_off {
+   background-color: #FFFFFF;
+   color: #134074;
+}
+
+
